@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+//repositories {
+//    maven {
+    // Quandl4j has a dependency not in Maven: 'com.opengamma.external.json:json:1.0.0.v20101106'
+    // Source of this URL: https://github.com/jimmoores/quandl4j/blob/master/pom.xml
+//    url "http://maven.opengamma.com/nexus/content/groups/public"
+//    }
+//}
+
+mainClassName = 'hello.HelloWorld'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile "joda-time:joda-time:2.2"
+    compile 'com.jimmoores:quandl:1.4.0'
+    testCompile "junit:junit:4.12"
+}
+
+jar {
+    baseName = 'dataCollector'
+    version =  '0.0.1'
+}
