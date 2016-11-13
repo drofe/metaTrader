@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile 'com.google.protobuf:protobuf-java:3.0.0'
+    testCompile "junit:junit:4.12"
+}
+
+jar {
+    baseName = 'messaging'
+    version =  '0.0.1'
+}

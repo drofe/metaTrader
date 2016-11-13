@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package marketdata;
+
+option java_package = "org.bergefall.protocol.marketdata";
+option java_outer_classname = "MarketDataProtos";
+
+message Instrument {
+    string name = 1;
+     int32 id = 2;
+  }
+
+message marketData {
+    string instrument = 1;
+    string date = 2;
+    int64 close = 3;
+  }
