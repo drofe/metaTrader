@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bergefall.protocol.marketdata.MarketDataCreator;
-import org.bergefall.protocol.marketdata.MarketDataProtos.marketData;
+import org.bergefall.protocol.marketdata.MarketDataProtos.MarketData;
 import org.threeten.bp.LocalDate;
 
 import com.jimmoores.quandl.DataSetRequest;
@@ -16,9 +16,12 @@ public class SimpleGetter {
 	
 	private static final int OPENIdx = 1;
 	private static final String OPEN = "Open";
-	private static final int HIGH = 2;
-	private static final int LOW = 3;
-	private static final int CLOSE = 4;
+	private static final int HIGHIdx = 2;
+	private static final String HIGH = "High";
+	private static final int LOWIdx = 3;
+	private static final String LOW = "Low";
+	private static final int CLOSEIdx = 4;
+	private static final String CLOSE = "Close";
 	private static final long DIVISOR = 1_000_000L;
 	
 	
@@ -28,11 +31,11 @@ public class SimpleGetter {
 		TabularResult tabularResult = session.getDataSet(
 		  DataSetRequest.Builder.of("WIKI/AAPL")
 		  .withColumn(OPENIdx)
-		  .withColumn(CLOSE)
+		  .withColumn(CLOSEIdx)
 		  .build());
 		System.out.println(tabularResult.toPrettyPrintedString());
 		
-		List<marketData> tMDList = new ArrayList<>(tabularResult.size());
+		List<MarketData> tMDList = new ArrayList<>(tabularResult.size());
 		
 		for (final Row tRow : tabularResult) {
 			LocalDate tDate = tRow.getLocalDate("Date");

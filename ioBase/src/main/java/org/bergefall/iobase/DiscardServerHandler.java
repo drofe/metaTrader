@@ -8,16 +8,17 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
  * Handles a server-side channel.
  */
-public class DiscardServerHandler extends ChannelInboundHandlerAdapter { // (1)
+public class DiscardServerHandler extends ChannelInboundHandlerAdapter {
 
         @Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
+	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 	    // Discard the received data silently.
-	    ((ByteBuf) msg).release(); // (3)
+	    ((ByteBuf) msg).release();
+	    System.out.println("SERVER: Received: " + ((ByteBuf) msg).toString());
 	}
 
         @Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 	    // Close the connection when an exception is raised.
 	    cause.printStackTrace();
 	    ctx.close();

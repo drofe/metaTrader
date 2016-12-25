@@ -14,6 +14,1183 @@ public final class MarketDataProtos {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface MetaTraderMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:marketdata.MetaTraderMessage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    org.bergefall.protocol.marketdata.MarketDataProtos.Instrument getInstrument();
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder getInstrumentOrBuilder();
+
+    /**
+     * <code>optional .marketdata.MarketData marketData = 2;</code>
+     */
+    org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getMarketData();
+    /**
+     * <code>optional .marketdata.MarketData marketData = 2;</code>
+     */
+    org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder getMarketDataOrBuilder();
+
+    /**
+     * <code>optional uint64 seqNo = 10;</code>
+     */
+    long getSeqNo();
+
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    java.util.List<java.lang.Long> getTimeStampsList();
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    int getTimeStampsCount();
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    long getTimeStamps(int index);
+
+    public org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.PayloadCase getPayloadCase();
+  }
+  /**
+   * Protobuf type {@code marketdata.MetaTraderMessage}
+   */
+  public  static final class MetaTraderMessage extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:marketdata.MetaTraderMessage)
+      MetaTraderMessageOrBuilder {
+    // Use MetaTraderMessage.newBuilder() to construct.
+    private MetaTraderMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private MetaTraderMessage() {
+      seqNo_ = 0L;
+      timeStamps_ = java.util.Collections.emptyList();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private MetaTraderMessage(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder subBuilder = null;
+              if (payloadCase_ == 1) {
+                subBuilder = ((org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 1;
+              break;
+            }
+            case 18: {
+              org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder subBuilder = null;
+              if (payloadCase_ == 2) {
+                subBuilder = ((org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 2;
+              break;
+            }
+            case 80: {
+
+              seqNo_ = input.readUInt64();
+              break;
+            }
+            case 88: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                timeStamps_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              timeStamps_.add(input.readUInt64());
+              break;
+            }
+            case 90: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
+                timeStamps_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                timeStamps_.add(input.readUInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          timeStamps_ = java.util.Collections.unmodifiableList(timeStamps_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MetaTraderMessage_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MetaTraderMessage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.class, org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.Builder.class);
+    }
+
+    /**
+     * Protobuf enum {@code marketdata.MetaTraderMessage.Type}
+     */
+    public enum Type
+        implements com.google.protobuf.ProtocolMessageEnum {
+      /**
+       * <code>Instrument = 0;</code>
+       */
+      Instrument(0),
+      /**
+       * <code>MarketData = 1;</code>
+       */
+      MarketData(1),
+      UNRECOGNIZED(-1),
+      ;
+
+      /**
+       * <code>Instrument = 0;</code>
+       */
+      public static final int Instrument_VALUE = 0;
+      /**
+       * <code>MarketData = 1;</code>
+       */
+      public static final int MarketData_VALUE = 1;
+
+
+      public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
+        return value;
+      }
+
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static Type valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static Type forNumber(int value) {
+        switch (value) {
+          case 0: return Instrument;
+          case 1: return MarketData;
+          default: return null;
+        }
+      }
+
+      public static com.google.protobuf.Internal.EnumLiteMap<Type>
+          internalGetValueMap() {
+        return internalValueMap;
+      }
+      private static final com.google.protobuf.Internal.EnumLiteMap<
+          Type> internalValueMap =
+            new com.google.protobuf.Internal.EnumLiteMap<Type>() {
+              public Type findValueByNumber(int number) {
+                return Type.forNumber(number);
+              }
+            };
+
+      public final com.google.protobuf.Descriptors.EnumValueDescriptor
+          getValueDescriptor() {
+        return getDescriptor().getValues().get(ordinal());
+      }
+      public final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptorForType() {
+        return getDescriptor();
+      }
+      public static final com.google.protobuf.Descriptors.EnumDescriptor
+          getDescriptor() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.getDescriptor().getEnumTypes().get(0);
+      }
+
+      private static final Type[] VALUES = values();
+
+      public static Type valueOf(
+          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+        if (desc.getType() != getDescriptor()) {
+          throw new java.lang.IllegalArgumentException(
+            "EnumValueDescriptor is not for this type.");
+        }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
+        return VALUES[desc.getIndex()];
+      }
+
+      private final int value;
+
+      private Type(int value) {
+        this.value = value;
+      }
+
+      // @@protoc_insertion_point(enum_scope:marketdata.MetaTraderMessage.Type)
+    }
+
+    private int bitField0_;
+    private int payloadCase_ = 0;
+    private java.lang.Object payload_;
+    public enum PayloadCase
+        implements com.google.protobuf.Internal.EnumLite {
+      INSTRUMENT(1),
+      MARKETDATA(2),
+      PAYLOAD_NOT_SET(0);
+      private final int value;
+      private PayloadCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static PayloadCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static PayloadCase forNumber(int value) {
+        switch (value) {
+          case 1: return INSTRUMENT;
+          case 2: return MARKETDATA;
+          case 0: return PAYLOAD_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public PayloadCase
+    getPayloadCase() {
+      return PayloadCase.forNumber(
+          payloadCase_);
+    }
+
+    public static final int INSTRUMENT_FIELD_NUMBER = 1;
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    public org.bergefall.protocol.marketdata.MarketDataProtos.Instrument getInstrument() {
+      if (payloadCase_ == 1) {
+         return (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_;
+      }
+      return org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+    }
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    public org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+      if (payloadCase_ == 1) {
+         return (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_;
+      }
+      return org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+    }
+
+    public static final int MARKETDATA_FIELD_NUMBER = 2;
+    /**
+     * <code>optional .marketdata.MarketData marketData = 2;</code>
+     */
+    public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getMarketData() {
+      if (payloadCase_ == 2) {
+         return (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_;
+      }
+      return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+    }
+    /**
+     * <code>optional .marketdata.MarketData marketData = 2;</code>
+     */
+    public org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder getMarketDataOrBuilder() {
+      if (payloadCase_ == 2) {
+         return (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_;
+      }
+      return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+    }
+
+    public static final int SEQNO_FIELD_NUMBER = 10;
+    private long seqNo_;
+    /**
+     * <code>optional uint64 seqNo = 10;</code>
+     */
+    public long getSeqNo() {
+      return seqNo_;
+    }
+
+    public static final int TIMESTAMPS_FIELD_NUMBER = 11;
+    private java.util.List<java.lang.Long> timeStamps_;
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    public java.util.List<java.lang.Long>
+        getTimeStampsList() {
+      return timeStamps_;
+    }
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    public int getTimeStampsCount() {
+      return timeStamps_.size();
+    }
+    /**
+     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     */
+    public long getTimeStamps(int index) {
+      return timeStamps_.get(index);
+    }
+    private int timeStampsMemoizedSerializedSize = -1;
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (payloadCase_ == 1) {
+        output.writeMessage(1, (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_);
+      }
+      if (payloadCase_ == 2) {
+        output.writeMessage(2, (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_);
+      }
+      if (seqNo_ != 0L) {
+        output.writeUInt64(10, seqNo_);
+      }
+      if (getTimeStampsList().size() > 0) {
+        output.writeUInt32NoTag(90);
+        output.writeUInt32NoTag(timeStampsMemoizedSerializedSize);
+      }
+      for (int i = 0; i < timeStamps_.size(); i++) {
+        output.writeUInt64NoTag(timeStamps_.get(i));
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (payloadCase_ == 1) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_);
+      }
+      if (payloadCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_);
+      }
+      if (seqNo_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, seqNo_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < timeStamps_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeUInt64SizeNoTag(timeStamps_.get(i));
+        }
+        size += dataSize;
+        if (!getTimeStampsList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        timeStampsMemoizedSerializedSize = dataSize;
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage)) {
+        return super.equals(obj);
+      }
+      org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage other = (org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage) obj;
+
+      boolean result = true;
+      result = result && (getSeqNo()
+          == other.getSeqNo());
+      result = result && getTimeStampsList()
+          .equals(other.getTimeStampsList());
+      result = result && getPayloadCase().equals(
+          other.getPayloadCase());
+      if (!result) return false;
+      switch (payloadCase_) {
+        case 1:
+          result = result && getInstrument()
+              .equals(other.getInstrument());
+          break;
+        case 2:
+          result = result && getMarketData()
+              .equals(other.getMarketData());
+          break;
+        case 0:
+        default:
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + SEQNO_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSeqNo());
+      if (getTimeStampsCount() > 0) {
+        hash = (37 * hash) + TIMESTAMPS_FIELD_NUMBER;
+        hash = (53 * hash) + getTimeStampsList().hashCode();
+      }
+      switch (payloadCase_) {
+        case 1:
+          hash = (37 * hash) + INSTRUMENT_FIELD_NUMBER;
+          hash = (53 * hash) + getInstrument().hashCode();
+          break;
+        case 2:
+          hash = (37 * hash) + MARKETDATA_FIELD_NUMBER;
+          hash = (53 * hash) + getMarketData().hashCode();
+          break;
+        case 0:
+        default:
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code marketdata.MetaTraderMessage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:marketdata.MetaTraderMessage)
+        org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MetaTraderMessage_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MetaTraderMessage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.class, org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.Builder.class);
+      }
+
+      // Construct using org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        seqNo_ = 0L;
+
+        timeStamps_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        payloadCase_ = 0;
+        payload_ = null;
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MetaTraderMessage_descriptor;
+      }
+
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage getDefaultInstanceForType() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.getDefaultInstance();
+      }
+
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage build() {
+        org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage buildPartial() {
+        org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage result = new org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (payloadCase_ == 1) {
+          if (instrumentBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = instrumentBuilder_.build();
+          }
+        }
+        if (payloadCase_ == 2) {
+          if (marketDataBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = marketDataBuilder_.build();
+          }
+        }
+        result.seqNo_ = seqNo_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          timeStamps_ = java.util.Collections.unmodifiableList(timeStamps_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.timeStamps_ = timeStamps_;
+        result.bitField0_ = to_bitField0_;
+        result.payloadCase_ = payloadCase_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage) {
+          return mergeFrom((org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage other) {
+        if (other == org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage.getDefaultInstance()) return this;
+        if (other.getSeqNo() != 0L) {
+          setSeqNo(other.getSeqNo());
+        }
+        if (!other.timeStamps_.isEmpty()) {
+          if (timeStamps_.isEmpty()) {
+            timeStamps_ = other.timeStamps_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensureTimeStampsIsMutable();
+            timeStamps_.addAll(other.timeStamps_);
+          }
+          onChanged();
+        }
+        switch (other.getPayloadCase()) {
+          case INSTRUMENT: {
+            mergeInstrument(other.getInstrument());
+            break;
+          }
+          case MARKETDATA: {
+            mergeMarketData(other.getMarketData());
+            break;
+          }
+          case PAYLOAD_NOT_SET: {
+            break;
+          }
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int payloadCase_ = 0;
+      private java.lang.Object payload_;
+      public PayloadCase
+          getPayloadCase() {
+        return PayloadCase.forNumber(
+            payloadCase_);
+      }
+
+      public Builder clearPayload() {
+        payloadCase_ = 0;
+        payload_ = null;
+        onChanged();
+        return this;
+      }
+
+      private int bitField0_;
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.marketdata.MarketDataProtos.Instrument, org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder> instrumentBuilder_;
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.Instrument getInstrument() {
+        if (instrumentBuilder_ == null) {
+          if (payloadCase_ == 1) {
+            return (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_;
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 1) {
+            return instrumentBuilder_.getMessage();
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder setInstrument(org.bergefall.protocol.marketdata.MarketDataProtos.Instrument value) {
+        if (instrumentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          instrumentBuilder_.setMessage(value);
+        }
+        payloadCase_ = 1;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder setInstrument(
+          org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder builderForValue) {
+        if (instrumentBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          instrumentBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 1;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder mergeInstrument(org.bergefall.protocol.marketdata.MarketDataProtos.Instrument value) {
+        if (instrumentBuilder_ == null) {
+          if (payloadCase_ == 1 &&
+              payload_ != org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance()) {
+            payload_ = org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.newBuilder((org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 1) {
+            instrumentBuilder_.mergeFrom(value);
+          }
+          instrumentBuilder_.setMessage(value);
+        }
+        payloadCase_ = 1;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder clearInstrument() {
+        if (instrumentBuilder_ == null) {
+          if (payloadCase_ == 1) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 1) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          instrumentBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder getInstrumentBuilder() {
+        return getInstrumentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+        if ((payloadCase_ == 1) && (instrumentBuilder_ != null)) {
+          return instrumentBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 1) {
+            return (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_;
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.marketdata.MarketDataProtos.Instrument, org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder> 
+          getInstrumentFieldBuilder() {
+        if (instrumentBuilder_ == null) {
+          if (!(payloadCase_ == 1)) {
+            payload_ = org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.getDefaultInstance();
+          }
+          instrumentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              org.bergefall.protocol.marketdata.MarketDataProtos.Instrument, org.bergefall.protocol.marketdata.MarketDataProtos.Instrument.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.InstrumentOrBuilder>(
+                  (org.bergefall.protocol.marketdata.MarketDataProtos.Instrument) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 1;
+        onChanged();;
+        return instrumentBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.marketdata.MarketDataProtos.MarketData, org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder> marketDataBuilder_;
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getMarketData() {
+        if (marketDataBuilder_ == null) {
+          if (payloadCase_ == 2) {
+            return (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_;
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 2) {
+            return marketDataBuilder_.getMessage();
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public Builder setMarketData(org.bergefall.protocol.marketdata.MarketDataProtos.MarketData value) {
+        if (marketDataBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          marketDataBuilder_.setMessage(value);
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public Builder setMarketData(
+          org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder builderForValue) {
+        if (marketDataBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          marketDataBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public Builder mergeMarketData(org.bergefall.protocol.marketdata.MarketDataProtos.MarketData value) {
+        if (marketDataBuilder_ == null) {
+          if (payloadCase_ == 2 &&
+              payload_ != org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance()) {
+            payload_ = org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.newBuilder((org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 2) {
+            marketDataBuilder_.mergeFrom(value);
+          }
+          marketDataBuilder_.setMessage(value);
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public Builder clearMarketData() {
+        if (marketDataBuilder_ == null) {
+          if (payloadCase_ == 2) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 2) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          marketDataBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder getMarketDataBuilder() {
+        return getMarketDataFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder getMarketDataOrBuilder() {
+        if ((payloadCase_ == 2) && (marketDataBuilder_ != null)) {
+          return marketDataBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 2) {
+            return (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_;
+          }
+          return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.MarketData marketData = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.marketdata.MarketDataProtos.MarketData, org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder> 
+          getMarketDataFieldBuilder() {
+        if (marketDataBuilder_ == null) {
+          if (!(payloadCase_ == 2)) {
+            payload_ = org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
+          }
+          marketDataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              org.bergefall.protocol.marketdata.MarketDataProtos.MarketData, org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder, org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder>(
+                  (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 2;
+        onChanged();;
+        return marketDataBuilder_;
+      }
+
+      private long seqNo_ ;
+      /**
+       * <code>optional uint64 seqNo = 10;</code>
+       */
+      public long getSeqNo() {
+        return seqNo_;
+      }
+      /**
+       * <code>optional uint64 seqNo = 10;</code>
+       */
+      public Builder setSeqNo(long value) {
+        
+        seqNo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 seqNo = 10;</code>
+       */
+      public Builder clearSeqNo() {
+        
+        seqNo_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<java.lang.Long> timeStamps_ = java.util.Collections.emptyList();
+      private void ensureTimeStampsIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          timeStamps_ = new java.util.ArrayList<java.lang.Long>(timeStamps_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public java.util.List<java.lang.Long>
+          getTimeStampsList() {
+        return java.util.Collections.unmodifiableList(timeStamps_);
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public int getTimeStampsCount() {
+        return timeStamps_.size();
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public long getTimeStamps(int index) {
+        return timeStamps_.get(index);
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public Builder setTimeStamps(
+          int index, long value) {
+        ensureTimeStampsIsMutable();
+        timeStamps_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public Builder addTimeStamps(long value) {
+        ensureTimeStampsIsMutable();
+        timeStamps_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public Builder addAllTimeStamps(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureTimeStampsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, timeStamps_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       */
+      public Builder clearTimeStamps() {
+        timeStamps_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:marketdata.MetaTraderMessage)
+    }
+
+    // @@protoc_insertion_point(class_scope:marketdata.MetaTraderMessage)
+    private static final org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage();
+    }
+
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MetaTraderMessage>
+        PARSER = new com.google.protobuf.AbstractParser<MetaTraderMessage>() {
+      public MetaTraderMessage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new MetaTraderMessage(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<MetaTraderMessage> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MetaTraderMessage> getParserForType() {
+      return PARSER;
+    }
+
+    public org.bergefall.protocol.marketdata.MarketDataProtos.MetaTraderMessage getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface InstrumentOrBuilder extends
       // @@protoc_insertion_point(interface_extends:marketdata.Instrument)
       com.google.protobuf.MessageOrBuilder {
@@ -580,8 +1757,8 @@ public final class MarketDataProtos {
 
   }
 
-  public interface marketDataOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:marketdata.marketData)
+  public interface MarketDataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:marketdata.MarketData)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -608,22 +1785,46 @@ public final class MarketDataProtos {
      * <code>optional int64 close = 3;</code>
      */
     long getClose();
+
+    /**
+     * <code>optional int64 open = 4;</code>
+     */
+    long getOpen();
+
+    /**
+     * <code>optional int64 high = 5;</code>
+     */
+    long getHigh();
+
+    /**
+     * <code>optional int64 low = 6;</code>
+     */
+    long getLow();
+
+    /**
+     * <code>optional double split = 7;</code>
+     */
+    double getSplit();
   }
   /**
-   * Protobuf type {@code marketdata.marketData}
+   * Protobuf type {@code marketdata.MarketData}
    */
-  public  static final class marketData extends
+  public  static final class MarketData extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:marketdata.marketData)
-      marketDataOrBuilder {
-    // Use marketData.newBuilder() to construct.
-    private marketData(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      // @@protoc_insertion_point(message_implements:marketdata.MarketData)
+      MarketDataOrBuilder {
+    // Use MarketData.newBuilder() to construct.
+    private MarketData(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private marketData() {
+    private MarketData() {
       instrument_ = "";
       date_ = "";
       close_ = 0L;
+      open_ = 0L;
+      high_ = 0L;
+      low_ = 0L;
+      split_ = 0D;
     }
 
     @java.lang.Override
@@ -631,7 +1832,7 @@ public final class MarketDataProtos {
     getUnknownFields() {
       return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
-    private marketData(
+    private MarketData(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -668,6 +1869,26 @@ public final class MarketDataProtos {
               close_ = input.readInt64();
               break;
             }
+            case 32: {
+
+              open_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              high_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              low_ = input.readInt64();
+              break;
+            }
+            case 57: {
+
+              split_ = input.readDouble();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -681,14 +1902,14 @@ public final class MarketDataProtos {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_marketData_descriptor;
+      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MarketData_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_marketData_fieldAccessorTable
+      return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MarketData_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.bergefall.protocol.marketdata.MarketDataProtos.marketData.class, org.bergefall.protocol.marketdata.MarketDataProtos.marketData.Builder.class);
+              org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.class, org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder.class);
     }
 
     public static final int INSTRUMENT_FIELD_NUMBER = 1;
@@ -768,6 +1989,42 @@ public final class MarketDataProtos {
       return close_;
     }
 
+    public static final int OPEN_FIELD_NUMBER = 4;
+    private long open_;
+    /**
+     * <code>optional int64 open = 4;</code>
+     */
+    public long getOpen() {
+      return open_;
+    }
+
+    public static final int HIGH_FIELD_NUMBER = 5;
+    private long high_;
+    /**
+     * <code>optional int64 high = 5;</code>
+     */
+    public long getHigh() {
+      return high_;
+    }
+
+    public static final int LOW_FIELD_NUMBER = 6;
+    private long low_;
+    /**
+     * <code>optional int64 low = 6;</code>
+     */
+    public long getLow() {
+      return low_;
+    }
+
+    public static final int SPLIT_FIELD_NUMBER = 7;
+    private double split_;
+    /**
+     * <code>optional double split = 7;</code>
+     */
+    public double getSplit() {
+      return split_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -789,6 +2046,18 @@ public final class MarketDataProtos {
       if (close_ != 0L) {
         output.writeInt64(3, close_);
       }
+      if (open_ != 0L) {
+        output.writeInt64(4, open_);
+      }
+      if (high_ != 0L) {
+        output.writeInt64(5, high_);
+      }
+      if (low_ != 0L) {
+        output.writeInt64(6, low_);
+      }
+      if (split_ != 0D) {
+        output.writeDouble(7, split_);
+      }
     }
 
     public int getSerializedSize() {
@@ -806,6 +2075,22 @@ public final class MarketDataProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, close_);
       }
+      if (open_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, open_);
+      }
+      if (high_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, high_);
+      }
+      if (low_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, low_);
+      }
+      if (split_ != 0D) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(7, split_);
+      }
       memoizedSize = size;
       return size;
     }
@@ -816,10 +2101,10 @@ public final class MarketDataProtos {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof org.bergefall.protocol.marketdata.MarketDataProtos.marketData)) {
+      if (!(obj instanceof org.bergefall.protocol.marketdata.MarketDataProtos.MarketData)) {
         return super.equals(obj);
       }
-      org.bergefall.protocol.marketdata.MarketDataProtos.marketData other = (org.bergefall.protocol.marketdata.MarketDataProtos.marketData) obj;
+      org.bergefall.protocol.marketdata.MarketDataProtos.MarketData other = (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) obj;
 
       boolean result = true;
       result = result && getInstrument()
@@ -828,6 +2113,16 @@ public final class MarketDataProtos {
           .equals(other.getDate());
       result = result && (getClose()
           == other.getClose());
+      result = result && (getOpen()
+          == other.getOpen());
+      result = result && (getHigh()
+          == other.getHigh());
+      result = result && (getLow()
+          == other.getLow());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getSplit())
+          == java.lang.Double.doubleToLongBits(
+              other.getSplit()));
       return result;
     }
 
@@ -845,63 +2140,75 @@ public final class MarketDataProtos {
       hash = (37 * hash) + CLOSE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getClose());
+      hash = (37 * hash) + OPEN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOpen());
+      hash = (37 * hash) + HIGH_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getHigh());
+      hash = (37 * hash) + LOW_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLow());
+      hash = (37 * hash) + SPLIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getSplit()));
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(byte[] data)
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(java.io.InputStream input)
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseDelimitedFrom(java.io.InputStream input)
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseDelimitedFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData parseFrom(
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -913,7 +2220,7 @@ public final class MarketDataProtos {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.bergefall.protocol.marketdata.MarketDataProtos.marketData prototype) {
+    public static Builder newBuilder(org.bergefall.protocol.marketdata.MarketDataProtos.MarketData prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -928,25 +2235,25 @@ public final class MarketDataProtos {
       return builder;
     }
     /**
-     * Protobuf type {@code marketdata.marketData}
+     * Protobuf type {@code marketdata.MarketData}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:marketdata.marketData)
-        org.bergefall.protocol.marketdata.MarketDataProtos.marketDataOrBuilder {
+        // @@protoc_insertion_point(builder_implements:marketdata.MarketData)
+        org.bergefall.protocol.marketdata.MarketDataProtos.MarketDataOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_marketData_descriptor;
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MarketData_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_marketData_fieldAccessorTable
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MarketData_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.bergefall.protocol.marketdata.MarketDataProtos.marketData.class, org.bergefall.protocol.marketdata.MarketDataProtos.marketData.Builder.class);
+                org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.class, org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.Builder.class);
       }
 
-      // Construct using org.bergefall.protocol.marketdata.MarketDataProtos.marketData.newBuilder()
+      // Construct using org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -969,31 +2276,43 @@ public final class MarketDataProtos {
 
         close_ = 0L;
 
+        open_ = 0L;
+
+        high_ = 0L;
+
+        low_ = 0L;
+
+        split_ = 0D;
+
         return this;
       }
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_marketData_descriptor;
+        return org.bergefall.protocol.marketdata.MarketDataProtos.internal_static_marketdata_MarketData_descriptor;
       }
 
-      public org.bergefall.protocol.marketdata.MarketDataProtos.marketData getDefaultInstanceForType() {
-        return org.bergefall.protocol.marketdata.MarketDataProtos.marketData.getDefaultInstance();
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getDefaultInstanceForType() {
+        return org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance();
       }
 
-      public org.bergefall.protocol.marketdata.MarketDataProtos.marketData build() {
-        org.bergefall.protocol.marketdata.MarketDataProtos.marketData result = buildPartial();
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData build() {
+        org.bergefall.protocol.marketdata.MarketDataProtos.MarketData result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public org.bergefall.protocol.marketdata.MarketDataProtos.marketData buildPartial() {
-        org.bergefall.protocol.marketdata.MarketDataProtos.marketData result = new org.bergefall.protocol.marketdata.MarketDataProtos.marketData(this);
+      public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData buildPartial() {
+        org.bergefall.protocol.marketdata.MarketDataProtos.MarketData result = new org.bergefall.protocol.marketdata.MarketDataProtos.MarketData(this);
         result.instrument_ = instrument_;
         result.date_ = date_;
         result.close_ = close_;
+        result.open_ = open_;
+        result.high_ = high_;
+        result.low_ = low_;
+        result.split_ = split_;
         onBuilt();
         return result;
       }
@@ -1025,16 +2344,16 @@ public final class MarketDataProtos {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof org.bergefall.protocol.marketdata.MarketDataProtos.marketData) {
-          return mergeFrom((org.bergefall.protocol.marketdata.MarketDataProtos.marketData)other);
+        if (other instanceof org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) {
+          return mergeFrom((org.bergefall.protocol.marketdata.MarketDataProtos.MarketData)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.bergefall.protocol.marketdata.MarketDataProtos.marketData other) {
-        if (other == org.bergefall.protocol.marketdata.MarketDataProtos.marketData.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.bergefall.protocol.marketdata.MarketDataProtos.MarketData other) {
+        if (other == org.bergefall.protocol.marketdata.MarketDataProtos.MarketData.getDefaultInstance()) return this;
         if (!other.getInstrument().isEmpty()) {
           instrument_ = other.instrument_;
           onChanged();
@@ -1045,6 +2364,18 @@ public final class MarketDataProtos {
         }
         if (other.getClose() != 0L) {
           setClose(other.getClose());
+        }
+        if (other.getOpen() != 0L) {
+          setOpen(other.getOpen());
+        }
+        if (other.getHigh() != 0L) {
+          setHigh(other.getHigh());
+        }
+        if (other.getLow() != 0L) {
+          setLow(other.getLow());
+        }
+        if (other.getSplit() != 0D) {
+          setSplit(other.getSplit());
         }
         onChanged();
         return this;
@@ -1058,11 +2389,11 @@ public final class MarketDataProtos {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.bergefall.protocol.marketdata.MarketDataProtos.marketData parsedMessage = null;
+        org.bergefall.protocol.marketdata.MarketDataProtos.MarketData parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (org.bergefall.protocol.marketdata.MarketDataProtos.marketData) e.getUnfinishedMessage();
+          parsedMessage = (org.bergefall.protocol.marketdata.MarketDataProtos.MarketData) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1235,6 +2566,110 @@ public final class MarketDataProtos {
         onChanged();
         return this;
       }
+
+      private long open_ ;
+      /**
+       * <code>optional int64 open = 4;</code>
+       */
+      public long getOpen() {
+        return open_;
+      }
+      /**
+       * <code>optional int64 open = 4;</code>
+       */
+      public Builder setOpen(long value) {
+        
+        open_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 open = 4;</code>
+       */
+      public Builder clearOpen() {
+        
+        open_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long high_ ;
+      /**
+       * <code>optional int64 high = 5;</code>
+       */
+      public long getHigh() {
+        return high_;
+      }
+      /**
+       * <code>optional int64 high = 5;</code>
+       */
+      public Builder setHigh(long value) {
+        
+        high_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 high = 5;</code>
+       */
+      public Builder clearHigh() {
+        
+        high_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long low_ ;
+      /**
+       * <code>optional int64 low = 6;</code>
+       */
+      public long getLow() {
+        return low_;
+      }
+      /**
+       * <code>optional int64 low = 6;</code>
+       */
+      public Builder setLow(long value) {
+        
+        low_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 low = 6;</code>
+       */
+      public Builder clearLow() {
+        
+        low_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private double split_ ;
+      /**
+       * <code>optional double split = 7;</code>
+       */
+      public double getSplit() {
+        return split_;
+      }
+      /**
+       * <code>optional double split = 7;</code>
+       */
+      public Builder setSplit(double value) {
+        
+        split_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double split = 7;</code>
+       */
+      public Builder clearSplit() {
+        
+        split_ = 0D;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -1246,54 +2681,59 @@ public final class MarketDataProtos {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:marketdata.marketData)
+      // @@protoc_insertion_point(builder_scope:marketdata.MarketData)
     }
 
-    // @@protoc_insertion_point(class_scope:marketdata.marketData)
-    private static final org.bergefall.protocol.marketdata.MarketDataProtos.marketData DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:marketdata.MarketData)
+    private static final org.bergefall.protocol.marketdata.MarketDataProtos.MarketData DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new org.bergefall.protocol.marketdata.MarketDataProtos.marketData();
+      DEFAULT_INSTANCE = new org.bergefall.protocol.marketdata.MarketDataProtos.MarketData();
     }
 
-    public static org.bergefall.protocol.marketdata.MarketDataProtos.marketData getDefaultInstance() {
+    public static org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    private static final com.google.protobuf.Parser<marketData>
-        PARSER = new com.google.protobuf.AbstractParser<marketData>() {
-      public marketData parsePartialFrom(
+    private static final com.google.protobuf.Parser<MarketData>
+        PARSER = new com.google.protobuf.AbstractParser<MarketData>() {
+      public MarketData parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new marketData(input, extensionRegistry);
+          return new MarketData(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<marketData> parser() {
+    public static com.google.protobuf.Parser<MarketData> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<marketData> getParserForType() {
+    public com.google.protobuf.Parser<MarketData> getParserForType() {
       return PARSER;
     }
 
-    public org.bergefall.protocol.marketdata.MarketDataProtos.marketData getDefaultInstanceForType() {
+    public org.bergefall.protocol.marketdata.MarketDataProtos.MarketData getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_marketdata_MetaTraderMessage_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_marketdata_MetaTraderMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_marketdata_Instrument_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_marketdata_Instrument_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_marketdata_marketData_descriptor;
+    internal_static_marketdata_MarketData_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_marketdata_marketData_fieldAccessorTable;
+      internal_static_marketdata_MarketData_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1304,11 +2744,17 @@ public final class MarketDataProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n\034definitions/marketData.proto\022\nmarketda" +
-      "ta\"&\n\nInstrument\022\014\n\004name\030\001 \001(\t\022\n\n\002id\030\002 \001" +
-      "(\005\"=\n\nmarketData\022\022\n\ninstrument\030\001 \001(\t\022\014\n\004" +
-      "date\030\002 \001(\t\022\r\n\005close\030\003 \001(\003B5\n!org.bergefa" +
-      "ll.protocol.marketdataB\020MarketDataProtos" +
-      "b\006proto3"
+      "ta\"\311\001\n\021MetaTraderMessage\022,\n\ninstrument\030\001" +
+      " \001(\0132\026.marketdata.InstrumentH\000\022,\n\nmarket" +
+      "Data\030\002 \001(\0132\026.marketdata.MarketDataH\000\022\r\n\005" +
+      "seqNo\030\n \001(\004\022\026\n\ntimeStamps\030\013 \003(\004B\002\020\001\"&\n\004T" +
+      "ype\022\016\n\nInstrument\020\000\022\016\n\nMarketData\020\001B\t\n\007p" +
+      "ayload\"&\n\nInstrument\022\014\n\004name\030\001 \001(\t\022\n\n\002id" +
+      "\030\002 \001(\005\"u\n\nMarketData\022\022\n\ninstrument\030\001 \001(\t" +
+      "\022\014\n\004date\030\002 \001(\t\022\r\n\005close\030\003 \001(\003\022\014\n\004open\030\004 " +
+      "\001(\003\022\014\n\004high\030\005 \001(\003\022\013\n\003low\030\006 \001(\003\022\r\n\005split\030",
+      "\007 \001(\001B5\n!org.bergefall.protocol.marketda" +
+      "taB\020MarketDataProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1322,18 +2768,24 @@ public final class MarketDataProtos {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_marketdata_Instrument_descriptor =
+    internal_static_marketdata_MetaTraderMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_marketdata_MetaTraderMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_marketdata_MetaTraderMessage_descriptor,
+        new java.lang.String[] { "Instrument", "MarketData", "SeqNo", "TimeStamps", "Payload", });
+    internal_static_marketdata_Instrument_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_marketdata_Instrument_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_Instrument_descriptor,
         new java.lang.String[] { "Name", "Id", });
-    internal_static_marketdata_marketData_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_marketdata_marketData_fieldAccessorTable = new
+    internal_static_marketdata_MarketData_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_marketdata_MarketData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_marketdata_marketData_descriptor,
-        new java.lang.String[] { "Instrument", "Date", "Close", });
+        internal_static_marketdata_MarketData_descriptor,
+        new java.lang.String[] { "Instrument", "Date", "Close", "Open", "High", "Low", "Split", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
