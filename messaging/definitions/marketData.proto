@@ -6,10 +6,11 @@ option java_package = "org.bergefall.protocol.marketdata";
 option java_outer_classname = "MarketDataProtos";
 
 message MetaTraderMessage {
-    enum Type {Instrument = 0; MarketData = 1;}
+    enum Type {Instrument = 0; MarketData = 1; Account = 2;}
     oneof payload {
         Instrument instrument = 1;
 	MarketData marketData = 2;
+	Account account = 3;
     }
     uint64 seqNo = 10;
     repeated uint64 timeStamps = 11 [packed=true];
@@ -20,6 +21,15 @@ message Instrument {
     int32 id = 2;
   }
 
+message Account {
+    string name = 1;
+    int32 id = 2;
+    string broker = 3;
+    string user = 4;
+    string hashedPw = 5;
+}
+    
+
 message MarketData {
     string instrument = 1;
     string date = 2;
@@ -27,5 +37,11 @@ message MarketData {
     int64 open = 4;
     int64 high = 5;
     int64 low = 6;
-    double split = 7;
-  }
+    int64 bid = 7;
+    int64 ask = 8;
+    int64 avg = 9;
+    int64 trades = 10;
+    int64 turnover = 11;
+    int64 totVol = 12;
+    double split = 13;
+}
