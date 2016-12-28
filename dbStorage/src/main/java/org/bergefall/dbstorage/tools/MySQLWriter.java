@@ -5,22 +5,17 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 import org.bergefall.dbstorage.HistoricalPriceCtx;
-import org.bergefall.dbstorage.MySQLAccess;
+import org.bergefall.dbstorage.EqHsAccess;
 
-public class MySQLWriter extends MySQLAccess {
+public class MySQLWriter extends EqHsAccess {
 
-	private static final String ctxInsert = "INSERT INTO EQ_HS (SYMBOL, DATE_TIME, OPEN_P, CLOSE_P,"
-			+ "HIGH_P, LOW_P, AVG_P, TOT_VOL, TRADES_NR) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-	private static final int cSymbolIdx = 1;
-	private static final int cDateTimeIdx = 2;
-	private static final int cOpenPIdx = 3;
-	private static final int cClosePIdx = 4;
-	private static final int cHighPIdx = 5;
-	private static final int cLowPIdx = 6;
-	private static final int cAvgPIdx = 7;
-	private static final int cTotVolIdx = 8;
-	private static final int cTradesNrIdx = 9;
+	private static final String ctxInsert = "INSERT INTO EQ_HS (" +
+			cSymbolColName + "," + 
+			cDateTimeColName + ", OPEN_P, " + 
+			cCloseColName + ","
+			+ "HIGH_P, LOW_P, AVG_P, TOT_VOL, TRADES_NR, TURNOVER, BID_P, ASK_P) " + 
+			"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	
 
 	public boolean storePriceCtx(HistoricalPriceCtx priceCtx) {
 		if(!init()) {
@@ -37,6 +32,9 @@ public class MySQLWriter extends MySQLAccess {
 			preparedStatement.setLong(cAvgPIdx, priceCtx.getAvgPrice());
 			preparedStatement.setLong(cTotVolIdx, priceCtx.getTotVol());
 			preparedStatement.setLong(cTradesNrIdx, priceCtx.getNrTrades());
+			preparedStatement.setLong(cTurnoverIdx, priceCtx.getTurnover());
+			preparedStatement.setLong(cAskPriceIdx, priceCtx.getAskPrice());
+			preparedStatement.setLong(cBidPriceIdx, priceCtx.getBidPrice());
 
 			return preparedStatement.execute();
 

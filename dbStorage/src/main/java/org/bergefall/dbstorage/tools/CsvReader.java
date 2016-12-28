@@ -104,8 +104,11 @@ public class CsvReader {
 				convertData(data[cAvgIdx]),
 				convertData(data[cHighIdx]),
 				convertData(data[cLowIdx]),
+				convertData(data[cAskIdx]),
+				convertData(data[cBidIdx]),
 				convertData(data[cTradesIdx]),
-				convertData(data[cTotVolIdx]));
+				convertData(data[cTotVolIdx]),
+				convertData(data[cTurnoverIdx]));
 		return price;
 	}
 	private long convertData(String data) {
@@ -126,7 +129,7 @@ public class CsvReader {
 		}
 		String[] headers = readLine.split(cSep);
 		for (int idx = 0; idx < headers.length; idx++) {
-			String header = headers[idx];
+			String header = headers[idx].trim();
 			switch (header) {
 			case cClose :
 				cCloseIdx = idx;
