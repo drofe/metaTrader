@@ -1,10 +1,8 @@
 package org.bergefall.protocol.marketdata;
-
+import static org.bergefall.common.MetaTraderConstants.DIVISOR;
 import org.bergefall.protocol.marketdata.MarketDataProtos.MarketData;
 
 public class MarketDataCreator {
-
-	private static final long DIVISOR = 1_000_000L;
 	
 	public static MarketData createMD(String pDate, Double pClose) {
 		MarketData tMD = MarketData.newBuilder()

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Set;
 
-import org.bergefall.dbstorage.HistoricalPriceCtx;
+import org.bergefall.common.data.HistoricalPriceCtx;
 import org.bergefall.dbstorage.EqHsAccess;
 
 public class MySQLWriter extends EqHsAccess {

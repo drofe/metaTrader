@@ -1,6 +1,6 @@
-package dbStorage;
+package org.bergefall.dbstorage.test;
 
-import org.bergefall.dbstorage.HistoricalPriceCtx;
+import org.bergefall.common.data.HistoricalPriceCtx;
 import org.bergefall.dbstorage.tools.CsvReader;
 import org.junit.Before;
 import org.junit.Test;

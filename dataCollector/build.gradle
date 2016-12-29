@@ -16,6 +16,7 @@ dependencies {
     compile 'com.google.protobuf:protobuf-java:3.0.0'
     compile 'com.jimmoores:quandl:1.4.0'
     compile project(":messaging")
+    compile project(":common")
     testCompile "junit:junit:4.12"
 }
 

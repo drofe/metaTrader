@@ -2,6 +2,10 @@ package org.bergefall.dbstorage;
 
 import java.util.Set;
 import java.util.TreeSet;
+
+import static org.bergefall.common.MetaTraderConstants.DefaultEqPrice;
+import static org.bergefall.common.MetaTraderConstants.DefaultVal;
+import org.bergefall.common.data.HistoricalPriceCtx;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,8 +20,6 @@ import java.time.LocalDateTime;
 public class ReadHistoricalEqPrices extends EqHsAccess {
 
 	private static final String cSymbSelect = "SELECT * FROM META_TRADER.EQ_HS as EQ where EQ.SYMBOL = \'";
-	private static final long cDefaultEqPrice = -1L;
-	private static final long cDefaultVal = 0L;
 	
 	public Set<HistoricalPriceCtx> getAllPricesForSymb(String symbol) {
 		Set<HistoricalPriceCtx> historicalPrices = new TreeSet<>();
@@ -76,11 +78,11 @@ public class ReadHistoricalEqPrices extends EqHsAccess {
 	}
 	
 	private long getPrice(Long price) {
-		return null == price ? cDefaultEqPrice : price.longValue();
+		return null == price ? DefaultEqPrice : price.longValue();
 	}
 	
 	private long getValWithDefault(Long value) {
-		return null == value ? cDefaultVal : value.longValue();
+		return null == value ? DefaultVal : value.longValue();
 	}
 }
 

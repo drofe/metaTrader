@@ -1,10 +1,9 @@
-package dbStorage;
-
+package org.bergefall.dbstorage.test;
 
 
 import java.util.Set;
 
-import org.bergefall.dbstorage.HistoricalPriceCtx;
+import org.bergefall.common.data.HistoricalPriceCtx;
 import org.bergefall.dbstorage.ReadHistoricalEqPrices;
 import org.junit.Before;
 import org.junit.Test;

@@ -21,9 +21,7 @@ public class SimpleGetter {
 	private static final int LOWIdx = 3;
 	private static final String LOW = "Low";
 	private static final int CLOSEIdx = 4;
-	private static final String CLOSE = "Close";
-	private static final long DIVISOR = 1_000_000L;
-	
+	private static final String CLOSE = "Close";	
 	
 	public void getStuff() {
 		// Example1.java

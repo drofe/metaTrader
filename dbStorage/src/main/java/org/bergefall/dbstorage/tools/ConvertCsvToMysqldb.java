@@ -2,7 +2,7 @@ package org.bergefall.dbstorage.tools;
 
 import java.util.Set;
 
-import org.bergefall.dbstorage.HistoricalPriceCtx;
+import org.bergefall.common.data.HistoricalPriceCtx;
 
 public class ConvertCsvToMysqldb {
 

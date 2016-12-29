@@ -1,4 +1,4 @@
-package org.bergefall.dbstorage;
+package org.bergefall.common.data;
 
 import java.time.LocalDateTime;
 

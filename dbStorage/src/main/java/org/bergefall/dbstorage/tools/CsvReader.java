@@ -11,7 +11,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bergefall.dbstorage.HistoricalPriceCtx;
+import org.bergefall.common.data.HistoricalPriceCtx;
+import org.bergefall.common.log.system.SystemLoggerIf;
+import org.bergefall.common.log.system.SystemLoggerImpl;
 
 public class CsvReader {
 
@@ -46,6 +48,8 @@ public class CsvReader {
 	private static int cTurnoverIdx;
 	private static final String cTrades = "Trades";
 	private static int cTradesIdx;
+	
+	private static SystemLoggerIf log = SystemLoggerImpl.get();
 
 	private File file;
 	private FileReader fileRead = null;
@@ -61,6 +65,7 @@ public class CsvReader {
 			throw new RuntimeException("File (" + pFile + ") did not exist");
 		}
 		cSymb = symb;
+		log.setLogInOwnThread(true);
 	}
 
 	public Set<HistoricalPriceCtx> getFileContents() {
@@ -82,6 +87,7 @@ public class CsvReader {
 			extractIndices(bufRead.readLine());
 			String line;
 			while ((line = bufRead.readLine()) != null) {
+				log.trace("READING LINE: " + line);
 				tPrices.add(getPricesFromLine(line));
 			}
 
