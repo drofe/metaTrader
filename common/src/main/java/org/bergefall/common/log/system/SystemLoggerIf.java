@@ -6,13 +6,19 @@ public interface SystemLoggerIf {
 	 * Turn on/off logging in a separate thread.
 	 * @param 
 	 */
-	void setLogInOwnThread(boolean b);
+	public void setLogInOwnThread(boolean b);
 
 	/**
 	 * Log trace level logging.
 	 * @param string
 	 */
-	void trace(String string);
+	public void trace(String msg);
+	
+	/**
+	 * Log error level logging.
+	 * @param string
+	 */
+	public void error(String msg);
 
 	/**
 	 * Log info level logging.

@@ -6,20 +6,18 @@ repositories {
     jcenter()
 }
 
-mainClassName = 'hello.HelloWorld'
-
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    compile 'io.netty:netty-all:4.1.6.Final'
     compile project(":common")
-    compile project(":messaging")
+    compile project(":ioBase")
+    compile project(":dbStorage")
     testCompile "junit:junit:4.12"
 }
 
 jar {
-    baseName = 'ioBase'
+    baseName = 'BacktestDataProvider'
     version =  '0.0.1'
 }

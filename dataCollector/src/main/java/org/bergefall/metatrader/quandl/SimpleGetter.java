@@ -3,8 +3,8 @@ package org.bergefall.metatrader.quandl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bergefall.protocol.marketdata.MarketDataCreator;
-import org.bergefall.protocol.marketdata.MarketDataProtos.MarketData;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
+import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.threeten.bp.LocalDate;
 
 import com.jimmoores.quandl.DataSetRequest;
@@ -38,7 +38,7 @@ public class SimpleGetter {
 		for (final Row tRow : tabularResult) {
 			LocalDate tDate = tRow.getLocalDate("Date");
 			Double tClose = tRow.getDouble("Close");
-			tMDList.add(MarketDataCreator.createMD(tDate.toString(), tClose));
+			tMDList.add(MetaTraderMessageCreator.createMD(tDate.toString(), tClose));
 		}
 	}
 	

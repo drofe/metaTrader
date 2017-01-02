@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Set;
 
-import org.bergefall.common.data.HistoricalPriceCtx;
+import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.dbstorage.EqHsAccess;
 
 public class MySQLWriter extends EqHsAccess {
@@ -17,7 +17,7 @@ public class MySQLWriter extends EqHsAccess {
 			"values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	
 
-	public boolean storePriceCtx(HistoricalPriceCtx priceCtx) {
+	public boolean storePriceCtx(MarketDataCtx priceCtx) {
 		if(!init()) {
 			return false;
 		}
@@ -44,11 +44,11 @@ public class MySQLWriter extends EqHsAccess {
 		}
 	}
 
-	public boolean storePricesSet(Set<HistoricalPriceCtx> prices) {
+	public boolean storePricesSet(Set<MarketDataCtx> prices) {
 		if (null == prices || prices.isEmpty()) {
 			return false;
 		}
-		for (HistoricalPriceCtx priceCtx : prices) {
+		for (MarketDataCtx priceCtx : prices) {
 			if(!storePriceCtx(priceCtx)) {
 				return false;
 			}

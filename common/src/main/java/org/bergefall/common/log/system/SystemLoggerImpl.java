@@ -1,6 +1,8 @@
 package org.bergefall.common.log.system;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +13,12 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 
 	private static SystemLoggerImpl cInstance;
 	private static final Logger logger = LoggerFactory.getLogger(SystemLoggerImpl.class);
-	private ConcurrentLinkedQueue<LogEntry> logQueue;
+	private BlockingQueue<LogEntry> logQueue;
 	private static boolean logInOwnTread = false;
 	
 	private SystemLoggerImpl() {
 		//Private by design.
-		logQueue = new ConcurrentLinkedQueue<>();
+		logQueue = new LinkedBlockingQueue<>();
 	}
 	
 	public static SystemLoggerImpl get() {
@@ -26,6 +28,7 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 		return cInstance;
 	}
 	
+	@Override
 	public void trace(String msg) {
 		if (!logger.isTraceEnabled()) {
 			return;
@@ -38,6 +41,7 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 		logger.trace(formatLogEntry(entry));
 	}
 	
+	@Override
 	public void info(String msg) {
 		if (!logger.isInfoEnabled()) {
 			return;
@@ -48,6 +52,19 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 			return;
 		}
 		logger.info(formatLogEntry(entry));
+	}
+	
+	@Override
+	public void error(String msg) {
+		if (!logger.isErrorEnabled()) {
+			return;
+		}
+		LogEntry entry = new LogEntry(new Exception(), msg, Level.ERROR);
+		if (logInOwnTread) {
+			logQueue.offer(entry);
+			return;
+		}
+		logger.error(formatLogEntry(entry));
 	}
 	
 	
@@ -95,15 +112,10 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 		@Override
 		public void run() {
 			while(logInOwnTread || !logQueue.isEmpty()) { //Empty queue if turned off.
-				LogEntry entry = logQueue.poll();
-				if (null == entry) {
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-						logger.error("Exception: " + e.getMessage());
-					}
-				} else {
-					doLog(entry);
+				try {
+					doLog(logQueue.poll(1000, TimeUnit.MILLISECONDS));
+				} catch (InterruptedException e) {
+					logger.error("Exception: " + e.getMessage());
 				}
 			}
 		}

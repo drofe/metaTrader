@@ -1,15 +1,13 @@
-package org.bergefall.iobase.demo;
+package org.bergefall.backtest.client;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
+import java.util.Set;
 
-import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.MarketDataCtx;
+import org.bergefall.dbstorage.ReadHistoricalEqPrices;
 import org.bergefall.iobase.client.MetaTraderClientChannelInitializer;
 import org.bergefall.iobase.client.MetaTraderTcpClientHandlerBase;
-import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
+import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -17,20 +15,35 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-public class DemoClient {
+public class BacktestCLIClient {
 
 	static final String HOST = System.getProperty("host", "127.0.0.1");
 	static final int PORT = Integer.parseInt(System.getProperty("port", "8463"));
-
-	private SecureRandom random = new SecureRandom();
+	ReadHistoricalEqPrices priceReader;
 	
 	public static void main(String[] args) throws InterruptedException {
 		
-		DemoClient client = new DemoClient();
-		client.runClient();
+		BacktestCLIClient client = new BacktestCLIClient();
+		String symb = null;
+		if (args.length == 1) {
+			symb = args[0];
+		} else {
+			symb = "CINN";
+		}
+		client.runClient(symb);
 	}
 	
-	public void runClient() throws InterruptedException {
+	public void runClient(String symb) {
+		priceReader = new ReadHistoricalEqPrices();
+		Set<MarketDataCtx> priceSet = priceReader.getAllPricesForSymb(symb);
+		try {
+			sendData(priceSet);
+		} catch (InterruptedException e) {
+			
+		}
+	}
+	
+	private void sendData(Set<MarketDataCtx> prices) throws InterruptedException {
 		EventLoopGroup group = new NioEventLoopGroup();
 
 		try {
@@ -42,20 +55,10 @@ public class DemoClient {
 
 			// Get handle to handler so we can send message
 			MetaTraderTcpClientHandlerBase handle = c.pipeline().get(MetaTraderTcpClientHandlerBase.class);
-			String accountNamePrefix = getRandomString();
-			for (int i = 1; i < 100; i++) {
-				MetaTraderMessage msg = null;
-				if (0 == i % 2) {
-					MarketDataCtx mdCtx = new MarketDataCtx("CINN", 
-							LocalDateTime.now(), 
-							Long.valueOf(i), 1L, 2L, 3L, 4L, 5L, 7L, 6L, 8L, 9L);
-					msg = MetaTraderMessageCreator.createMTMsg(mdCtx);
-				} else {
-					AccountCtx acc = new AccountCtx(accountNamePrefix + " -- "+ i, 0, "broker", "user");
-					msg = MetaTraderMessageCreator.createMTMsg(acc);
-				}
+	
+			for (MarketDataCtx price :  prices) {
+				MetaTraderMessage msg = MetaTraderMessageCreator.createMTMsg(price);
 				handle.sendAsyncReq(msg);
-				Thread.sleep(50);
 			}
 			Thread.sleep(5000);
 			c.close();
@@ -66,7 +69,4 @@ public class DemoClient {
 
 	}
 	
-	private String getRandomString() {
-		return new BigInteger(80, random).toString(32);
-	}
 }

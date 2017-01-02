@@ -5,7 +5,7 @@ import java.util.TreeSet;
 
 import static org.bergefall.common.MetaTraderConstants.DefaultEqPrice;
 import static org.bergefall.common.MetaTraderConstants.DefaultVal;
-import org.bergefall.common.data.HistoricalPriceCtx;
+import org.bergefall.common.data.MarketDataCtx;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,8 +21,8 @@ public class ReadHistoricalEqPrices extends EqHsAccess {
 
 	private static final String cSymbSelect = "SELECT * FROM META_TRADER.EQ_HS as EQ where EQ.SYMBOL = \'";
 	
-	public Set<HistoricalPriceCtx> getAllPricesForSymb(String symbol) {
-		Set<HistoricalPriceCtx> historicalPrices = new TreeSet<>();
+	public Set<MarketDataCtx> getAllPricesForSymb(String symbol) {
+		Set<MarketDataCtx> historicalPrices = new TreeSet<>();
 		if (!init()) {
 			return historicalPrices;
 		}
@@ -48,7 +48,7 @@ public class ReadHistoricalEqPrices extends EqHsAccess {
 		return historicalPrices;
 	}
 	
-	protected void addPricesFromResultSet(ResultSet resultSet, Set<HistoricalPriceCtx> prices) {
+	protected void addPricesFromResultSet(ResultSet resultSet, Set<MarketDataCtx> prices) {
 		if (null == resultSet || null == prices) {
 			return;
 		}
@@ -59,7 +59,7 @@ public class ReadHistoricalEqPrices extends EqHsAccess {
 				Timestamp timestamp = resultSet.getTimestamp(cDateTimeColName);
 				LocalDateTime ldt = null == timestamp ? null : timestamp.toLocalDateTime();
 
-				HistoricalPriceCtx ctx = new HistoricalPriceCtx(symb, ldt, 
+				MarketDataCtx ctx = new MarketDataCtx(symb, ldt, 
 						getPrice(resultSet.getLong(cOpenColName)), 
 						getPrice(resultSet.getLong(cCloseColName)), 
 					    getPrice(resultSet.getLong(cAvgColName)), 

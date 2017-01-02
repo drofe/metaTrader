@@ -2,7 +2,7 @@ package org.bergefall.common.data;
 
 import java.time.LocalDateTime;
 
-public class HistoricalPriceCtx implements Comparable<HistoricalPriceCtx>{
+public class MarketDataCtx implements Comparable<MarketDataCtx>{
 
 	private final String symbol;
 	private final LocalDateTime date;
@@ -17,7 +17,7 @@ public class HistoricalPriceCtx implements Comparable<HistoricalPriceCtx>{
 	private final long totVol;
 	private final long turnover;
 
-	public HistoricalPriceCtx(final String symbol, final LocalDateTime dateTime, long openPrice, long closePrice,
+	public MarketDataCtx(final String symbol, final LocalDateTime dateTime, long openPrice, long closePrice,
 			long avgPrice, long highPrice, long lowPrice, long askPrice, long bidPrice, long nrTrades, long totVol, 
 			long turnover) {
 		this.openPrice = openPrice;
@@ -83,7 +83,7 @@ public class HistoricalPriceCtx implements Comparable<HistoricalPriceCtx>{
 	}
 
 	@Override
-	public int compareTo(HistoricalPriceCtx o) {
+	public int compareTo(MarketDataCtx o) {
 		return date.compareTo(o.getDate());
 	}
 

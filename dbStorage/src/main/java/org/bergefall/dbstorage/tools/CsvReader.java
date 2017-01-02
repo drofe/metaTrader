@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bergefall.common.data.HistoricalPriceCtx;
+import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.common.log.system.SystemLoggerImpl;
 
@@ -68,8 +68,8 @@ public class CsvReader {
 		log.setLogInOwnThread(true);
 	}
 
-	public Set<HistoricalPriceCtx> getFileContents() {
-		Set<HistoricalPriceCtx> tPrices = new HashSet<HistoricalPriceCtx>();
+	public Set<MarketDataCtx> getFileContents() {
+		Set<MarketDataCtx> tPrices = new HashSet<MarketDataCtx>();
 		if(!initReaders()) {
 			System.out.println("Failed to initialize readers!");
 			return tPrices;
@@ -100,10 +100,10 @@ public class CsvReader {
 		return tPrices;
 	}
 
-	private HistoricalPriceCtx getPricesFromLine(String line) {
+	private MarketDataCtx getPricesFromLine(String line) {
 		String[] data = line.split(cSep);
 		LocalDateTime ldt = LocalDate.parse(data[cDateIdx], cFormatter).atStartOfDay();
-		HistoricalPriceCtx price = new HistoricalPriceCtx(cSymb,
+		MarketDataCtx price = new MarketDataCtx(cSymb,
 				ldt,
 				convertData(data[cOpenIdx]),
 				convertData(data[cCloseIdx]),

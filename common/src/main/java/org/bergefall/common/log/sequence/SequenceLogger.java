@@ -1,5 +1,10 @@
 package org.bergefall.common.log.sequence;
 
-public class SequenceLogger {
+public interface SequenceLogger {
 
+	/**
+	 * Turns synchronous logging on/off
+	 * @param on
+	 */
+	public void setSynchLogging(boolean on);
 }

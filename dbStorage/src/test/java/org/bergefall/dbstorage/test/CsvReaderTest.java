@@ -1,6 +1,6 @@
 package org.bergefall.dbstorage.test;
 
-import org.bergefall.common.data.HistoricalPriceCtx;
+import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.dbstorage.tools.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +23,10 @@ public class CsvReaderTest {
 	@Test
 	public void testGetFileContents() {
 	
-		Set<HistoricalPriceCtx> tRes = mReader.getFileContents();
+		Set<MarketDataCtx> tRes = mReader.getFileContents();
 		
 		Assert.assertEquals(1, tRes.size());
-		HistoricalPriceCtx tPriceCtx = tRes.iterator().next();
+		MarketDataCtx tPriceCtx = tRes.iterator().next();
 		assertEquals("Wrong bid price", 193 * cFac, tPriceCtx.getBidPrice());
 		assertEquals("Wrong ask price", 196 * cFac, tPriceCtx.getAskPrice());
 		assertEquals("Wrong open price", 200 * cFac, tPriceCtx.getOpenPrice());
