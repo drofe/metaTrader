@@ -8,7 +8,7 @@ public class MetaTraderConstants {
 	
 	public static final long DIVISOR = 1_000_000;
 	
-	public static final long DefaultEqPrice = -1L;
+	public static final long DefaultEqPrice = Long.MIN_VALUE;
 	public static final long DefaultVal = 0L;
 	
 }

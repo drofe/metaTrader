@@ -39,7 +39,7 @@ public class WriteProtobufDataTest extends BlpTestBase {
 	public void testSimpleWriteRead() {
 		int nr = 10;
 		for (int i = 1; i <= nr; i++) {
-			MarketData md = MetaTraderMessageCreator.createMD(createPriceCtx(LocalDateTime.of(2016, 12, i, 0, 0)));
+			MarketData md = MetaTraderMessageCreator.createMD(createMdCtx(LocalDateTime.of(2016, 12, i, 0, 0)));
 			mLogger.writeMarketData(md);
 		}
 		mReader.init(cTestFile);
@@ -57,7 +57,7 @@ public class WriteProtobufDataTest extends BlpTestBase {
 		MetaTraderMessage mtm;
 		for (int i = 1; i <= nr; i++) {
 			if (0 == i % 2) {
-				mtm = MetaTraderMessageCreator.createMTMsg(createPriceCtx(LocalDateTime.of(2016, 12, i, 0, 0)));
+				mtm = MetaTraderMessageCreator.createMTMsg(createMdCtx(LocalDateTime.of(2016, 12, i, 0, 0)));
 			} else {
 				mtm = MetaTraderMessageCreator.createMTMsg(createAccountCtx(i));
 			}

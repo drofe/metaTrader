@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class EqHsAccess {
 
@@ -83,5 +86,108 @@ public class EqHsAccess {
 
 		}
 	}
-
+	
+	protected String getSelectQueryFromCriteria(DataCriterias criteria) {
+		StringBuilder select = new StringBuilder();
+		
+		select.append("SELECT ");
+		select.append(cSymbolColName + "," + cDateTimeColName + ",");
+		select.append(criteria.exCloseP ? "" : cCloseColName + ",");
+		select.append(criteria.exOpenP ? "" : cOpenColName + ",");
+		select.append(criteria.exHighP ? "" : cHighColName + ",");
+		select.append(criteria.exLowP ? "" : cLowColName + ",");
+		select.append(criteria.exAsk ? "" : cAskColName + ",");
+		select.append(criteria.exBid ? "" : cBidColName + ",");
+		select.append(criteria.exAvgP ? "" : cAvgColName + ",");
+		select.append(criteria.exTrades ? "" : cTradesNrColName + ",");
+		select.append(criteria.exTotVol ? "" : cTotVolColName + ",");
+		select.append(criteria.exTurnover ? "" : cTurnoverColName + ",");
+		if (',' == select.charAt(select.length() - 1 )) {
+			select.replace(select.length() - 1, select.length(), "");
+		}
+		select.append(" FROM META_TRADER.EQ_HS as EQ where EQ.SYMBOL = \'");
+		select.append(criteria.symbol);
+		select.append("\'");
+		select.append(" AND " + cDateTimeColName + " >=  ? ");
+		select.append(" AND " + cDateTimeColName + " <= ? ");
+		return select.toString();
+	}
+	
+	public static boolean hasColumn(ResultSet rs, String columnName) {
+		try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columns = rsmd.getColumnCount();
+			for (int x = 1; x <= columns; x++) {
+				if (columnName.equals(rsmd.getColumnName(x))) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			return false;
+		}
+	    return false;
+	}
+	
+	public static class DataCriterias {
+		public Timestamp from;
+		public Timestamp to;
+		public String symbol;
+		public boolean exCloseP;
+		public boolean exOpenP;
+		public boolean exHighP;
+		public boolean exLowP;
+		public boolean exAvgP;
+		public boolean exTotVol;
+		public boolean exTurnover;
+		public boolean exTrades;
+		public boolean exBid = true;
+		public boolean exAsk = true;
+		
+		public DataCriterias(LocalDateTime from, LocalDateTime to, String symbol) {
+			this.from = Timestamp.valueOf(from);
+			this.to = Timestamp.valueOf(to);
+			this.symbol = symbol;
+		}
+		
+		public DataCriterias excludeClosePrice() {
+			exCloseP = true;
+			return this;
+		}
+		
+		public DataCriterias excludeOpenPrice() {
+			exOpenP = true;
+			return this;
+		}
+		
+		public DataCriterias excludeHighPrice() {
+			exHighP = true;
+			return this;
+		}
+		
+		public DataCriterias excludeLowPrice() {
+			exLowP = true;
+			return this;
+		}
+		
+		public DataCriterias excludeAvgPrice() {
+			exAvgP = true;
+			return this;
+		}
+		
+		public DataCriterias excludeTotalVolume() {
+			exTotVol = true;
+			return this;
+		}
+		
+		public DataCriterias excludeTurnover() {
+			exTurnover = true;
+			return this;
+		}
+		
+		public DataCriterias excludeNrTrades() {
+			exTrades = true;
+			return this;
+		}
+	}
 }
+

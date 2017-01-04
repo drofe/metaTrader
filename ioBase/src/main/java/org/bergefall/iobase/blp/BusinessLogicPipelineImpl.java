@@ -1,7 +1,18 @@
 package org.bergefall.iobase.blp;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bergefall.base.commondata.CommonStrategyData;
+import org.bergefall.base.strategy.AbstractStrategyBean;
+import org.bergefall.base.strategy.IntraStrategyBeanMsg;
+import org.bergefall.base.strategy.Status;
+import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.base.strategy.basicbeans.AddDataToCommonData;
+import org.bergefall.common.DateUtils;
 import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.common.log.system.SystemLoggerImpl;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
@@ -15,12 +26,16 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
  */
 public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline {
 
+	protected static final String PreMDStrategy = "preMDStrategy";
+	
 	private static final AtomicInteger cBLPNr = new AtomicInteger(0);
 	private boolean active;
 	private static final SystemLoggerIf log;
 	private Integer thisBlpNumber;
 	private final SequencedBlpQueue sequencedQueue;
 	private int defaultSeqQueueSize = 1024 * 4;
+	private CommonStrategyData csd;
+	private Map<String, List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>>> strategyMap;
 	
 	static {
 		log = SystemLoggerImpl.get();
@@ -30,8 +45,19 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		thisBlpNumber = Integer.valueOf(cBLPNr.getAndIncrement());
 		sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);
 		sequencedQueue.doSequenceLog(true);
+		csd = getOrCreateCSD();
+		strategyMap = new HashMap<>();
+		buildStrategies();
 	}
 	
+	protected CommonStrategyData getOrCreateCSD() {
+		if (null == csd) {
+			return new CommonStrategyData();
+		} else {
+			return csd;
+		}
+	}
+
 	@Override
 	public void run() {
 		Thread.currentThread().setName("BLP-" + getBlpNr());
@@ -64,7 +90,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		active = false;
 	}
 	
-	private void fireHandlers(MetaTraderMessage msg) {
+	protected void fireHandlers(MetaTraderMessage msg) {
 		MetaTraderMessage.Type type = msg.getMsgType();
 		
 		switch (type) {
@@ -72,7 +98,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 			handleAccounts(msg);
 			break;
 		case MarketData : 
-			handleMarketData(msg);
+			handleMarketDataInternal(msg);
 			break;
 		case Instrument : 
 			handleInstrument(msg);
@@ -82,9 +108,52 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		}
 	}
 	
+	protected void handleMarketDataInternal(MetaTraderMessage msg) {
+		StrategyToken token = new StrategyToken(DateUtils.getDateTimeFromTimestamp(msg.getTimeStamps(0)), 
+				csd);
+		token.setTriggeringMsg(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		runStrategy(PreMDStrategy, token, intraMsg);
+		handleMarketData(token, intraMsg);
+	}
+	
+	protected IntraStrategyBeanMsg getNewIntraBeanMsg() {
+		return new IntraStrategyBeanMsg();
+	}
+	
+	// This is temp stuff until it is controlled via config.
+	private void buildStrategies() {
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preMd = new LinkedList<>();
+		preMd.add(new AddDataToCommonData());
+		strategyMap.put(PreMDStrategy, preMd);
+	}
+	
+	protected Status runStrategy(String strategyName, StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strategy =
+				strategyMap.get(strategyName);
+		if (null == strategy) {
+			log.error("Unable to find strategy: " + strategyName);
+			return new Status(Status.ERROR);
+		}
+		Status status = null;
+		for (AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status> bean : strategy) {
+			status = bean.execute(token, intraMsg);
+			if (null == status || status.getCode() >= Status.ERROR) {
+				log.error("Error occurred in bean: " + bean.getClass().getName() + "\n\t" +
+						"in strategy: " + strategyName + "\n\t" + 
+						"code: " + status.getCode() + (null != status.getMessage() ? ", message: " + 
+						status.getMessage() : ""));
+				break;
+			}			
+		}
+		return status;
+	}
+	
 	protected abstract void handleAccounts(MetaTraderMessage msg);
 	
 	protected abstract void handleInstrument(MetaTraderMessage msg);
 	
-	protected abstract void handleMarketData(MetaTraderMessage msg);
+	protected abstract void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg);
+	
+	
 }

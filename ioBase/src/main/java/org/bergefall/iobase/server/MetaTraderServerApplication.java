@@ -1,5 +1,6 @@
 package org.bergefall.iobase.server;
 
+import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
@@ -21,6 +22,7 @@ public abstract class MetaTraderServerApplication {
 	protected EventLoopGroup workerGroup;
 	protected BusinessLogicPipline blp;
 	protected MetaTraderConfig config;
+	protected BeatsGenerator beatGenerator;
 	
 	protected void initServer(String configFile) {
 		// Create event loop groups. One for incoming connections handling and
@@ -30,8 +32,11 @@ public abstract class MetaTraderServerApplication {
 		this.blp = getBLP();
 		this.config = getConfig(configFile);
 		this.bootStrap = getBootStrap();
+		this.beatGenerator = new BeatsGenerator(this.blp, this.config);
 		Thread businessPileLine = new Thread(blp);
 		businessPileLine.start();
+		Thread beatGen = new Thread(beatGenerator);
+		beatGen.start();
 		
 		bootStrap.group(serverGroup, workerGroup)
 			.channel(getServerChannel())

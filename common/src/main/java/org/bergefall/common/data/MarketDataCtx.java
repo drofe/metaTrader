@@ -20,6 +20,12 @@ public class MarketDataCtx implements Comparable<MarketDataCtx>{
 	public MarketDataCtx(final String symbol, final LocalDateTime dateTime, long openPrice, long closePrice,
 			long avgPrice, long highPrice, long lowPrice, long askPrice, long bidPrice, long nrTrades, long totVol, 
 			long turnover) {
+		if (null == dateTime) {
+			throw new RuntimeException("Date is mandatory field for MarketDataCtx!");
+		}
+		if (null == symbol) {
+			throw new RuntimeException("Symbol is mandatory field for MarketDataCtx!");
+		}
 		this.openPrice = openPrice;
 		this.avgPrice = avgPrice;
 		this.closePrice = closePrice;
@@ -90,17 +96,17 @@ public class MarketDataCtx implements Comparable<MarketDataCtx>{
 	@Override
 	public String toString() {
 		return date.toString() + " " 
-				+ symbol + " "
-				+ openPrice + " "
-				+ closePrice + " "
-				+ highPrice + " "
-				+ lowPrice + " "
-				+ bidPrice + " "
-				+ askPrice + " "
-				+ turnover + " "
-				+ totVol + " "
-				+ nrTrades + " "
-				+ avgPrice;
+				+ symbol + ", "
+				+ (openPrice == Long.MIN_VALUE ? "" : "Open: " + openPrice) + " "
+				+ (closePrice == Long.MIN_VALUE ? "" : "Close: " + closePrice) + " "
+				+ (highPrice == Long.MIN_VALUE ? "" : "High: " + highPrice) + " "
+				+ (lowPrice == Long.MIN_VALUE ? "" : "Low: " + lowPrice) + " "
+				+ (bidPrice == Long.MIN_VALUE ? "" : "Bid: " + bidPrice) + " "
+				+ (askPrice == Long.MIN_VALUE ? "" : "Ask: " + askPrice) + " "
+				+ (turnover == 0 ? "" : "Turnover: " + turnover) + " "
+				+ (totVol == 0 ? "" : "Total vol: " + totVol) + " "
+				+ (nrTrades == 0 ? "" : "Nr of Trades: " + nrTrades) + " "
+				+ (avgPrice == Long.MIN_VALUE ? "" : "Avg: " +avgPrice);
 	}
 
 }

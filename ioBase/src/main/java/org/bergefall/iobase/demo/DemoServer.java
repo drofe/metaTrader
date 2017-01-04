@@ -1,5 +1,7 @@
 package org.bergefall.iobase.demo;
 
+import org.bergefall.base.strategy.IntraStrategyBeanMsg;
+import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.DateUtils;
 import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
 import org.bergefall.iobase.blp.BusinessLogicPipline;
@@ -33,7 +35,8 @@ public class DemoServer extends MetaTraderServerApplication {
 		}
 
 		@Override
-		protected void handleMarketData(MetaTraderMessage msg) {
+		protected void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			MetaTraderMessage msg = token.getTriggeringMsg();
 			if ( msg.getSeqNo() % 10 == 0) {
 				System.out.println("Handled MarketData msg with seqno: " + msg.getSeqNo() + " at: " +
 						DateUtils.getCurrentTimeAsReadableDate() + msg);			

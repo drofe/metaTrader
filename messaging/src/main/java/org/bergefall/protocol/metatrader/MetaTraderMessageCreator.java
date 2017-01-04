@@ -20,19 +20,20 @@ public class MetaTraderMessageCreator {
 		return md;
 	}
 	
-	public static MarketData createMD(MarketDataCtx priceCtx) {
+	public static MarketData createMD(MarketDataCtx mdCtx) {
 		MarketData md = MarketData.newBuilder()
-				.setDate(priceCtx.getDate().toString())
-				.setAsk(priceCtx.getAskPrice())
-				.setBid(priceCtx.getBidPrice())
-				.setClose(priceCtx.getClosePrice())
-				.setOpen(priceCtx.getOpenPrice())
-				.setAvg(priceCtx.getAvgPrice())
-				.setTurnover(priceCtx.getTurnover())
-				.setTotVol(priceCtx.getTotVol())
-				.setTrades(priceCtx.getNrTrades())
-				.setHigh(priceCtx.getHighPrice())
-				.setLow(priceCtx.getLowPrice())
+				.setInstrument(mdCtx.getSymbol())
+				.setDate(mdCtx.getDate().toString())
+				.setAsk(mdCtx.getAskPrice())
+				.setBid(mdCtx.getBidPrice())
+				.setClose(mdCtx.getClosePrice())
+				.setOpen(mdCtx.getOpenPrice())
+				.setAvg(mdCtx.getAvgPrice())
+				.setTurnover(mdCtx.getTurnover())
+				.setTotVol(mdCtx.getTotVol())
+				.setTrades(mdCtx.getNrTrades())
+				.setHigh(mdCtx.getHighPrice())
+				.setLow(mdCtx.getLowPrice())
 				.build();
 		return md;
 	}
@@ -41,6 +42,7 @@ public class MetaTraderMessageCreator {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.MarketData)
 				.setMarketData(createMD(priceCtx))
+				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;
 	}
@@ -58,6 +60,7 @@ public class MetaTraderMessageCreator {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.Account)
 				.setAccount(createAccount(accountCtx))
+				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;
 	}

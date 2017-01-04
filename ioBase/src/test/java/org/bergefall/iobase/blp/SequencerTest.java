@@ -15,7 +15,7 @@ public class SequencerTest extends BlpTestBase {
 	@Before
 	public void setup() {
 		mQueue = new SequencedBlpQueueImpl(60_000);
-		mQueue.doSequenceLog(true);
+		mQueue.doSequenceLog(false);
 		arr = new MetaTraderMessage[60_000];
 	}
 	
@@ -25,7 +25,7 @@ public class SequencerTest extends BlpTestBase {
 		int test = 35000;
 		//Add stuff to queue.
 		for (int i = 1; i <= warmup + test; i++) {
-			MetaTraderMessage mtm = MetaTraderMessageCreator.createMTMsg(createPriceCtx(LocalDateTime.of(2016, 12, 
+			MetaTraderMessage mtm = MetaTraderMessageCreator.createMTMsg(createMdCtx(LocalDateTime.of(2016, 12, 
 					i%30 +1, 0, 0)));
 			mQueue.enqueue(mtm);
 		}
