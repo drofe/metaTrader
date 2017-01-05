@@ -36,24 +36,40 @@ public class BlpTest extends BlpTestBase {
 
 	private static class TestBlp extends BusinessLogicPipelineImpl {
 
-		public void fireAway(MetaTraderMessage msg) {
-			fireHandlers(msg);
+		public TestBlp() {
+			super(null);
 		}
 		
-		@Override
-		protected void handleAccounts(MetaTraderMessage msg) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		protected void handleInstrument(MetaTraderMessage msg) {
-			// TODO Auto-generated method stub
-			
+		public void fireAway(MetaTraderMessage msg) {
+			fireHandlers(msg);
 		}
 
 		@Override
 		protected void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void handleAccounts(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void handleInstrument(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void handleBeats(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void handleOrders(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 			// TODO Auto-generated method stub
 			
 		}

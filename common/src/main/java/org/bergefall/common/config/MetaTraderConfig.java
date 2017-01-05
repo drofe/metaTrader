@@ -5,9 +5,10 @@ public interface MetaTraderConfig {
 	public static final String MESSAGING = "messaging.";
 	public static final String IO = "io.";
 	public static final String STRATEGY = "strategy.";
+	public static final String BLP = "blp.";
 	
 	
-	public Long getCommonLongConfig(String propKey);
+	public Long getCommonLong(String propKey);
 	
 	public Double getCommonDoubleConfig(String propKey);
 	
@@ -17,5 +18,9 @@ public interface MetaTraderConfig {
 	
 	public Double getIoDoubleConfig(String propKey);
 	
-	public String getIoStringConfig(String propKey);
+	public String getIoString(String propKey);
+	
+	public Boolean getBlpBoolean(String propKey);
+
+	public Long getBlpLong(String propKey);
 }

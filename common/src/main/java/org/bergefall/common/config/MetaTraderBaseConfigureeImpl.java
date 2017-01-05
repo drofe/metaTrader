@@ -34,12 +34,6 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		}
 	}
 	
-	private Properties getDefaults() {
-		Properties def = new Properties();
-		def.setProperty("common.processname", "metaTraderService");
-		return def;
-	}
-	
 	public Map<String, String> getAllConfigsFor(String configSet) {
 		Set<String> propertyNames = configProperties.stringPropertyNames();
 		if (propertyNames.isEmpty()) {
@@ -55,7 +49,7 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	}
 	
 	@Override
-	public Long getCommonLongConfig(String propKey) {
+	public Long getCommonLong(String propKey) {
 		return getLongProperty(COMMON + propKey);
 	}
 	
@@ -80,8 +74,27 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	}
 	
 	@Override
-	public String getIoStringConfig(String propKey) {
+	public String getIoString(String propKey) {
 		return getStringProperty(IO + propKey);
+	}
+	
+	@Override
+	public Boolean getBlpBoolean(String propKey) {
+		return getBooleanProperty(BLP + propKey);
+	}
+	
+	@Override
+	public Long getBlpLong(String propKey) {
+		return getLongProperty(BLP + propKey);
+	}
+	
+	private Boolean getBooleanProperty(String key) {
+		checkInitialized();
+		String prop = configProperties.getProperty(key);
+		if (null == prop) {
+			return null;
+		}
+		return Boolean.valueOf(prop);
 	}
 	
 	private Long getLongProperty(String key) {
@@ -125,5 +138,15 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		if (null == configProperties) {
 			throw new ConfigurationException("Config is not propery initialized from config file!");
 		}
+	}
+	
+	private Properties getDefaults() {
+		Properties def = new Properties();
+		def.setProperty(COMMON + "processname", "metaTraderService");
+		def.setProperty(BLP +"runPreMDStrategy", "true");
+		def.setProperty(BLP +"runPreAccStrategy", "true");
+		def.setProperty(BLP +"runInstrStrategy", "true");
+		def.setProperty(BLP + "beatInterval", "5000");
+		return def;
 	}
 }

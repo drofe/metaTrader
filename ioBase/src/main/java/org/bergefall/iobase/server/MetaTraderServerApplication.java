@@ -1,5 +1,8 @@
 package org.bergefall.iobase.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
@@ -20,23 +23,28 @@ public abstract class MetaTraderServerApplication {
 	protected ServerBootstrap bootStrap;
 	protected EventLoopGroup serverGroup;
 	protected EventLoopGroup workerGroup;
-	protected BusinessLogicPipline blp;
+	protected List<BusinessLogicPipline> blps;
+	protected List<Thread> blpThreads;
 	protected MetaTraderConfig config;
-	protected BeatsGenerator beatGenerator;
 	
 	protected void initServer(String configFile) {
 		// Create event loop groups. One for incoming connections handling and
 		// second for handling actual event by workers
 		this.serverGroup = getServerGroup();
 		this.workerGroup = getWorkerGroup();
-		this.blp = getBLP();
 		this.config = getConfig(configFile);
+		this.blps = getBLP(config);
 		this.bootStrap = getBootStrap();
-		this.beatGenerator = new BeatsGenerator(this.blp, this.config);
-		Thread businessPileLine = new Thread(blp);
-		businessPileLine.start();
-		Thread beatGen = new Thread(beatGenerator);
-		beatGen.start();
+		
+		blpThreads = new ArrayList<>(blps.size());
+		for (BusinessLogicPipline blp : blps) {
+			Thread businessPipeLine = new Thread(blp);
+			blpThreads.add(businessPipeLine);
+			businessPipeLine.start();
+			Thread beatGen = new Thread(new BeatsGenerator(blp, this.config));
+			beatGen.start();
+		}
+		
 		
 		bootStrap.group(serverGroup, workerGroup)
 			.channel(getServerChannel())
@@ -52,7 +60,9 @@ public abstract class MetaTraderServerApplication {
 		} finally {
 			serverGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
-			blp.shutdown();
+			for (BusinessLogicPipline blp1 : blps) {
+				blp1.shutdown();
+			}
 		}
 	}
 	protected int getPort() {
@@ -69,7 +79,7 @@ public abstract class MetaTraderServerApplication {
 	
 	
 	
-	protected abstract BusinessLogicPipline getBLP();
+	protected abstract List<BusinessLogicPipline> getBLP(MetaTraderConfig config);
 	
 	protected ServerBootstrap getBootStrap() {
 		return new ServerBootstrap();
@@ -92,7 +102,7 @@ public abstract class MetaTraderServerApplication {
 	}
 	
 	protected ChannelHandler getChildHandler() {
-		return new MetaTraderServerChannelInitializer(blp);
+		return new MetaTraderServerChannelInitializer(blps);
 	}
 
 	protected Class<? extends ServerChannel> getServerChannel() {

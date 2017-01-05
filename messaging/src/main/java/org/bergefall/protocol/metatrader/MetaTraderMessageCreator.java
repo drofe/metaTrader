@@ -11,6 +11,11 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type
 
 public class MetaTraderMessageCreator {
 	
+	public static MetaTraderMessage createTestMsg() {
+		AccountCtx ctx = new AccountCtx("TEST", 0, "TEST_BROKER", "TEST_USER");
+		return createMTMsg(ctx);
+	}
+	
 	public static MarketData createMD(String pDate, Double pClose) {
 		 MarketData md = MarketData.newBuilder()
 				.setDate(pDate)

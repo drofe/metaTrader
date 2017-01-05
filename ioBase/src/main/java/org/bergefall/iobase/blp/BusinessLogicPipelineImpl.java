@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
@@ -13,6 +14,7 @@ import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.base.strategy.basicbeans.AddDataToCommonData;
 import org.bergefall.common.DateUtils;
+import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.common.log.system.SystemLoggerImpl;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
@@ -26,27 +28,43 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
  */
 public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline {
 
-	protected static final String PreMDStrategy = "preMDStrategy";
+	protected static final SystemLoggerIf log;
 	
+	private static final String PreMDStrategy = "preMDStrategy";
+	private static final String PreAccountStrategy = "preAccStrategy";
+	private static final String PreInstrumentStrategy = "preInstrStrategy";
+	private static final String PreBeatStrategy = "preBeatStrategy";
+	private static final String PreOrderStrategy = "preOrderStrategy";
+		
 	private static final AtomicInteger cBLPNr = new AtomicInteger(0);
 	private boolean active;
-	private static final SystemLoggerIf log;
+	
 	private Integer thisBlpNumber;
 	private final SequencedBlpQueue sequencedQueue;
 	private int defaultSeqQueueSize = 1024 * 4;
 	private CommonStrategyData csd;
 	private Map<String, List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>>> strategyMap;
+	private MetaTraderConfig config;
+	private boolean runPreMdStrat = true;
+	private boolean runPreAccStrat = true;
+	private boolean runPreInstrStrat = true;
+	private boolean runPreBeatStrat = true;
+	private boolean runPreOrderrStrat = true;
+	private BeatsGenerator beatGenerator;
+	
 	
 	static {
 		log = SystemLoggerImpl.get();
 	}
 	
-	public BusinessLogicPipelineImpl () {
-		thisBlpNumber = Integer.valueOf(cBLPNr.getAndIncrement());
-		sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);
-		sequencedQueue.doSequenceLog(true);
-		csd = getOrCreateCSD();
-		strategyMap = new HashMap<>();
+	public BusinessLogicPipelineImpl (MetaTraderConfig config) {
+		this.config = config;
+		parseConfig();
+		this.thisBlpNumber = Integer.valueOf(cBLPNr.getAndIncrement());
+		this.sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);
+		this.sequencedQueue.doSequenceLog(true);
+		this.csd = getOrCreateCSD();
+		this.strategyMap = new HashMap<>();
 		buildStrategies();
 	}
 	
@@ -72,12 +90,16 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		}
 	}
 	
-	protected Integer getBlpNr () {
+	@Override
+	public Integer getBlpNr() {
 		return thisBlpNumber;
 	}
 	
 	@Override
 	public boolean enqueue(MetaTraderMessage msg) throws InterruptedException {
+		if (null == msg) {
+			return false;
+		}
 		boolean res = sequencedQueue.enqueue(msg);
 		if (!res) {
 			log.error("FATAL: Failed to enqueue msg: " + msg);
@@ -87,7 +109,22 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	
 	@Override
 	public void shutdown() {
+		if (null != beatGenerator) {
+			beatGenerator.stopBeatGenerator();
+		}
 		active = false;
+		
+	}
+	
+	@Override
+	public void attachBeatGenerator(BeatsGenerator beatGen) {
+		beatGenerator = beatGen;
+	}
+	
+	protected void parseConfig() {
+		runPreMdStrat = config.getBlpBoolean("runPreMDStrategy");
+		runPreAccStrat = config.getBlpBoolean("runPreAccStrategy");
+		runPreInstrStrat = config.getBlpBoolean("runInstrStrategy");
 	}
 	
 	protected void fireHandlers(MetaTraderMessage msg) {
@@ -95,25 +132,63 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		
 		switch (type) {
 		case Account :
-			handleAccounts(msg);
+			handleAccountsInternal(msg);
 			break;
 		case MarketData : 
 			handleMarketDataInternal(msg);
 			break;
-		case Instrument : 
-			handleInstrument(msg);
+		case Instrument:
+			handleInstrumentInternal(msg);
 			break;
-			default:
-				break;
+		default:
+			handleBeatsInternal(msg);
+			handleOrderInternal(msg);
+			break;
 		}
 	}
 	
-	protected void handleMarketDataInternal(MetaTraderMessage msg) {
-		StrategyToken token = new StrategyToken(DateUtils.getDateTimeFromTimestamp(msg.getTimeStamps(0)), 
-				csd);
-		token.setTriggeringMsg(msg);
+	private void handleInstrumentInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
-		runStrategy(PreMDStrategy, token, intraMsg);
+		if (runPreInstrStrat) {
+			runStrategy(PreInstrumentStrategy, token, intraMsg);
+		}
+		handleInstrument(token, intraMsg);
+	}
+	
+	private void handleOrderInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		if (runPreOrderrStrat) {
+			runStrategy(PreOrderStrategy, token, intraMsg);
+		}
+		handleOrders(token, intraMsg);
+	}
+	
+	private void handleBeatsInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		if (runPreBeatStrat) {
+			runStrategy(PreBeatStrategy, token, intraMsg);
+		}
+		handleBeats(token, intraMsg);
+	}
+
+	private void handleAccountsInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		if (runPreAccStrat) {
+			runStrategy(PreAccountStrategy, token, intraMsg);
+		}
+		handleAccounts(token, intraMsg);
+	}
+
+	private void handleMarketDataInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		if (runPreMdStrat) {
+			runStrategy(PreMDStrategy, token, intraMsg);
+		}
 		handleMarketData(token, intraMsg);
 	}
 	
@@ -121,10 +196,18 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		return new IntraStrategyBeanMsg();
 	}
 	
+	protected StrategyToken getNewToken(MetaTraderMessage msg) {
+		StrategyToken token = new StrategyToken(DateUtils.getDateTimeFromTimestamp(msg.getTimeStamps(0)), csd);
+		token.setTriggeringMsg(msg);
+		return token;
+	}
+	
 	// This is temp stuff until it is controlled via config.
 	private void buildStrategies() {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preMd = new LinkedList<>();
-		preMd.add(new AddDataToCommonData());
+		AddDataToCommonData addData = new AddDataToCommonData();
+		addData.parseConfig(config);
+		preMd.add(addData);
 		strategyMap.put(PreMDStrategy, preMd);
 	}
 	
@@ -149,11 +232,14 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		return status;
 	}
 	
-	protected abstract void handleAccounts(MetaTraderMessage msg);
+	protected abstract void handleAccounts(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
-	protected abstract void handleInstrument(MetaTraderMessage msg);
+	protected abstract void handleInstrument(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
 	protected abstract void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
+	protected abstract void handleBeats(StrategyToken token, IntraStrategyBeanMsg intraMsg);
+	
+	protected abstract void handleOrders(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
 }
