@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+repositories {
+    jcenter()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    project(":ioBase")
+    testCompile "junit:junit:4.12"
+}
+
+jar {
+    baseName = 'strategyEngine'
+    version =  '0.0.1'
+}

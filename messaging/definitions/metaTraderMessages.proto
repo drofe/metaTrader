@@ -2,24 +2,41 @@ syntax = "proto3";
 
 package marketdata;
 
-option java_package = "org.bergefall.protocol.marketdata";
-option java_outer_classname = "MarketDataProtos";
+option java_package = "org.bergefall.protocol.metatrader";
+option java_outer_classname = "MetaTraderProtos";
 
 message MetaTraderMessage {
-    enum Type {Instrument = 0; MarketData = 1; Account = 2;}
+    enum Type {Instrument = 0; MarketData = 1; Account = 2;
+    	      Beat = 3; Order = 4;}
     oneof payload {
         Instrument instrument = 1;
 	MarketData marketData = 2;
 	Account account = 3;
+	Beat beat = 4;
+	Order order = 5;
     }
     uint64 seqNo = 10;
     repeated uint64 timeStamps = 11 [packed=true];
 }
 
+message Beat {
+	uint64 time = 1;
+}
+
+message Order {
+	enum TimeInForce {Day = 0; Session = 1; Time = 2; IoC = 3;
+	     GtC = 4; FoK = 5; }
+	Instrument instrument = 1;
+	Account account = 2;
+	int64 qty = 3;
+	int64 price = 4;
+	TimeInForce tif = 5; 
+}
+
 message Instrument {
     string name = 1;
     int32 id = 2;
-  }
+}
 
 message Account {
     string name = 1;

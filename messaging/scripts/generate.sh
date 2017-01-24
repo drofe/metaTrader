@@ -1,3 +1,3 @@
 #!/bin/bash
 
-protoc --java_out=src/main/java/ definitions/marketData.proto 
+protoc --java_out=src/main/java/ definitions/metaTraderMessages.proto 
