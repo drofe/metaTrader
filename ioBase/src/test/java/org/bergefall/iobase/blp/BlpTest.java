@@ -74,5 +74,11 @@ public class BlpTest extends BlpTestBase {
 			
 		}
 		
+		@Override
+		protected void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 }

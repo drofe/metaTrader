@@ -5,6 +5,7 @@ import static org.bergefall.common.MetaTraderConstants.DIVISOR;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Beat;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
@@ -14,6 +15,12 @@ public class MetaTraderMessageCreator {
 	public static MetaTraderMessage createTestMsg() {
 		AccountCtx ctx = new AccountCtx("TEST", 0, "TEST_BROKER", "TEST_USER");
 		return createMTMsg(ctx);
+	}
+	
+	public static MetaTraderMessage createBeat(long time) {
+		Beat beat = Beat.newBuilder().setTime(time).build();
+		MetaTraderMessage message = MetaTraderMessage.newBuilder().setBeat(beat).build();
+		return message;
 	}
 	
 	public static MarketData createMD(String pDate, Double pClose) {

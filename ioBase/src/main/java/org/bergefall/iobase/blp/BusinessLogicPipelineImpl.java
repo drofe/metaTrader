@@ -35,6 +35,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	private static final String PreInstrumentStrategy = "preInstrStrategy";
 	private static final String PreBeatStrategy = "preBeatStrategy";
 	private static final String PreOrderStrategy = "preOrderStrategy";
+	private static final String PreTradeStrategy = "preTradeStrategy";
 		
 	private static final AtomicInteger cBLPNr = new AtomicInteger(0);
 	private boolean active;
@@ -49,7 +50,8 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	private boolean runPreAccStrat = true;
 	private boolean runPreInstrStrat = true;
 	private boolean runPreBeatStrat = true;
-	private boolean runPreOrderrStrat = true;
+	private boolean runPreOrderStrat = true;
+	private boolean runPreTradeStrat = true;
 	private BeatsGenerator beatGenerator;
 	
 	
@@ -140,9 +142,16 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		case Instrument:
 			handleInstrumentInternal(msg);
 			break;
-		default:
+		case Beat:
 			handleBeatsInternal(msg);
+			break;
+		case Order:
 			handleOrderInternal(msg);
+			break;
+		case Trade:
+			handleTradeInternal(msg);
+			break;
+		default:
 			break;
 		}
 	}
@@ -156,10 +165,19 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		handleInstrument(token, intraMsg);
 	}
 	
+	private void handleTradeInternal(MetaTraderMessage msg) {
+		StrategyToken token = getNewToken(msg);
+		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
+		if (runPreTradeStrat) {
+			runStrategy(PreTradeStrategy, token, intraMsg);
+		}
+		handleTrades(token, intraMsg);
+	}
+	
 	private void handleOrderInternal(MetaTraderMessage msg) {
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
-		if (runPreOrderrStrat) {
+		if (runPreOrderStrat) {
 			runStrategy(PreOrderStrategy, token, intraMsg);
 		}
 		handleOrders(token, intraMsg);
@@ -241,5 +259,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	protected abstract void handleBeats(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
 	protected abstract void handleOrders(StrategyToken token, IntraStrategyBeanMsg intraMsg);
+	
+	protected abstract void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg);
 	
 }

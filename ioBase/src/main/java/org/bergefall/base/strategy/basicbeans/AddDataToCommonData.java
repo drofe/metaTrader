@@ -30,8 +30,8 @@ public class AddDataToCommonData extends AbstractStrategyBean<IntraStrategyBeanM
 			case Account :
 				handleAccount(msg.getAccount());
 				break;
-				default :
-					break;
+			default :
+				break;
 			}
 		}
 		return status;

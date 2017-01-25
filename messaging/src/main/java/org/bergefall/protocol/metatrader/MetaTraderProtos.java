@@ -64,20 +64,38 @@ public final class MetaTraderProtos {
     org.bergefall.protocol.metatrader.MetaTraderProtos.OrderOrBuilder getOrderOrBuilder();
 
     /**
-     * <code>optional uint64 seqNo = 10;</code>
+     * <code>optional .marketdata.Trade trade = 6;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getTrade();
+    /**
+     * <code>optional .marketdata.Trade trade = 6;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder getTradeOrBuilder();
+
+    /**
+     * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+     */
+    int getMsgTypeValue();
+    /**
+     * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type getMsgType();
+
+    /**
+     * <code>optional uint64 seqNo = 11;</code>
      */
     long getSeqNo();
 
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     java.util.List<java.lang.Long> getTimeStampsList();
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     int getTimeStampsCount();
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     long getTimeStamps(int index);
 
@@ -95,6 +113,7 @@ public final class MetaTraderProtos {
       super(builder);
     }
     private MetaTraderMessage() {
+      msgType_ = 0;
       seqNo_ = 0L;
       timeStamps_ = java.util.Collections.emptyList();
     }
@@ -194,25 +213,45 @@ public final class MetaTraderProtos {
               payloadCase_ = 5;
               break;
             }
+            case 50: {
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder subBuilder = null;
+              if (payloadCase_ == 6) {
+                subBuilder = ((org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 6;
+              break;
+            }
             case 80: {
+              int rawValue = input.readEnum();
+
+              msgType_ = rawValue;
+              break;
+            }
+            case 88: {
 
               seqNo_ = input.readUInt64();
               break;
             }
-            case 88: {
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+            case 96: {
+              if (!((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
                 timeStamps_ = new java.util.ArrayList<java.lang.Long>();
-                mutable_bitField0_ |= 0x00000040;
+                mutable_bitField0_ |= 0x00000100;
               }
               timeStamps_.add(input.readUInt64());
               break;
             }
-            case 90: {
+            case 98: {
               int length = input.readRawVarint32();
               int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000040) == 0x00000040) && input.getBytesUntilLimit() > 0) {
+              if (!((mutable_bitField0_ & 0x00000100) == 0x00000100) && input.getBytesUntilLimit() > 0) {
                 timeStamps_ = new java.util.ArrayList<java.lang.Long>();
-                mutable_bitField0_ |= 0x00000040;
+                mutable_bitField0_ |= 0x00000100;
               }
               while (input.getBytesUntilLimit() > 0) {
                 timeStamps_.add(input.readUInt64());
@@ -228,7 +267,7 @@ public final class MetaTraderProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((mutable_bitField0_ & 0x00000100) == 0x00000100)) {
           timeStamps_ = java.util.Collections.unmodifiableList(timeStamps_);
         }
         makeExtensionsImmutable();
@@ -271,6 +310,10 @@ public final class MetaTraderProtos {
        * <code>Order = 4;</code>
        */
       Order(4),
+      /**
+       * <code>Trade = 5;</code>
+       */
+      Trade(5),
       UNRECOGNIZED(-1),
       ;
 
@@ -294,6 +337,10 @@ public final class MetaTraderProtos {
        * <code>Order = 4;</code>
        */
       public static final int Order_VALUE = 4;
+      /**
+       * <code>Trade = 5;</code>
+       */
+      public static final int Trade_VALUE = 5;
 
 
       public final int getNumber() {
@@ -319,6 +366,7 @@ public final class MetaTraderProtos {
           case 2: return Account;
           case 3: return Beat;
           case 4: return Order;
+          case 5: return Trade;
           default: return null;
         }
       }
@@ -381,6 +429,7 @@ public final class MetaTraderProtos {
       ACCOUNT(3),
       BEAT(4),
       ORDER(5),
+      TRADE(6),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -401,6 +450,7 @@ public final class MetaTraderProtos {
           case 3: return ACCOUNT;
           case 4: return BEAT;
           case 5: return ORDER;
+          case 6: return TRADE;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -516,32 +566,68 @@ public final class MetaTraderProtos {
       return org.bergefall.protocol.metatrader.MetaTraderProtos.Order.getDefaultInstance();
     }
 
-    public static final int SEQNO_FIELD_NUMBER = 10;
+    public static final int TRADE_FIELD_NUMBER = 6;
+    /**
+     * <code>optional .marketdata.Trade trade = 6;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getTrade() {
+      if (payloadCase_ == 6) {
+         return (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_;
+      }
+      return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+    }
+    /**
+     * <code>optional .marketdata.Trade trade = 6;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder getTradeOrBuilder() {
+      if (payloadCase_ == 6) {
+         return (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_;
+      }
+      return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+    }
+
+    public static final int MSGTYPE_FIELD_NUMBER = 10;
+    private int msgType_;
+    /**
+     * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+     */
+    public int getMsgTypeValue() {
+      return msgType_;
+    }
+    /**
+     * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type getMsgType() {
+      org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type result = org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.valueOf(msgType_);
+      return result == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.UNRECOGNIZED : result;
+    }
+
+    public static final int SEQNO_FIELD_NUMBER = 11;
     private long seqNo_;
     /**
-     * <code>optional uint64 seqNo = 10;</code>
+     * <code>optional uint64 seqNo = 11;</code>
      */
     public long getSeqNo() {
       return seqNo_;
     }
 
-    public static final int TIMESTAMPS_FIELD_NUMBER = 11;
+    public static final int TIMESTAMPS_FIELD_NUMBER = 12;
     private java.util.List<java.lang.Long> timeStamps_;
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     public java.util.List<java.lang.Long>
         getTimeStampsList() {
       return timeStamps_;
     }
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     public int getTimeStampsCount() {
       return timeStamps_.size();
     }
     /**
-     * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+     * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
      */
     public long getTimeStamps(int index) {
       return timeStamps_.get(index);
@@ -576,11 +662,17 @@ public final class MetaTraderProtos {
       if (payloadCase_ == 5) {
         output.writeMessage(5, (org.bergefall.protocol.metatrader.MetaTraderProtos.Order) payload_);
       }
+      if (payloadCase_ == 6) {
+        output.writeMessage(6, (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_);
+      }
+      if (msgType_ != org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.Instrument.getNumber()) {
+        output.writeEnum(10, msgType_);
+      }
       if (seqNo_ != 0L) {
-        output.writeUInt64(10, seqNo_);
+        output.writeUInt64(11, seqNo_);
       }
       if (getTimeStampsList().size() > 0) {
-        output.writeUInt32NoTag(90);
+        output.writeUInt32NoTag(98);
         output.writeUInt32NoTag(timeStampsMemoizedSerializedSize);
       }
       for (int i = 0; i < timeStamps_.size(); i++) {
@@ -613,9 +705,17 @@ public final class MetaTraderProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, (org.bergefall.protocol.metatrader.MetaTraderProtos.Order) payload_);
       }
+      if (payloadCase_ == 6) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_);
+      }
+      if (msgType_ != org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.Instrument.getNumber()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(10, msgType_);
+      }
       if (seqNo_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(10, seqNo_);
+          .computeUInt64Size(11, seqNo_);
       }
       {
         int dataSize = 0;
@@ -647,6 +747,7 @@ public final class MetaTraderProtos {
       org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage other = (org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage) obj;
 
       boolean result = true;
+      result = result && msgType_ == other.msgType_;
       result = result && (getSeqNo()
           == other.getSeqNo());
       result = result && getTimeStampsList()
@@ -675,6 +776,10 @@ public final class MetaTraderProtos {
           result = result && getOrder()
               .equals(other.getOrder());
           break;
+        case 6:
+          result = result && getTrade()
+              .equals(other.getTrade());
+          break;
         case 0:
         default:
       }
@@ -688,6 +793,8 @@ public final class MetaTraderProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptorForType().hashCode();
+      hash = (37 * hash) + MSGTYPE_FIELD_NUMBER;
+      hash = (53 * hash) + msgType_;
       hash = (37 * hash) + SEQNO_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getSeqNo());
@@ -715,6 +822,10 @@ public final class MetaTraderProtos {
         case 5:
           hash = (37 * hash) + ORDER_FIELD_NUMBER;
           hash = (53 * hash) + getOrder().hashCode();
+          break;
+        case 6:
+          hash = (37 * hash) + TRADE_FIELD_NUMBER;
+          hash = (53 * hash) + getTrade().hashCode();
           break;
         case 0:
         default:
@@ -837,10 +948,12 @@ public final class MetaTraderProtos {
       }
       public Builder clear() {
         super.clear();
+        msgType_ = 0;
+
         seqNo_ = 0L;
 
         timeStamps_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000100);
         payloadCase_ = 0;
         payload_ = null;
         return this;
@@ -902,10 +1015,18 @@ public final class MetaTraderProtos {
             result.payload_ = orderBuilder_.build();
           }
         }
+        if (payloadCase_ == 6) {
+          if (tradeBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = tradeBuilder_.build();
+          }
+        }
+        result.msgType_ = msgType_;
         result.seqNo_ = seqNo_;
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (((bitField0_ & 0x00000100) == 0x00000100)) {
           timeStamps_ = java.util.Collections.unmodifiableList(timeStamps_);
-          bitField0_ = (bitField0_ & ~0x00000040);
+          bitField0_ = (bitField0_ & ~0x00000100);
         }
         result.timeStamps_ = timeStamps_;
         result.bitField0_ = to_bitField0_;
@@ -951,13 +1072,16 @@ public final class MetaTraderProtos {
 
       public Builder mergeFrom(org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage other) {
         if (other == org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.getDefaultInstance()) return this;
+        if (other.msgType_ != 0) {
+          setMsgTypeValue(other.getMsgTypeValue());
+        }
         if (other.getSeqNo() != 0L) {
           setSeqNo(other.getSeqNo());
         }
         if (!other.timeStamps_.isEmpty()) {
           if (timeStamps_.isEmpty()) {
             timeStamps_ = other.timeStamps_;
-            bitField0_ = (bitField0_ & ~0x00000040);
+            bitField0_ = (bitField0_ & ~0x00000100);
           } else {
             ensureTimeStampsIsMutable();
             timeStamps_.addAll(other.timeStamps_);
@@ -983,6 +1107,10 @@ public final class MetaTraderProtos {
           }
           case ORDER: {
             mergeOrder(other.getOrder());
+            break;
+          }
+          case TRADE: {
+            mergeTrade(other.getTrade());
             break;
           }
           case PAYLOAD_NOT_SET: {
@@ -1681,15 +1809,189 @@ public final class MetaTraderProtos {
         return orderBuilder_;
       }
 
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Trade, org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder> tradeBuilder_;
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getTrade() {
+        if (tradeBuilder_ == null) {
+          if (payloadCase_ == 6) {
+            return (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_;
+          }
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 6) {
+            return tradeBuilder_.getMessage();
+          }
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public Builder setTrade(org.bergefall.protocol.metatrader.MetaTraderProtos.Trade value) {
+        if (tradeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          tradeBuilder_.setMessage(value);
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public Builder setTrade(
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder builderForValue) {
+        if (tradeBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          tradeBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public Builder mergeTrade(org.bergefall.protocol.metatrader.MetaTraderProtos.Trade value) {
+        if (tradeBuilder_ == null) {
+          if (payloadCase_ == 6 &&
+              payload_ != org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance()) {
+            payload_ = org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.newBuilder((org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 6) {
+            tradeBuilder_.mergeFrom(value);
+          }
+          tradeBuilder_.setMessage(value);
+        }
+        payloadCase_ = 6;
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public Builder clearTrade() {
+        if (tradeBuilder_ == null) {
+          if (payloadCase_ == 6) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 6) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          tradeBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder getTradeBuilder() {
+        return getTradeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder getTradeOrBuilder() {
+        if ((payloadCase_ == 6) && (tradeBuilder_ != null)) {
+          return tradeBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 6) {
+            return (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_;
+          }
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Trade trade = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Trade, org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder> 
+          getTradeFieldBuilder() {
+        if (tradeBuilder_ == null) {
+          if (!(payloadCase_ == 6)) {
+            payload_ = org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+          }
+          tradeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Trade, org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder>(
+                  (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 6;
+        onChanged();;
+        return tradeBuilder_;
+      }
+
+      private int msgType_ = 0;
+      /**
+       * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+       */
+      public int getMsgTypeValue() {
+        return msgType_;
+      }
+      /**
+       * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+       */
+      public Builder setMsgTypeValue(int value) {
+        msgType_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type getMsgType() {
+        org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type result = org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.valueOf(msgType_);
+        return result == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type.UNRECOGNIZED : result;
+      }
+      /**
+       * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+       */
+      public Builder setMsgType(org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        
+        msgType_ = value.getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.MetaTraderMessage.Type msgType = 10;</code>
+       */
+      public Builder clearMsgType() {
+        
+        msgType_ = 0;
+        onChanged();
+        return this;
+      }
+
       private long seqNo_ ;
       /**
-       * <code>optional uint64 seqNo = 10;</code>
+       * <code>optional uint64 seqNo = 11;</code>
        */
       public long getSeqNo() {
         return seqNo_;
       }
       /**
-       * <code>optional uint64 seqNo = 10;</code>
+       * <code>optional uint64 seqNo = 11;</code>
        */
       public Builder setSeqNo(long value) {
         
@@ -1698,7 +2000,7 @@ public final class MetaTraderProtos {
         return this;
       }
       /**
-       * <code>optional uint64 seqNo = 10;</code>
+       * <code>optional uint64 seqNo = 11;</code>
        */
       public Builder clearSeqNo() {
         
@@ -1709,32 +2011,32 @@ public final class MetaTraderProtos {
 
       private java.util.List<java.lang.Long> timeStamps_ = java.util.Collections.emptyList();
       private void ensureTimeStampsIsMutable() {
-        if (!((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (!((bitField0_ & 0x00000100) == 0x00000100)) {
           timeStamps_ = new java.util.ArrayList<java.lang.Long>(timeStamps_);
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000100;
          }
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public java.util.List<java.lang.Long>
           getTimeStampsList() {
         return java.util.Collections.unmodifiableList(timeStamps_);
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public int getTimeStampsCount() {
         return timeStamps_.size();
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public long getTimeStamps(int index) {
         return timeStamps_.get(index);
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public Builder setTimeStamps(
           int index, long value) {
@@ -1744,7 +2046,7 @@ public final class MetaTraderProtos {
         return this;
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public Builder addTimeStamps(long value) {
         ensureTimeStampsIsMutable();
@@ -1753,7 +2055,7 @@ public final class MetaTraderProtos {
         return this;
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public Builder addAllTimeStamps(
           java.lang.Iterable<? extends java.lang.Long> values) {
@@ -1764,11 +2066,11 @@ public final class MetaTraderProtos {
         return this;
       }
       /**
-       * <code>repeated uint64 timeStamps = 11 [packed = true];</code>
+       * <code>repeated uint64 timeStamps = 12 [packed = true];</code>
        */
       public Builder clearTimeStamps() {
         timeStamps_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000100);
         onChanged();
         return this;
       }
@@ -2299,6 +2601,11 @@ public final class MetaTraderProtos {
      * <code>optional .marketdata.Order.TimeInForce tif = 5;</code>
      */
     org.bergefall.protocol.metatrader.MetaTraderProtos.Order.TimeInForce getTif();
+
+    /**
+     * <code>optional bool isAsk = 6;</code>
+     */
+    boolean getIsAsk();
   }
   /**
    * Protobuf type {@code marketdata.Order}
@@ -2315,6 +2622,7 @@ public final class MetaTraderProtos {
       qty_ = 0L;
       price_ = 0L;
       tif_ = 0;
+      isAsk_ = false;
     }
 
     @java.lang.Override
@@ -2382,6 +2690,11 @@ public final class MetaTraderProtos {
               int rawValue = input.readEnum();
 
               tif_ = rawValue;
+              break;
+            }
+            case 48: {
+
+              isAsk_ = input.readBool();
               break;
             }
           }
@@ -2617,6 +2930,15 @@ public final class MetaTraderProtos {
       return result == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Order.TimeInForce.UNRECOGNIZED : result;
     }
 
+    public static final int ISASK_FIELD_NUMBER = 6;
+    private boolean isAsk_;
+    /**
+     * <code>optional bool isAsk = 6;</code>
+     */
+    public boolean getIsAsk() {
+      return isAsk_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2644,6 +2966,9 @@ public final class MetaTraderProtos {
       if (tif_ != org.bergefall.protocol.metatrader.MetaTraderProtos.Order.TimeInForce.Day.getNumber()) {
         output.writeEnum(5, tif_);
       }
+      if (isAsk_ != false) {
+        output.writeBool(6, isAsk_);
+      }
     }
 
     public int getSerializedSize() {
@@ -2670,6 +2995,10 @@ public final class MetaTraderProtos {
       if (tif_ != org.bergefall.protocol.metatrader.MetaTraderProtos.Order.TimeInForce.Day.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(5, tif_);
+      }
+      if (isAsk_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, isAsk_);
       }
       memoizedSize = size;
       return size;
@@ -2702,6 +3031,8 @@ public final class MetaTraderProtos {
       result = result && (getPrice()
           == other.getPrice());
       result = result && tif_ == other.tif_;
+      result = result && (getIsAsk()
+          == other.getIsAsk());
       return result;
     }
 
@@ -2728,6 +3059,9 @@ public final class MetaTraderProtos {
           getPrice());
       hash = (37 * hash) + TIF_FIELD_NUMBER;
       hash = (53 * hash) + tif_;
+      hash = (37 * hash) + ISASK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsAsk());
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2864,6 +3198,8 @@ public final class MetaTraderProtos {
 
         tif_ = 0;
 
+        isAsk_ = false;
+
         return this;
       }
 
@@ -2899,6 +3235,7 @@ public final class MetaTraderProtos {
         result.qty_ = qty_;
         result.price_ = price_;
         result.tif_ = tif_;
+        result.isAsk_ = isAsk_;
         onBuilt();
         return result;
       }
@@ -2954,6 +3291,9 @@ public final class MetaTraderProtos {
         }
         if (other.tif_ != 0) {
           setTifValue(other.getTifValue());
+        }
+        if (other.getIsAsk() != false) {
+          setIsAsk(other.getIsAsk());
         }
         onChanged();
         return this;
@@ -3310,6 +3650,32 @@ public final class MetaTraderProtos {
         onChanged();
         return this;
       }
+
+      private boolean isAsk_ ;
+      /**
+       * <code>optional bool isAsk = 6;</code>
+       */
+      public boolean getIsAsk() {
+        return isAsk_;
+      }
+      /**
+       * <code>optional bool isAsk = 6;</code>
+       */
+      public Builder setIsAsk(boolean value) {
+        
+        isAsk_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool isAsk = 6;</code>
+       */
+      public Builder clearIsAsk() {
+        
+        isAsk_ = false;
+        onChanged();
+        return this;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return this;
@@ -3354,6 +3720,1281 @@ public final class MetaTraderProtos {
     }
 
     public org.bergefall.protocol.metatrader.MetaTraderProtos.Order getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TradeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:marketdata.Trade)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    boolean hasInstrument();
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument();
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder();
+
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    boolean hasAccount();
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.Account getAccount();
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder getAccountOrBuilder();
+
+    /**
+     * <code>optional string date = 3;</code>
+     */
+    java.lang.String getDate();
+    /**
+     * <code>optional string date = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getDateBytes();
+
+    /**
+     * <code>optional int64 qty = 4;</code>
+     */
+    long getQty();
+
+    /**
+     * <code>optional int64 price = 5;</code>
+     */
+    long getPrice();
+
+    /**
+     * <code>optional bool isEntry = 6;</code>
+     */
+    boolean getIsEntry();
+
+    /**
+     * <code>optional int64 netProfit = 7;</code>
+     */
+    long getNetProfit();
+
+    /**
+     * <code>optional int64 grossProfit = 8;</code>
+     */
+    long getGrossProfit();
+
+    /**
+     * <code>optional int64 commission = 9;</code>
+     */
+    long getCommission();
+  }
+  /**
+   * Protobuf type {@code marketdata.Trade}
+   */
+  public  static final class Trade extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:marketdata.Trade)
+      TradeOrBuilder {
+    // Use Trade.newBuilder() to construct.
+    private Trade(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private Trade() {
+      date_ = "";
+      qty_ = 0L;
+      price_ = 0L;
+      isEntry_ = false;
+      netProfit_ = 0L;
+      grossProfit_ = 0L;
+      commission_ = 0L;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+    }
+    private Trade(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!input.skipField(tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder subBuilder = null;
+              if (instrument_ != null) {
+                subBuilder = instrument_.toBuilder();
+              }
+              instrument_ = input.readMessage(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(instrument_);
+                instrument_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 18: {
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder subBuilder = null;
+              if (account_ != null) {
+                subBuilder = account_.toBuilder();
+              }
+              account_ = input.readMessage(org.bergefall.protocol.metatrader.MetaTraderProtos.Account.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(account_);
+                account_ = subBuilder.buildPartial();
+              }
+
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              date_ = s;
+              break;
+            }
+            case 32: {
+
+              qty_ = input.readInt64();
+              break;
+            }
+            case 40: {
+
+              price_ = input.readInt64();
+              break;
+            }
+            case 48: {
+
+              isEntry_ = input.readBool();
+              break;
+            }
+            case 56: {
+
+              netProfit_ = input.readInt64();
+              break;
+            }
+            case 64: {
+
+              grossProfit_ = input.readInt64();
+              break;
+            }
+            case 72: {
+
+              commission_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Trade_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Trade_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.class, org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder.class);
+    }
+
+    public static final int INSTRUMENT_FIELD_NUMBER = 1;
+    private org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument instrument_;
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    public boolean hasInstrument() {
+      return instrument_ != null;
+    }
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument() {
+      return instrument_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+    }
+    /**
+     * <code>optional .marketdata.Instrument instrument = 1;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+      return getInstrument();
+    }
+
+    public static final int ACCOUNT_FIELD_NUMBER = 2;
+    private org.bergefall.protocol.metatrader.MetaTraderProtos.Account account_;
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    public boolean hasAccount() {
+      return account_ != null;
+    }
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Account getAccount() {
+      return account_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Account.getDefaultInstance() : account_;
+    }
+    /**
+     * <code>optional .marketdata.Account account = 2;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder getAccountOrBuilder() {
+      return getAccount();
+    }
+
+    public static final int DATE_FIELD_NUMBER = 3;
+    private volatile java.lang.Object date_;
+    /**
+     * <code>optional string date = 3;</code>
+     */
+    public java.lang.String getDate() {
+      java.lang.Object ref = date_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        date_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>optional string date = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDateBytes() {
+      java.lang.Object ref = date_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        date_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int QTY_FIELD_NUMBER = 4;
+    private long qty_;
+    /**
+     * <code>optional int64 qty = 4;</code>
+     */
+    public long getQty() {
+      return qty_;
+    }
+
+    public static final int PRICE_FIELD_NUMBER = 5;
+    private long price_;
+    /**
+     * <code>optional int64 price = 5;</code>
+     */
+    public long getPrice() {
+      return price_;
+    }
+
+    public static final int ISENTRY_FIELD_NUMBER = 6;
+    private boolean isEntry_;
+    /**
+     * <code>optional bool isEntry = 6;</code>
+     */
+    public boolean getIsEntry() {
+      return isEntry_;
+    }
+
+    public static final int NETPROFIT_FIELD_NUMBER = 7;
+    private long netProfit_;
+    /**
+     * <code>optional int64 netProfit = 7;</code>
+     */
+    public long getNetProfit() {
+      return netProfit_;
+    }
+
+    public static final int GROSSPROFIT_FIELD_NUMBER = 8;
+    private long grossProfit_;
+    /**
+     * <code>optional int64 grossProfit = 8;</code>
+     */
+    public long getGrossProfit() {
+      return grossProfit_;
+    }
+
+    public static final int COMMISSION_FIELD_NUMBER = 9;
+    private long commission_;
+    /**
+     * <code>optional int64 commission = 9;</code>
+     */
+    public long getCommission() {
+      return commission_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (instrument_ != null) {
+        output.writeMessage(1, getInstrument());
+      }
+      if (account_ != null) {
+        output.writeMessage(2, getAccount());
+      }
+      if (!getDateBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, date_);
+      }
+      if (qty_ != 0L) {
+        output.writeInt64(4, qty_);
+      }
+      if (price_ != 0L) {
+        output.writeInt64(5, price_);
+      }
+      if (isEntry_ != false) {
+        output.writeBool(6, isEntry_);
+      }
+      if (netProfit_ != 0L) {
+        output.writeInt64(7, netProfit_);
+      }
+      if (grossProfit_ != 0L) {
+        output.writeInt64(8, grossProfit_);
+      }
+      if (commission_ != 0L) {
+        output.writeInt64(9, commission_);
+      }
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (instrument_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getInstrument());
+      }
+      if (account_ != null) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getAccount());
+      }
+      if (!getDateBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, date_);
+      }
+      if (qty_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, qty_);
+      }
+      if (price_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, price_);
+      }
+      if (isEntry_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, isEntry_);
+      }
+      if (netProfit_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, netProfit_);
+      }
+      if (grossProfit_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(8, grossProfit_);
+      }
+      if (commission_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(9, commission_);
+      }
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof org.bergefall.protocol.metatrader.MetaTraderProtos.Trade)) {
+        return super.equals(obj);
+      }
+      org.bergefall.protocol.metatrader.MetaTraderProtos.Trade other = (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) obj;
+
+      boolean result = true;
+      result = result && (hasInstrument() == other.hasInstrument());
+      if (hasInstrument()) {
+        result = result && getInstrument()
+            .equals(other.getInstrument());
+      }
+      result = result && (hasAccount() == other.hasAccount());
+      if (hasAccount()) {
+        result = result && getAccount()
+            .equals(other.getAccount());
+      }
+      result = result && getDate()
+          .equals(other.getDate());
+      result = result && (getQty()
+          == other.getQty());
+      result = result && (getPrice()
+          == other.getPrice());
+      result = result && (getIsEntry()
+          == other.getIsEntry());
+      result = result && (getNetProfit()
+          == other.getNetProfit());
+      result = result && (getGrossProfit()
+          == other.getGrossProfit());
+      result = result && (getCommission()
+          == other.getCommission());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasInstrument()) {
+        hash = (37 * hash) + INSTRUMENT_FIELD_NUMBER;
+        hash = (53 * hash) + getInstrument().hashCode();
+      }
+      if (hasAccount()) {
+        hash = (37 * hash) + ACCOUNT_FIELD_NUMBER;
+        hash = (53 * hash) + getAccount().hashCode();
+      }
+      hash = (37 * hash) + DATE_FIELD_NUMBER;
+      hash = (53 * hash) + getDate().hashCode();
+      hash = (37 * hash) + QTY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getQty());
+      hash = (37 * hash) + PRICE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPrice());
+      hash = (37 * hash) + ISENTRY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getIsEntry());
+      hash = (37 * hash) + NETPROFIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNetProfit());
+      hash = (37 * hash) + GROSSPROFIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGrossProfit());
+      hash = (37 * hash) + COMMISSION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCommission());
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(org.bergefall.protocol.metatrader.MetaTraderProtos.Trade prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code marketdata.Trade}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:marketdata.Trade)
+        org.bergefall.protocol.metatrader.MetaTraderProtos.TradeOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Trade_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Trade_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.class, org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.Builder.class);
+      }
+
+      // Construct using org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        if (instrumentBuilder_ == null) {
+          instrument_ = null;
+        } else {
+          instrument_ = null;
+          instrumentBuilder_ = null;
+        }
+        if (accountBuilder_ == null) {
+          account_ = null;
+        } else {
+          account_ = null;
+          accountBuilder_ = null;
+        }
+        date_ = "";
+
+        qty_ = 0L;
+
+        price_ = 0L;
+
+        isEntry_ = false;
+
+        netProfit_ = 0L;
+
+        grossProfit_ = 0L;
+
+        commission_ = 0L;
+
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Trade_descriptor;
+      }
+
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getDefaultInstanceForType() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance();
+      }
+
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade build() {
+        org.bergefall.protocol.metatrader.MetaTraderProtos.Trade result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade buildPartial() {
+        org.bergefall.protocol.metatrader.MetaTraderProtos.Trade result = new org.bergefall.protocol.metatrader.MetaTraderProtos.Trade(this);
+        if (instrumentBuilder_ == null) {
+          result.instrument_ = instrument_;
+        } else {
+          result.instrument_ = instrumentBuilder_.build();
+        }
+        if (accountBuilder_ == null) {
+          result.account_ = account_;
+        } else {
+          result.account_ = accountBuilder_.build();
+        }
+        result.date_ = date_;
+        result.qty_ = qty_;
+        result.price_ = price_;
+        result.isEntry_ = isEntry_;
+        result.netProfit_ = netProfit_;
+        result.grossProfit_ = grossProfit_;
+        result.commission_ = commission_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) {
+          return mergeFrom((org.bergefall.protocol.metatrader.MetaTraderProtos.Trade)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(org.bergefall.protocol.metatrader.MetaTraderProtos.Trade other) {
+        if (other == org.bergefall.protocol.metatrader.MetaTraderProtos.Trade.getDefaultInstance()) return this;
+        if (other.hasInstrument()) {
+          mergeInstrument(other.getInstrument());
+        }
+        if (other.hasAccount()) {
+          mergeAccount(other.getAccount());
+        }
+        if (!other.getDate().isEmpty()) {
+          date_ = other.date_;
+          onChanged();
+        }
+        if (other.getQty() != 0L) {
+          setQty(other.getQty());
+        }
+        if (other.getPrice() != 0L) {
+          setPrice(other.getPrice());
+        }
+        if (other.getIsEntry() != false) {
+          setIsEntry(other.getIsEntry());
+        }
+        if (other.getNetProfit() != 0L) {
+          setNetProfit(other.getNetProfit());
+        }
+        if (other.getGrossProfit() != 0L) {
+          setGrossProfit(other.getGrossProfit());
+        }
+        if (other.getCommission() != 0L) {
+          setCommission(other.getCommission());
+        }
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        org.bergefall.protocol.metatrader.MetaTraderProtos.Trade parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (org.bergefall.protocol.metatrader.MetaTraderProtos.Trade) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+
+      private org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument instrument_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder> instrumentBuilder_;
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public boolean hasInstrument() {
+        return instrumentBuilder_ != null || instrument_ != null;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument() {
+        if (instrumentBuilder_ == null) {
+          return instrument_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+        } else {
+          return instrumentBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder setInstrument(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument value) {
+        if (instrumentBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          instrument_ = value;
+          onChanged();
+        } else {
+          instrumentBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder setInstrument(
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder builderForValue) {
+        if (instrumentBuilder_ == null) {
+          instrument_ = builderForValue.build();
+          onChanged();
+        } else {
+          instrumentBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder mergeInstrument(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument value) {
+        if (instrumentBuilder_ == null) {
+          if (instrument_ != null) {
+            instrument_ =
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.newBuilder(instrument_).mergeFrom(value).buildPartial();
+          } else {
+            instrument_ = value;
+          }
+          onChanged();
+        } else {
+          instrumentBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public Builder clearInstrument() {
+        if (instrumentBuilder_ == null) {
+          instrument_ = null;
+          onChanged();
+        } else {
+          instrument_ = null;
+          instrumentBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder getInstrumentBuilder() {
+        
+        onChanged();
+        return getInstrumentFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+        if (instrumentBuilder_ != null) {
+          return instrumentBuilder_.getMessageOrBuilder();
+        } else {
+          return instrument_ == null ?
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+        }
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder> 
+          getInstrumentFieldBuilder() {
+        if (instrumentBuilder_ == null) {
+          instrumentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder>(
+                  getInstrument(),
+                  getParentForChildren(),
+                  isClean());
+          instrument_ = null;
+        }
+        return instrumentBuilder_;
+      }
+
+      private org.bergefall.protocol.metatrader.MetaTraderProtos.Account account_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder> accountBuilder_;
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public boolean hasAccount() {
+        return accountBuilder_ != null || account_ != null;
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account getAccount() {
+        if (accountBuilder_ == null) {
+          return account_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Account.getDefaultInstance() : account_;
+        } else {
+          return accountBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public Builder setAccount(org.bergefall.protocol.metatrader.MetaTraderProtos.Account value) {
+        if (accountBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          account_ = value;
+          onChanged();
+        } else {
+          accountBuilder_.setMessage(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public Builder setAccount(
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder builderForValue) {
+        if (accountBuilder_ == null) {
+          account_ = builderForValue.build();
+          onChanged();
+        } else {
+          accountBuilder_.setMessage(builderForValue.build());
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public Builder mergeAccount(org.bergefall.protocol.metatrader.MetaTraderProtos.Account value) {
+        if (accountBuilder_ == null) {
+          if (account_ != null) {
+            account_ =
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Account.newBuilder(account_).mergeFrom(value).buildPartial();
+          } else {
+            account_ = value;
+          }
+          onChanged();
+        } else {
+          accountBuilder_.mergeFrom(value);
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public Builder clearAccount() {
+        if (accountBuilder_ == null) {
+          account_ = null;
+          onChanged();
+        } else {
+          account_ = null;
+          accountBuilder_ = null;
+        }
+
+        return this;
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder getAccountBuilder() {
+        
+        onChanged();
+        return getAccountFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder getAccountOrBuilder() {
+        if (accountBuilder_ != null) {
+          return accountBuilder_.getMessageOrBuilder();
+        } else {
+          return account_ == null ?
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Account.getDefaultInstance() : account_;
+        }
+      }
+      /**
+       * <code>optional .marketdata.Account account = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder> 
+          getAccountFieldBuilder() {
+        if (accountBuilder_ == null) {
+          accountBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Account, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.AccountOrBuilder>(
+                  getAccount(),
+                  getParentForChildren(),
+                  isClean());
+          account_ = null;
+        }
+        return accountBuilder_;
+      }
+
+      private java.lang.Object date_ = "";
+      /**
+       * <code>optional string date = 3;</code>
+       */
+      public java.lang.String getDate() {
+        java.lang.Object ref = date_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          date_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string date = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDateBytes() {
+        java.lang.Object ref = date_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          date_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string date = 3;</code>
+       */
+      public Builder setDate(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        date_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string date = 3;</code>
+       */
+      public Builder clearDate() {
+        
+        date_ = getDefaultInstance().getDate();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string date = 3;</code>
+       */
+      public Builder setDateBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        date_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long qty_ ;
+      /**
+       * <code>optional int64 qty = 4;</code>
+       */
+      public long getQty() {
+        return qty_;
+      }
+      /**
+       * <code>optional int64 qty = 4;</code>
+       */
+      public Builder setQty(long value) {
+        
+        qty_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 qty = 4;</code>
+       */
+      public Builder clearQty() {
+        
+        qty_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long price_ ;
+      /**
+       * <code>optional int64 price = 5;</code>
+       */
+      public long getPrice() {
+        return price_;
+      }
+      /**
+       * <code>optional int64 price = 5;</code>
+       */
+      public Builder setPrice(long value) {
+        
+        price_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 price = 5;</code>
+       */
+      public Builder clearPrice() {
+        
+        price_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private boolean isEntry_ ;
+      /**
+       * <code>optional bool isEntry = 6;</code>
+       */
+      public boolean getIsEntry() {
+        return isEntry_;
+      }
+      /**
+       * <code>optional bool isEntry = 6;</code>
+       */
+      public Builder setIsEntry(boolean value) {
+        
+        isEntry_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool isEntry = 6;</code>
+       */
+      public Builder clearIsEntry() {
+        
+        isEntry_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long netProfit_ ;
+      /**
+       * <code>optional int64 netProfit = 7;</code>
+       */
+      public long getNetProfit() {
+        return netProfit_;
+      }
+      /**
+       * <code>optional int64 netProfit = 7;</code>
+       */
+      public Builder setNetProfit(long value) {
+        
+        netProfit_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 netProfit = 7;</code>
+       */
+      public Builder clearNetProfit() {
+        
+        netProfit_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long grossProfit_ ;
+      /**
+       * <code>optional int64 grossProfit = 8;</code>
+       */
+      public long getGrossProfit() {
+        return grossProfit_;
+      }
+      /**
+       * <code>optional int64 grossProfit = 8;</code>
+       */
+      public Builder setGrossProfit(long value) {
+        
+        grossProfit_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 grossProfit = 8;</code>
+       */
+      public Builder clearGrossProfit() {
+        
+        grossProfit_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long commission_ ;
+      /**
+       * <code>optional int64 commission = 9;</code>
+       */
+      public long getCommission() {
+        return commission_;
+      }
+      /**
+       * <code>optional int64 commission = 9;</code>
+       */
+      public Builder setCommission(long value) {
+        
+        commission_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 commission = 9;</code>
+       */
+      public Builder clearCommission() {
+        
+        commission_ = 0L;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:marketdata.Trade)
+    }
+
+    // @@protoc_insertion_point(class_scope:marketdata.Trade)
+    private static final org.bergefall.protocol.metatrader.MetaTraderProtos.Trade DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new org.bergefall.protocol.metatrader.MetaTraderProtos.Trade();
+    }
+
+    public static org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<Trade>
+        PARSER = new com.google.protobuf.AbstractParser<Trade>() {
+      public Trade parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Trade(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<Trade> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Trade> getParserForType() {
+      return PARSER;
+    }
+
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Trade getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -3973,6 +5614,30 @@ public final class MetaTraderProtos {
      */
     com.google.protobuf.ByteString
         getHashedPwBytes();
+
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> 
+        getPositionsList();
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getPositions(int index);
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    int getPositionsCount();
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    java.util.List<? extends org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder> 
+        getPositionsOrBuilderList();
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder getPositionsOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code marketdata.Account}
@@ -3991,6 +5656,7 @@ public final class MetaTraderProtos {
       broker_ = "";
       user_ = "";
       hashedPw_ = "";
+      positions_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -4047,6 +5713,15 @@ public final class MetaTraderProtos {
               hashedPw_ = s;
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                positions_ = new java.util.ArrayList<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              positions_.add(
+                  input.readMessage(org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.parser(), extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4055,6 +5730,9 @@ public final class MetaTraderProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          positions_ = java.util.Collections.unmodifiableList(positions_);
+        }
         makeExtensionsImmutable();
       }
     }
@@ -4070,6 +5748,823 @@ public final class MetaTraderProtos {
               org.bergefall.protocol.metatrader.MetaTraderProtos.Account.class, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder.class);
     }
 
+    public interface PositionOrBuilder extends
+        // @@protoc_insertion_point(interface_extends:marketdata.Account.Position)
+        com.google.protobuf.MessageOrBuilder {
+
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      boolean hasInstrument();
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument();
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder();
+
+      /**
+       * <code>optional int64 longQty = 2;</code>
+       */
+      long getLongQty();
+
+      /**
+       * <code>optional int64 avgLongPrice = 3;</code>
+       */
+      long getAvgLongPrice();
+
+      /**
+       * <code>optional int64 shortQty = 4;</code>
+       */
+      long getShortQty();
+
+      /**
+       * <code>optional int64 avgShortPrice = 5;</code>
+       */
+      long getAvgShortPrice();
+    }
+    /**
+     * Protobuf type {@code marketdata.Account.Position}
+     */
+    public  static final class Position extends
+        com.google.protobuf.GeneratedMessageV3 implements
+        // @@protoc_insertion_point(message_implements:marketdata.Account.Position)
+        PositionOrBuilder {
+      // Use Position.newBuilder() to construct.
+      private Position(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+        super(builder);
+      }
+      private Position() {
+        longQty_ = 0L;
+        avgLongPrice_ = 0L;
+        shortQty_ = 0L;
+        avgShortPrice_ = 0L;
+      }
+
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+      getUnknownFields() {
+        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
+      }
+      private Position(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        this();
+        int mutable_bitField0_ = 0;
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!input.skipField(tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder subBuilder = null;
+                if (instrument_ != null) {
+                  subBuilder = instrument_.toBuilder();
+                }
+                instrument_ = input.readMessage(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.parser(), extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(instrument_);
+                  instrument_ = subBuilder.buildPartial();
+                }
+
+                break;
+              }
+              case 16: {
+
+                longQty_ = input.readInt64();
+                break;
+              }
+              case 24: {
+
+                avgLongPrice_ = input.readInt64();
+                break;
+              }
+              case 32: {
+
+                shortQty_ = input.readInt64();
+                break;
+              }
+              case 40: {
+
+                avgShortPrice_ = input.readInt64();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
+        } finally {
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Account_Position_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Account_Position_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.class, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder.class);
+      }
+
+      public static final int INSTRUMENT_FIELD_NUMBER = 1;
+      private org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument instrument_;
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public boolean hasInstrument() {
+        return instrument_ != null;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument() {
+        return instrument_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+      }
+      /**
+       * <code>optional .marketdata.Instrument instrument = 1;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+        return getInstrument();
+      }
+
+      public static final int LONGQTY_FIELD_NUMBER = 2;
+      private long longQty_;
+      /**
+       * <code>optional int64 longQty = 2;</code>
+       */
+      public long getLongQty() {
+        return longQty_;
+      }
+
+      public static final int AVGLONGPRICE_FIELD_NUMBER = 3;
+      private long avgLongPrice_;
+      /**
+       * <code>optional int64 avgLongPrice = 3;</code>
+       */
+      public long getAvgLongPrice() {
+        return avgLongPrice_;
+      }
+
+      public static final int SHORTQTY_FIELD_NUMBER = 4;
+      private long shortQty_;
+      /**
+       * <code>optional int64 shortQty = 4;</code>
+       */
+      public long getShortQty() {
+        return shortQty_;
+      }
+
+      public static final int AVGSHORTPRICE_FIELD_NUMBER = 5;
+      private long avgShortPrice_;
+      /**
+       * <code>optional int64 avgShortPrice = 5;</code>
+       */
+      public long getAvgShortPrice() {
+        return avgShortPrice_;
+      }
+
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized == 1) return true;
+        if (isInitialized == 0) return false;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        if (instrument_ != null) {
+          output.writeMessage(1, getInstrument());
+        }
+        if (longQty_ != 0L) {
+          output.writeInt64(2, longQty_);
+        }
+        if (avgLongPrice_ != 0L) {
+          output.writeInt64(3, avgLongPrice_);
+        }
+        if (shortQty_ != 0L) {
+          output.writeInt64(4, shortQty_);
+        }
+        if (avgShortPrice_ != 0L) {
+          output.writeInt64(5, avgShortPrice_);
+        }
+      }
+
+      public int getSerializedSize() {
+        int size = memoizedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (instrument_ != null) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(1, getInstrument());
+        }
+        if (longQty_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(2, longQty_);
+        }
+        if (avgLongPrice_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(3, avgLongPrice_);
+        }
+        if (shortQty_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(4, shortQty_);
+        }
+        if (avgShortPrice_ != 0L) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(5, avgShortPrice_);
+        }
+        memoizedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position)) {
+          return super.equals(obj);
+        }
+        org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position other = (org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position) obj;
+
+        boolean result = true;
+        result = result && (hasInstrument() == other.hasInstrument());
+        if (hasInstrument()) {
+          result = result && getInstrument()
+              .equals(other.getInstrument());
+        }
+        result = result && (getLongQty()
+            == other.getLongQty());
+        result = result && (getAvgLongPrice()
+            == other.getAvgLongPrice());
+        result = result && (getShortQty()
+            == other.getShortQty());
+        result = result && (getAvgShortPrice()
+            == other.getAvgShortPrice());
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptorForType().hashCode();
+        if (hasInstrument()) {
+          hash = (37 * hash) + INSTRUMENT_FIELD_NUMBER;
+          hash = (53 * hash) + getInstrument().hashCode();
+        }
+        hash = (37 * hash) + LONGQTY_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getLongQty());
+        hash = (37 * hash) + AVGLONGPRICE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getAvgLongPrice());
+        hash = (37 * hash) + SHORTQTY_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getShortQty());
+        hash = (37 * hash) + AVGSHORTPRICE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getAvgShortPrice());
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
+      }
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
+      }
+
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
+        return DEFAULT_INSTANCE.toBuilder();
+      }
+      public static Builder newBuilder(org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position prototype) {
+        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() {
+        return this == DEFAULT_INSTANCE
+            ? new Builder() : new Builder().mergeFrom(this);
+      }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code marketdata.Account.Position}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+          // @@protoc_insertion_point(builder_implements:marketdata.Account.Position)
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Account_Position_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Account_Position_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.class, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder.class);
+        }
+
+        // Construct using org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
+          }
+        }
+        public Builder clear() {
+          super.clear();
+          if (instrumentBuilder_ == null) {
+            instrument_ = null;
+          } else {
+            instrument_ = null;
+            instrumentBuilder_ = null;
+          }
+          longQty_ = 0L;
+
+          avgLongPrice_ = 0L;
+
+          shortQty_ = 0L;
+
+          avgShortPrice_ = 0L;
+
+          return this;
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.internal_static_marketdata_Account_Position_descriptor;
+        }
+
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getDefaultInstanceForType() {
+          return org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.getDefaultInstance();
+        }
+
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position build() {
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position buildPartial() {
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position result = new org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position(this);
+          if (instrumentBuilder_ == null) {
+            result.instrument_ = instrument_;
+          } else {
+            result.instrument_ = instrumentBuilder_.build();
+          }
+          result.longQty_ = longQty_;
+          result.avgLongPrice_ = avgLongPrice_;
+          result.shortQty_ = shortQty_;
+          result.avgShortPrice_ = avgShortPrice_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position) {
+            return mergeFrom((org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position other) {
+          if (other == org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.getDefaultInstance()) return this;
+          if (other.hasInstrument()) {
+            mergeInstrument(other.getInstrument());
+          }
+          if (other.getLongQty() != 0L) {
+            setLongQty(other.getLongQty());
+          }
+          if (other.getAvgLongPrice() != 0L) {
+            setAvgLongPrice(other.getAvgLongPrice());
+          }
+          if (other.getShortQty() != 0L) {
+            setShortQty(other.getShortQty());
+          }
+          if (other.getAvgShortPrice() != 0L) {
+            setAvgShortPrice(other.getAvgShortPrice());
+          }
+          onChanged();
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position) e.getUnfinishedMessage();
+            throw e.unwrapIOException();
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+
+        private org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument instrument_ = null;
+        private com.google.protobuf.SingleFieldBuilderV3<
+            org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder> instrumentBuilder_;
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public boolean hasInstrument() {
+          return instrumentBuilder_ != null || instrument_ != null;
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument getInstrument() {
+          if (instrumentBuilder_ == null) {
+            return instrument_ == null ? org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+          } else {
+            return instrumentBuilder_.getMessage();
+          }
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public Builder setInstrument(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument value) {
+          if (instrumentBuilder_ == null) {
+            if (value == null) {
+              throw new NullPointerException();
+            }
+            instrument_ = value;
+            onChanged();
+          } else {
+            instrumentBuilder_.setMessage(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public Builder setInstrument(
+            org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder builderForValue) {
+          if (instrumentBuilder_ == null) {
+            instrument_ = builderForValue.build();
+            onChanged();
+          } else {
+            instrumentBuilder_.setMessage(builderForValue.build());
+          }
+
+          return this;
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public Builder mergeInstrument(org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument value) {
+          if (instrumentBuilder_ == null) {
+            if (instrument_ != null) {
+              instrument_ =
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.newBuilder(instrument_).mergeFrom(value).buildPartial();
+            } else {
+              instrument_ = value;
+            }
+            onChanged();
+          } else {
+            instrumentBuilder_.mergeFrom(value);
+          }
+
+          return this;
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public Builder clearInstrument() {
+          if (instrumentBuilder_ == null) {
+            instrument_ = null;
+            onChanged();
+          } else {
+            instrument_ = null;
+            instrumentBuilder_ = null;
+          }
+
+          return this;
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder getInstrumentBuilder() {
+          
+          onChanged();
+          return getInstrumentFieldBuilder().getBuilder();
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        public org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder getInstrumentOrBuilder() {
+          if (instrumentBuilder_ != null) {
+            return instrumentBuilder_.getMessageOrBuilder();
+          } else {
+            return instrument_ == null ?
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.getDefaultInstance() : instrument_;
+          }
+        }
+        /**
+         * <code>optional .marketdata.Instrument instrument = 1;</code>
+         */
+        private com.google.protobuf.SingleFieldBuilderV3<
+            org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder> 
+            getInstrumentFieldBuilder() {
+          if (instrumentBuilder_ == null) {
+            instrumentBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+                org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument, org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.InstrumentOrBuilder>(
+                    getInstrument(),
+                    getParentForChildren(),
+                    isClean());
+            instrument_ = null;
+          }
+          return instrumentBuilder_;
+        }
+
+        private long longQty_ ;
+        /**
+         * <code>optional int64 longQty = 2;</code>
+         */
+        public long getLongQty() {
+          return longQty_;
+        }
+        /**
+         * <code>optional int64 longQty = 2;</code>
+         */
+        public Builder setLongQty(long value) {
+          
+          longQty_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 longQty = 2;</code>
+         */
+        public Builder clearLongQty() {
+          
+          longQty_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long avgLongPrice_ ;
+        /**
+         * <code>optional int64 avgLongPrice = 3;</code>
+         */
+        public long getAvgLongPrice() {
+          return avgLongPrice_;
+        }
+        /**
+         * <code>optional int64 avgLongPrice = 3;</code>
+         */
+        public Builder setAvgLongPrice(long value) {
+          
+          avgLongPrice_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 avgLongPrice = 3;</code>
+         */
+        public Builder clearAvgLongPrice() {
+          
+          avgLongPrice_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long shortQty_ ;
+        /**
+         * <code>optional int64 shortQty = 4;</code>
+         */
+        public long getShortQty() {
+          return shortQty_;
+        }
+        /**
+         * <code>optional int64 shortQty = 4;</code>
+         */
+        public Builder setShortQty(long value) {
+          
+          shortQty_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 shortQty = 4;</code>
+         */
+        public Builder clearShortQty() {
+          
+          shortQty_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        private long avgShortPrice_ ;
+        /**
+         * <code>optional int64 avgShortPrice = 5;</code>
+         */
+        public long getAvgShortPrice() {
+          return avgShortPrice_;
+        }
+        /**
+         * <code>optional int64 avgShortPrice = 5;</code>
+         */
+        public Builder setAvgShortPrice(long value) {
+          
+          avgShortPrice_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>optional int64 avgShortPrice = 5;</code>
+         */
+        public Builder clearAvgShortPrice() {
+          
+          avgShortPrice_ = 0L;
+          onChanged();
+          return this;
+        }
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
+
+        // @@protoc_insertion_point(builder_scope:marketdata.Account.Position)
+      }
+
+      // @@protoc_insertion_point(class_scope:marketdata.Account.Position)
+      private static final org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position DEFAULT_INSTANCE;
+      static {
+        DEFAULT_INSTANCE = new org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position();
+      }
+
+      public static org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getDefaultInstance() {
+        return DEFAULT_INSTANCE;
+      }
+
+      private static final com.google.protobuf.Parser<Position>
+          PARSER = new com.google.protobuf.AbstractParser<Position>() {
+        public Position parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+            return new Position(input, extensionRegistry);
+        }
+      };
+
+      public static com.google.protobuf.Parser<Position> parser() {
+        return PARSER;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Position> getParserForType() {
+        return PARSER;
+      }
+
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getDefaultInstanceForType() {
+        return DEFAULT_INSTANCE;
+      }
+
+    }
+
+    private int bitField0_;
     public static final int NAME_FIELD_NUMBER = 1;
     private volatile java.lang.Object name_;
     /**
@@ -4215,6 +6710,41 @@ public final class MetaTraderProtos {
       }
     }
 
+    public static final int POSITIONS_FIELD_NUMBER = 6;
+    private java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> positions_;
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    public java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> getPositionsList() {
+      return positions_;
+    }
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    public java.util.List<? extends org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder> 
+        getPositionsOrBuilderList() {
+      return positions_;
+    }
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    public int getPositionsCount() {
+      return positions_.size();
+    }
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getPositions(int index) {
+      return positions_.get(index);
+    }
+    /**
+     * <code>repeated .marketdata.Account.Position positions = 6;</code>
+     */
+    public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder getPositionsOrBuilder(
+        int index) {
+      return positions_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4242,6 +6772,9 @@ public final class MetaTraderProtos {
       if (!getHashedPwBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, hashedPw_);
       }
+      for (int i = 0; i < positions_.size(); i++) {
+        output.writeMessage(6, positions_.get(i));
+      }
     }
 
     public int getSerializedSize() {
@@ -4264,6 +6797,10 @@ public final class MetaTraderProtos {
       }
       if (!getHashedPwBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, hashedPw_);
+      }
+      for (int i = 0; i < positions_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, positions_.get(i));
       }
       memoizedSize = size;
       return size;
@@ -4291,6 +6828,8 @@ public final class MetaTraderProtos {
           .equals(other.getUser());
       result = result && getHashedPw()
           .equals(other.getHashedPw());
+      result = result && getPositionsList()
+          .equals(other.getPositionsList());
       return result;
     }
 
@@ -4311,6 +6850,10 @@ public final class MetaTraderProtos {
       hash = (53 * hash) + getUser().hashCode();
       hash = (37 * hash) + HASHEDPW_FIELD_NUMBER;
       hash = (53 * hash) + getHashedPw().hashCode();
+      if (getPositionsCount() > 0) {
+        hash = (37 * hash) + POSITIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getPositionsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4425,6 +6968,7 @@ public final class MetaTraderProtos {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getPositionsFieldBuilder();
         }
       }
       public Builder clear() {
@@ -4439,6 +6983,12 @@ public final class MetaTraderProtos {
 
         hashedPw_ = "";
 
+        if (positionsBuilder_ == null) {
+          positions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+        } else {
+          positionsBuilder_.clear();
+        }
         return this;
       }
 
@@ -4461,11 +7011,23 @@ public final class MetaTraderProtos {
 
       public org.bergefall.protocol.metatrader.MetaTraderProtos.Account buildPartial() {
         org.bergefall.protocol.metatrader.MetaTraderProtos.Account result = new org.bergefall.protocol.metatrader.MetaTraderProtos.Account(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.name_ = name_;
         result.id_ = id_;
         result.broker_ = broker_;
         result.user_ = user_;
         result.hashedPw_ = hashedPw_;
+        if (positionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+            positions_ = java.util.Collections.unmodifiableList(positions_);
+            bitField0_ = (bitField0_ & ~0x00000020);
+          }
+          result.positions_ = positions_;
+        } else {
+          result.positions_ = positionsBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -4526,6 +7088,32 @@ public final class MetaTraderProtos {
           hashedPw_ = other.hashedPw_;
           onChanged();
         }
+        if (positionsBuilder_ == null) {
+          if (!other.positions_.isEmpty()) {
+            if (positions_.isEmpty()) {
+              positions_ = other.positions_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+            } else {
+              ensurePositionsIsMutable();
+              positions_.addAll(other.positions_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.positions_.isEmpty()) {
+            if (positionsBuilder_.isEmpty()) {
+              positionsBuilder_.dispose();
+              positionsBuilder_ = null;
+              positions_ = other.positions_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+              positionsBuilder_ = 
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                   getPositionsFieldBuilder() : null;
+            } else {
+              positionsBuilder_.addAllMessages(other.positions_);
+            }
+          }
+        }
         onChanged();
         return this;
       }
@@ -4551,6 +7139,7 @@ public final class MetaTraderProtos {
         }
         return this;
       }
+      private int bitField0_;
 
       private java.lang.Object name_ = "";
       /**
@@ -4852,6 +7441,246 @@ public final class MetaTraderProtos {
         hashedPw_ = value;
         onChanged();
         return this;
+      }
+
+      private java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> positions_ =
+        java.util.Collections.emptyList();
+      private void ensurePositionsIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          positions_ = new java.util.ArrayList<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position>(positions_);
+          bitField0_ |= 0x00000020;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder> positionsBuilder_;
+
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> getPositionsList() {
+        if (positionsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(positions_);
+        } else {
+          return positionsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public int getPositionsCount() {
+        if (positionsBuilder_ == null) {
+          return positions_.size();
+        } else {
+          return positionsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position getPositions(int index) {
+        if (positionsBuilder_ == null) {
+          return positions_.get(index);
+        } else {
+          return positionsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder setPositions(
+          int index, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.set(index, value);
+          onChanged();
+        } else {
+          positionsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder setPositions(
+          int index, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder addPositions(org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.add(value);
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder addPositions(
+          int index, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.add(index, value);
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder addPositions(
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.add(builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder addPositions(
+          int index, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder addAllPositions(
+          java.lang.Iterable<? extends org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position> values) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, positions_);
+          onChanged();
+        } else {
+          positionsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder clearPositions() {
+        if (positionsBuilder_ == null) {
+          positions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+          onChanged();
+        } else {
+          positionsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public Builder removePositions(int index) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.remove(index);
+          onChanged();
+        } else {
+          positionsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder getPositionsBuilder(
+          int index) {
+        return getPositionsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder getPositionsOrBuilder(
+          int index) {
+        if (positionsBuilder_ == null) {
+          return positions_.get(index);  } else {
+          return positionsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public java.util.List<? extends org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder> 
+           getPositionsOrBuilderList() {
+        if (positionsBuilder_ != null) {
+          return positionsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(positions_);
+        }
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder addPositionsBuilder() {
+        return getPositionsFieldBuilder().addBuilder(
+            org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder addPositionsBuilder(
+          int index) {
+        return getPositionsFieldBuilder().addBuilder(
+            index, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .marketdata.Account.Position positions = 6;</code>
+       */
+      public java.util.List<org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder> 
+           getPositionsBuilderList() {
+        return getPositionsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilderV3<
+          org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder> 
+          getPositionsFieldBuilder() {
+        if (positionsBuilder_ == null) {
+          positionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+              org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position.Builder, org.bergefall.protocol.metatrader.MetaTraderProtos.Account.PositionOrBuilder>(
+                  positions_,
+                  ((bitField0_ & 0x00000020) == 0x00000020),
+                  getParentForChildren(),
+                  isClean());
+          positions_ = null;
+        }
+        return positionsBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -6264,6 +9093,11 @@ public final class MetaTraderProtos {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_marketdata_Order_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_marketdata_Trade_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_marketdata_Trade_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_marketdata_Instrument_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -6273,6 +9107,11 @@ public final class MetaTraderProtos {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_marketdata_Account_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_marketdata_Account_Position_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_marketdata_Account_Position_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_marketdata_MarketData_descriptor;
   private static final 
@@ -6288,32 +9127,45 @@ public final class MetaTraderProtos {
   static {
     java.lang.String[] descriptorData = {
       "\n$definitions/metaTraderMessages.proto\022\n" +
-      "marketdata\"\331\002\n\021MetaTraderMessage\022,\n\ninst" +
+      "marketdata\"\275\003\n\021MetaTraderMessage\022,\n\ninst" +
       "rument\030\001 \001(\0132\026.marketdata.InstrumentH\000\022," +
       "\n\nmarketData\030\002 \001(\0132\026.marketdata.MarketDa" +
       "taH\000\022&\n\007account\030\003 \001(\0132\023.marketdata.Accou" +
       "ntH\000\022 \n\004beat\030\004 \001(\0132\020.marketdata.BeatH\000\022\"" +
-      "\n\005order\030\005 \001(\0132\021.marketdata.OrderH\000\022\r\n\005se" +
-      "qNo\030\n \001(\004\022\026\n\ntimeStamps\030\013 \003(\004B\002\020\001\"H\n\004Typ" +
-      "e\022\016\n\nInstrument\020\000\022\016\n\nMarketData\020\001\022\013\n\007Acc" +
-      "ount\020\002\022\010\n\004Beat\020\003\022\t\n\005Order\020\004B\t\n\007payload\"\024",
-      "\n\004Beat\022\014\n\004time\030\001 \001(\004\"\353\001\n\005Order\022*\n\ninstru" +
-      "ment\030\001 \001(\0132\026.marketdata.Instrument\022$\n\007ac" +
-      "count\030\002 \001(\0132\023.marketdata.Account\022\013\n\003qty\030" +
-      "\003 \001(\003\022\r\n\005price\030\004 \001(\003\022*\n\003tif\030\005 \001(\0162\035.mark" +
-      "etdata.Order.TimeInForce\"H\n\013TimeInForce\022" +
-      "\007\n\003Day\020\000\022\013\n\007Session\020\001\022\010\n\004Time\020\002\022\007\n\003IoC\020\003" +
-      "\022\007\n\003GtC\020\004\022\007\n\003FoK\020\005\"&\n\nInstrument\022\014\n\004name" +
-      "\030\001 \001(\t\022\n\n\002id\030\002 \001(\005\"S\n\007Account\022\014\n\004name\030\001 " +
-      "\001(\t\022\n\n\002id\030\002 \001(\005\022\016\n\006broker\030\003 \001(\t\022\014\n\004user\030" +
-      "\004 \001(\t\022\020\n\010hashedPw\030\005 \001(\t\"\316\001\n\nMarketData\022\022",
-      "\n\ninstrument\030\001 \001(\t\022\014\n\004date\030\002 \001(\t\022\r\n\005clos" +
-      "e\030\003 \001(\003\022\014\n\004open\030\004 \001(\003\022\014\n\004high\030\005 \001(\003\022\013\n\003l" +
-      "ow\030\006 \001(\003\022\013\n\003bid\030\007 \001(\003\022\013\n\003ask\030\010 \001(\003\022\013\n\003av" +
-      "g\030\t \001(\003\022\016\n\006trades\030\n \001(\003\022\020\n\010turnover\030\013 \001(" +
-      "\003\022\016\n\006totVol\030\014 \001(\003\022\r\n\005split\030\r \001(\001B5\n!org." +
-      "bergefall.protocol.metatraderB\020MetaTrade" +
-      "rProtosb\006proto3"
+      "\n\005order\030\005 \001(\0132\021.marketdata.OrderH\000\022\"\n\005tr" +
+      "ade\030\006 \001(\0132\021.marketdata.TradeH\000\0223\n\007msgTyp" +
+      "e\030\n \001(\0162\".marketdata.MetaTraderMessage.T" +
+      "ype\022\r\n\005seqNo\030\013 \001(\004\022\026\n\ntimeStamps\030\014 \003(\004B\002",
+      "\020\001\"S\n\004Type\022\016\n\nInstrument\020\000\022\016\n\nMarketData" +
+      "\020\001\022\013\n\007Account\020\002\022\010\n\004Beat\020\003\022\t\n\005Order\020\004\022\t\n\005" +
+      "Trade\020\005B\t\n\007payload\"\024\n\004Beat\022\014\n\004time\030\001 \001(\004" +
+      "\"\372\001\n\005Order\022*\n\ninstrument\030\001 \001(\0132\026.marketd" +
+      "ata.Instrument\022$\n\007account\030\002 \001(\0132\023.market" +
+      "data.Account\022\013\n\003qty\030\003 \001(\003\022\r\n\005price\030\004 \001(\003" +
+      "\022*\n\003tif\030\005 \001(\0162\035.marketdata.Order.TimeInF" +
+      "orce\022\r\n\005isAsk\030\006 \001(\010\"H\n\013TimeInForce\022\007\n\003Da" +
+      "y\020\000\022\013\n\007Session\020\001\022\010\n\004Time\020\002\022\007\n\003IoC\020\003\022\007\n\003G" +
+      "tC\020\004\022\007\n\003FoK\020\005\"\320\001\n\005Trade\022*\n\ninstrument\030\001 ",
+      "\001(\0132\026.marketdata.Instrument\022$\n\007account\030\002" +
+      " \001(\0132\023.marketdata.Account\022\014\n\004date\030\003 \001(\t\022" +
+      "\013\n\003qty\030\004 \001(\003\022\r\n\005price\030\005 \001(\003\022\017\n\007isEntry\030\006" +
+      " \001(\010\022\021\n\tnetProfit\030\007 \001(\003\022\023\n\013grossProfit\030\010" +
+      " \001(\003\022\022\n\ncommission\030\t \001(\003\"&\n\nInstrument\022\014" +
+      "\n\004name\030\001 \001(\t\022\n\n\002id\030\002 \001(\005\"\215\002\n\007Account\022\014\n\004" +
+      "name\030\001 \001(\t\022\n\n\002id\030\002 \001(\005\022\016\n\006broker\030\003 \001(\t\022\014" +
+      "\n\004user\030\004 \001(\t\022\020\n\010hashedPw\030\005 \001(\t\022/\n\tpositi" +
+      "ons\030\006 \003(\0132\034.marketdata.Account.Position\032" +
+      "\206\001\n\010Position\022*\n\ninstrument\030\001 \001(\0132\026.marke",
+      "tdata.Instrument\022\017\n\007longQty\030\002 \001(\003\022\024\n\014avg" +
+      "LongPrice\030\003 \001(\003\022\020\n\010shortQty\030\004 \001(\003\022\025\n\ravg" +
+      "ShortPrice\030\005 \001(\003\"\316\001\n\nMarketData\022\022\n\ninstr" +
+      "ument\030\001 \001(\t\022\014\n\004date\030\002 \001(\t\022\r\n\005close\030\003 \001(\003" +
+      "\022\014\n\004open\030\004 \001(\003\022\014\n\004high\030\005 \001(\003\022\013\n\003low\030\006 \001(" +
+      "\003\022\013\n\003bid\030\007 \001(\003\022\013\n\003ask\030\010 \001(\003\022\013\n\003avg\030\t \001(\003" +
+      "\022\016\n\006trades\030\n \001(\003\022\020\n\010turnover\030\013 \001(\003\022\016\n\006to" +
+      "tVol\030\014 \001(\003\022\r\n\005split\030\r \001(\001B5\n!org.bergefa" +
+      "ll.protocol.metatraderB\020MetaTraderProtos" +
+      "b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6332,7 +9184,7 @@ public final class MetaTraderProtos {
     internal_static_marketdata_MetaTraderMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_MetaTraderMessage_descriptor,
-        new java.lang.String[] { "Instrument", "MarketData", "Account", "Beat", "Order", "SeqNo", "TimeStamps", "Payload", });
+        new java.lang.String[] { "Instrument", "MarketData", "Account", "Beat", "Order", "Trade", "MsgType", "SeqNo", "TimeStamps", "Payload", });
     internal_static_marketdata_Beat_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_marketdata_Beat_fieldAccessorTable = new
@@ -6344,21 +9196,33 @@ public final class MetaTraderProtos {
     internal_static_marketdata_Order_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_Order_descriptor,
-        new java.lang.String[] { "Instrument", "Account", "Qty", "Price", "Tif", });
-    internal_static_marketdata_Instrument_descriptor =
+        new java.lang.String[] { "Instrument", "Account", "Qty", "Price", "Tif", "IsAsk", });
+    internal_static_marketdata_Trade_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_marketdata_Trade_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_marketdata_Trade_descriptor,
+        new java.lang.String[] { "Instrument", "Account", "Date", "Qty", "Price", "IsEntry", "NetProfit", "GrossProfit", "Commission", });
+    internal_static_marketdata_Instrument_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_marketdata_Instrument_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_Instrument_descriptor,
         new java.lang.String[] { "Name", "Id", });
     internal_static_marketdata_Account_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_marketdata_Account_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_Account_descriptor,
-        new java.lang.String[] { "Name", "Id", "Broker", "User", "HashedPw", });
+        new java.lang.String[] { "Name", "Id", "Broker", "User", "HashedPw", "Positions", });
+    internal_static_marketdata_Account_Position_descriptor =
+      internal_static_marketdata_Account_descriptor.getNestedTypes().get(0);
+    internal_static_marketdata_Account_Position_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_marketdata_Account_Position_descriptor,
+        new java.lang.String[] { "Instrument", "LongQty", "AvgLongPrice", "ShortQty", "AvgShortPrice", });
     internal_static_marketdata_MarketData_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_marketdata_MarketData_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_marketdata_MarketData_descriptor,

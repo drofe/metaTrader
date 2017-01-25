@@ -63,6 +63,12 @@ public class DemoServer extends MetaTraderServerApplication {
 			
 		}
 		
+		@Override
+		protected void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 

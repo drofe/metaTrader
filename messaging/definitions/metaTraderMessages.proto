@@ -7,16 +7,18 @@ option java_outer_classname = "MetaTraderProtos";
 
 message MetaTraderMessage {
     enum Type {Instrument = 0; MarketData = 1; Account = 2;
-    	      Beat = 3; Order = 4;}
+    	      Beat = 3; Order = 4; Trade = 5;}
     oneof payload {
         Instrument instrument = 1;
 	MarketData marketData = 2;
 	Account account = 3;
 	Beat beat = 4;
 	Order order = 5;
+	Trade trade = 6;
     }
-    uint64 seqNo = 10;
-    repeated uint64 timeStamps = 11 [packed=true];
+    Type msgType = 10;
+    uint64 seqNo = 11;
+    repeated uint64 timeStamps = 12 [packed=true];
 }
 
 message Beat {
@@ -24,13 +26,27 @@ message Beat {
 }
 
 message Order {
-	enum TimeInForce {Day = 0; Session = 1; Time = 2; IoC = 3;
-	     GtC = 4; FoK = 5; }
-	Instrument instrument = 1;
-	Account account = 2;
-	int64 qty = 3;
-	int64 price = 4;
-	TimeInForce tif = 5; 
+    enum TimeInForce {Day = 0; Session = 1; Time = 2; IoC = 3;
+        GtC = 4; FoK = 5; }
+    Instrument instrument = 1;
+    Account account = 2;
+    int64 qty = 3;
+    int64 price = 4;
+    TimeInForce tif = 5;
+    bool isAsk = 6;
+}
+
+message Trade {
+    Instrument instrument = 1;
+    Account account = 2;
+    string date = 3;
+    int64 qty = 4;
+    int64 price = 5;
+    bool isEntry = 6;
+    int64 netProfit = 7;
+    int64 grossProfit = 8;
+    int64 commission = 9;
+       
 }
 
 message Instrument {
@@ -39,11 +55,19 @@ message Instrument {
 }
 
 message Account {
+	message Position {
+             Instrument instrument = 1;
+	     int64 longQty = 2;
+	     int64 avgLongPrice = 3;
+	     int64 shortQty = 4;
+	     int64 avgShortPrice = 5;
+	}
     string name = 1;
     int32 id = 2;
     string broker = 3;
     string user = 4;
     string hashedPw = 5;
+    repeated Position positions = 6;
 }
     
 

@@ -37,7 +37,7 @@ public class BeatsGenerator implements Runnable {
 		log.info("Starting beats with interval: " + interval);
 		try {
 			while (active) {
-				blp.enqueue(MetaTraderMessageCreator.createTestMsg());
+				blp.enqueue(MetaTraderMessageCreator.createBeat(System.currentTimeMillis()));
 				Thread.sleep(interval);
 			}
 		} catch (InterruptedException e) {
