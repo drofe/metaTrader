@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.iobase.BlpTestBase;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
@@ -23,7 +24,7 @@ public class BlpTest extends BlpTestBase {
 		blp = new TestBlp();
 	}
 	@Test
-	public void test() {
+	public void testCSD() {
 		MetaTraderMessage msg = 
 				MetaTraderMessageCreator.createMTMsg(createMdCtx(LocalDateTime.now()));
 		blp.fireAway(msg);
@@ -34,10 +35,17 @@ public class BlpTest extends BlpTestBase {
 		Assert.assertEquals(2, mds.size());
 	}
 
+	@Test
+	public void testTrades() {
+		MetaTraderMessage msg = 
+				MetaTraderMessageCreator.createMTMsg(createTradeCtx(LocalDateTime.now()));
+		blp.fireAway(msg);
+	}
+	
 	private static class TestBlp extends BusinessLogicPipelineImpl {
 
 		public TestBlp() {
-			super(null);
+			super(new MetaTraderBaseConfigureeImpl(null));
 		}
 		
 		public void fireAway(MetaTraderMessage msg) {

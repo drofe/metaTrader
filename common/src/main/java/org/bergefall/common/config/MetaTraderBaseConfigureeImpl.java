@@ -20,8 +20,13 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	
 	
 	public MetaTraderBaseConfigureeImpl(String configFile) {
-		File file = new File(configFile);
 		defaults = getDefaults();
+		if (null == configFile) {
+			//Only use defaults. Mainly for testing purposes.
+			configProperties = new Properties(defaults);
+			return;
+		}
+		File file = new File(configFile);
 		try {
 			FileReader fileReader = new FileReader(file);
 			configProperties = new Properties(defaults);
@@ -145,7 +150,9 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		def.setProperty(COMMON + "processname", "metaTraderService");
 		def.setProperty(BLP +"runPreMDStrategy", "true");
 		def.setProperty(BLP +"runPreAccStrategy", "true");
-		def.setProperty(BLP +"runInstrStrategy", "true");
+		def.setProperty(BLP +"runPreInstrStrategy", "true");
+		def.setProperty(BLP + "runPreTradeStrategy", "true");
+		def.setProperty(BLP + "runPreBeatStrategy", "true");
 		def.setProperty(BLP + "beatInterval", "5000");
 		return def;
 	}

@@ -13,6 +13,7 @@ import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.base.strategy.basicbeans.AddDataToCommonData;
+import org.bergefall.base.strategy.basicbeans.StoreTradeToDb;
 import org.bergefall.common.DateUtils;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.log.system.SystemLoggerIf;
@@ -35,7 +36,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	private static final String PreInstrumentStrategy = "preInstrStrategy";
 	private static final String PreBeatStrategy = "preBeatStrategy";
 	private static final String PreOrderStrategy = "preOrderStrategy";
-	private static final String PreTradeStrategy = "preTradeStrategy";
+	private static final String preTradeStrategy = "preTradeStrategy";
 		
 	private static final AtomicInteger cBLPNr = new AtomicInteger(0);
 	private boolean active;
@@ -126,7 +127,9 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 	protected void parseConfig() {
 		runPreMdStrat = config.getBlpBoolean("runPreMDStrategy");
 		runPreAccStrat = config.getBlpBoolean("runPreAccStrategy");
-		runPreInstrStrat = config.getBlpBoolean("runInstrStrategy");
+		runPreInstrStrat = config.getBlpBoolean("runPreInstrStrategy");
+		runPreBeatStrat = config.getBlpBoolean("runPreBeatStrategy");
+		runPreTradeStrat = config.getBlpBoolean("runPreTradeStrategy");
 	}
 	
 	protected void fireHandlers(MetaTraderMessage msg) {
@@ -169,7 +172,7 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
 		if (runPreTradeStrat) {
-			runStrategy(PreTradeStrategy, token, intraMsg);
+			runStrategy(preTradeStrategy, token, intraMsg);
 		}
 		handleTrades(token, intraMsg);
 	}
@@ -227,6 +230,13 @@ public abstract class BusinessLogicPipelineImpl implements BusinessLogicPipline 
 		addData.parseConfig(config);
 		preMd.add(addData);
 		strategyMap.put(PreMDStrategy, preMd);
+		
+		
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preTrade = new LinkedList<>();
+		StoreTradeToDb storeTrade = new StoreTradeToDb();
+		storeTrade.parseConfig(config);
+		preTrade.add(storeTrade);
+		strategyMap.put(preTradeStrategy, preTrade);
 	}
 	
 	protected Status runStrategy(String strategyName, StrategyToken token, IntraStrategyBeanMsg intraMsg) {
