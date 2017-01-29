@@ -2,6 +2,7 @@ package org.bergefall.iobase.blp;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.base.strategy.AbstractStrategyBean;
@@ -14,7 +15,7 @@ import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 /**
- * This class is meant to be created as the (or one of the) main thread for the single threaded 
+ * This class is meant to be created as the (or one of the) main thread for the single threaded
  * business logic i MetaTrader servers. One server can hold several BLPs but they shall
  * not execute the same strategy or involve the same instruments.
  * @author ola
@@ -25,10 +26,12 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	private static final String PreMDStrategy = "preMDStrategy";
 	private static final String PreAccountStrategy = "preAccStrategy";
 	private static final String PreInstrumentStrategy = "preInstrStrategy";
-	private static final String PreBeatStrategy = "preBeatStrategy";
+	private static final String preBeatStrategy = "preBeatStrategy";
 	private static final String PreOrderStrategy = "preOrderStrategy";
 	private static final String preTradeStrategy = "preTradeStrategy";
-	
+	private static final AtomicInteger cBLPNr = new AtomicInteger(1);
+	private int thisBlpNr;
+
 	protected boolean runPreMdStrat = true;
 	protected boolean runPreAccStrat = true;
 	protected boolean runPreInstrStrat = true;
@@ -36,23 +39,27 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	protected boolean runPreOrderStrat = true;
 	protected boolean runPreTradeStrat = true;
 	protected BeatsGenerator beatGenerator;
-	
-	
-	public BusinessLogicPipelineImpl (MetaTraderConfig config,
-			BusinessLogicPipeline routingPipeline) {
+
+	public BusinessLogicPipelineImpl(MetaTraderConfig config) {
 		super(config);
-		this.routingPipeline = routingPipeline;
 		parseConfig();
+		blpName = "BLP-";
+		this.thisBlpNr = cBLPNr.getAndIncrement();
+	}
+
+	@Override
+	public void setRoutingBlp(BusinessLogicPipeline router) {
+		this.routingPipeline = router;
 	}
 	
 	@Override
-	public void shutdown() {		
+	public void shutdown() {
 		if (null != beatGenerator) {
 			beatGenerator.stopBeatGenerator();
 		}
 		super.shutdown();
 	}
-		
+
 	protected void parseConfig() {
 		runPreMdStrat = config.getBlpBoolean("runPreMDStrategy");
 		runPreAccStrat = config.getBlpBoolean("runPreAccStrategy");
@@ -60,15 +67,15 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		runPreBeatStrat = config.getBlpBoolean("runPreBeatStrategy");
 		runPreTradeStrat = config.getBlpBoolean("runPreTradeStrategy");
 	}
-	
+
 	protected void fireHandlers(MetaTraderMessage msg) {
 		MetaTraderMessage.Type type = msg.getMsgType();
-		
+
 		switch (type) {
 		case Account :
 			handleAccountsInternal(msg);
 			break;
-		case MarketData : 
+		case MarketData :
 			handleMarketDataInternal(msg);
 			break;
 		case Instrument:
@@ -87,7 +94,12 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 			break;
 		}
 	}
-	
+
+	@Override
+	public Integer getBlpNr() {
+		return thisBlpNr;
+	}
+
 	private void handleInstrumentInternal(MetaTraderMessage msg) {
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
@@ -96,7 +108,7 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		}
 		handleInstrument(token, intraMsg);
 	}
-	
+
 	private void handleTradeInternal(MetaTraderMessage msg) {
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
@@ -105,7 +117,7 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		}
 		handleTrades(token, intraMsg);
 	}
-	
+
 	private void handleOrderInternal(MetaTraderMessage msg) {
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
@@ -114,12 +126,12 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		}
 		handleOrders(token, intraMsg);
 	}
-	
+
 	private void handleBeatsInternal(MetaTraderMessage msg) {
 		StrategyToken token = getNewToken(msg);
 		IntraStrategyBeanMsg intraMsg = getNewIntraBeanMsg();
 		if (runPreBeatStrat) {
-			runStrategy(PreBeatStrategy, token, intraMsg);
+			runStrategy(preBeatStrategy, token, intraMsg);
 		}
 		handleBeats(token, intraMsg);
 	}
@@ -141,34 +153,43 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		}
 		handleMarketData(token, intraMsg);
 	}
-	
-	
+
+
 	// This is temp stuff until it is controlled via config.
 	protected void buildStrategies() {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preMd = new LinkedList<>();
 		AddDataToCommonData addData = new AddDataToCommonData();
-		addData.parseConfig(config);
+		addData.initBean(config);
 		preMd.add(addData);
 		strategyMap.put(PreMDStrategy, preMd);
-		
-		
+
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preTrade = new LinkedList<>();
 		StoreTradeToDb storeTrade = new StoreTradeToDb();
-		storeTrade.parseConfig(config);
+		storeTrade.initBean(config);
 		preTrade.add(storeTrade);
 		strategyMap.put(preTradeStrategy, preTrade);
-	}
+
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preBeat = new LinkedList<>();
+		strategyMap.put(preBeatStrategy, preBeat);
 		
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preAcc = new LinkedList<>();
+		strategyMap.put(PreAccountStrategy, preAcc);
+		
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preInstr = new LinkedList<>();
+		strategyMap.put(PreInstrumentStrategy, preInstr);
+		
+	}
+
 	protected abstract void handleAccounts(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 	protected abstract void handleInstrument(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 	protected abstract void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 	protected abstract void handleBeats(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 	protected abstract void handleOrders(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 	protected abstract void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg);
-	
+
 }

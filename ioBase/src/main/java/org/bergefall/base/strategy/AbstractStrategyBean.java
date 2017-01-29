@@ -9,7 +9,7 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 	
 	public abstract OUT execute(StrategyToken token, IN intraMsg);
 	
-	public void parseConfig(MetaTraderConfig config) {
+	public void initBean(MetaTraderConfig config) {
 		
 	}
 }

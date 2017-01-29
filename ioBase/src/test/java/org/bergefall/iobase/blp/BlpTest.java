@@ -10,7 +10,6 @@ import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.iobase.BlpTestBase;
-import org.bergefall.iobase.routing.RoutingPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 import org.junit.Assert;
@@ -48,7 +47,7 @@ public class BlpTest extends BlpTestBase {
 	private static class TestBlp extends BusinessLogicPipelineImpl {
 
 		public TestBlp(MetaTraderConfig config) { 
-			super(config, new RoutingPipeline(config));
+			super(config);
 		}
 		
 		public void fireAway(MetaTraderMessage msg) {

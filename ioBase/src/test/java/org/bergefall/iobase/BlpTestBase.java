@@ -3,6 +3,7 @@ package org.bergefall.iobase;
 import java.time.LocalDateTime;
 
 import org.bergefall.common.data.AccountCtx;
+import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.common.data.TradeCtx;
 
@@ -18,5 +19,9 @@ public class BlpTestBase {
 	
 	protected TradeCtx createTradeCtx(LocalDateTime ltd) {
 		return new TradeCtx("TEST", ltd, 1, true, 123456L, 123567L, 123123L, 123567L, Long.valueOf(567-123));
+	}
+	
+	protected InstrumentCtx createInstrCtx(String name) {
+		return new InstrumentCtx(name, 1);
 	}
 }

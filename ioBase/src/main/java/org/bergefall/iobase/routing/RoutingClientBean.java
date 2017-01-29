@@ -1,7 +1,9 @@
 package org.bergefall.iobase.routing;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
@@ -21,14 +23,21 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
 
-
-	protected List<MsgClient> accountServers = new ArrayList<>();
-	protected List<MsgClient> instrumentServers = new ArrayList<>();
-	protected List<MsgClient> orderServers = new ArrayList<>();
-	protected List<MsgClient> tradeServers = new ArrayList<>();
-	protected List<MsgClient> marketDataServers = new ArrayList<>();
-	protected List<MsgClient> all = new ArrayList<>();
- 
+	protected static String acc = "account";
+	protected static String instr = "instrument";
+	protected static String order = "order";
+	protected static String trade = "trade";
+	protected static String marketData = "marketData";
+	protected static String all = "all";
+	
+	protected Set<MsgClient> accountServers = new HashSet<>();
+	protected Set<MsgClient> instrumentServers = new HashSet<>();
+	protected Set<MsgClient> orderServers = new HashSet<>();
+	protected Set<MsgClient> tradeServers = new HashSet<>();
+	protected Set<MsgClient> marketDataServers = new HashSet<>();
+	protected Set<MsgClient> allServers = new HashSet<>();
+	protected Map<String, Set<MsgClient>> serverMap = new HashMap<>();
+	
 	private static final long serialVersionUID = -6007578345427827284L;
 	
 	@Override
@@ -38,15 +47,19 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 		
 		switch (msg.getMsgType()) {
 		case Account :
-			routeMessage(status, msg, accountServers);
+			routeMessage(status, msg, serverMap.get(acc));
+			break;
 		case MarketData :
-			routeMessage(status, msg, marketDataServers);
+			routeMessage(status, msg, serverMap.get(marketData));
+			break;
 		case Instrument:
-			routeMessage(status, msg, instrumentServers);
+			routeMessage(status, msg, serverMap.get(instr));
+			break;
 		case Order:
-			routeMessage(status, msg, orderServers);
+			routeMessage(status, msg, serverMap.get(order));
+			break;
 		case Trade:
-			routeMessage(status, msg, tradeServers);
+			routeMessage(status, msg, serverMap.get(trade));
 			break;
 		default:
 			break;
@@ -55,10 +68,15 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 	}
 	
 	protected void routeMessage(Status status, MetaTraderMessage msg, 
-			List<MsgClient> to) {
+			Set<MsgClient> to) {
+		if (to.isEmpty()) {
+			return;
+		}
+		//Create a copy and remove router BLPs seq.no.
+		MetaTraderMessage msgCpy = MetaTraderMessage.newBuilder(msg).setSeqNo(0).build();
 		for (MsgClient client : to) {
 			try {
-				client.sendMsg(msg);
+				client.sendMsg(msgCpy);
 			} catch (InterruptedException e) {
 				status.setCode(Status.ERROR);
 				status.setMsg("Error while sending msg: " + msg.toString());
@@ -68,30 +86,39 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 	}
 	
 	@Override
-	public void parseConfig(MetaTraderConfig config) {
-		all.add(new MsgClient("127.0.0.1", config.getIoLongConfig("port")));
+	public void initBean(MetaTraderConfig config) {
+		serverMap.put(all, allServers);
+		serverMap.put(acc, accountServers);
+		serverMap.put(marketData, marketDataServers);
+		serverMap.put(instr, instrumentServers);
+		serverMap.put(order, orderServers);
+		serverMap.put(trade, tradeServers);
+		
+		allServers.add(new MsgClient("127.0.0.1", config.getIoLongConfig("port")));
 		String accAddr = config.getRoutingString("accountAddr");
-		populateClientList(accountServers, accAddr);
+		populateClientList(acc, accAddr);
 		String instrAddr = config.getRoutingString("instrumentAddr");
-		populateClientList(instrumentServers, instrAddr);
+		populateClientList(instr, instrAddr);
 		String orderAddr = config.getRoutingString("orderAddr");
-		populateClientList(orderServers, orderAddr);
+		populateClientList(order, orderAddr);
 		String mdAddr = config.getRoutingString("marketDataAddr");
-		populateClientList(marketDataServers, mdAddr);
+		populateClientList(marketData, mdAddr);
 		String tradeAddr = config.getRoutingString("tradeAddr");
-		populateClientList(tradeServers, tradeAddr);
+		populateClientList(trade, tradeAddr);
 	}
 	
-	private void populateClientList(List<MsgClient> addressList, String config) {
+	private void populateClientList(String serverGroup, String config) {
 		if (null == config ||
 			config.isEmpty() ||
 			config.equalsIgnoreCase("all")) {
-			addressList = all;
+			serverMap.put(serverGroup, allServers);
 			return;
 		}
-		String[] servers = config.split(",");
+		String[] servers = config.split(",");		 
 		for (String server : servers) {
-			addressList.add(new MsgClient(server));		
+			MsgClient client = new MsgClient(server); 
+			serverMap.get(serverGroup).add(client);
+			serverMap.get(all).add(client);
 		}
 	}
 	

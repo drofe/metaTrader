@@ -9,9 +9,8 @@ import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.DateUtils;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.TradeCtx;
-import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
-import org.bergefall.iobase.routing.RoutingPipeline;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
+import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
 import org.bergefall.iobase.server.MetaTraderServerApplication;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
@@ -29,7 +28,7 @@ public class DemoServer extends MetaTraderServerApplication {
 	private static class SimpleBLP extends BusinessLogicPipelineImpl {
 
 		public SimpleBLP(MetaTraderConfig config) {
-			super(config, new RoutingPipeline(config));
+			super(config);
 		}
 
 		@Override

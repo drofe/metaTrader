@@ -3,6 +3,7 @@ package org.bergefall.protocol.metatrader;
 import static org.bergefall.common.MetaTraderConstants.DIVISOR;
 
 import org.bergefall.common.data.AccountCtx;
+import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.common.data.OrderCtx;
 import org.bergefall.common.data.TradeCtx;
@@ -11,17 +12,17 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.Beat;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
-import org.bergefall.protocol.metatrader.MetaTraderProtos.Order;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Order;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
 public class MetaTraderMessageCreator {
-	
+
 	public static MetaTraderMessage createTestMsg() {
 		AccountCtx ctx = new AccountCtx("TEST", 0, "TEST_BROKER", "TEST_USER");
 		return createMTMsg(ctx);
 	}
-	
+
 	public static MetaTraderMessage createBeat(long time) {
 		Beat beat = Beat.newBuilder().setTime(time).build();
 		MetaTraderMessage message = MetaTraderMessage.newBuilder()
@@ -31,7 +32,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return message;
 	}
-	
+
 	public static MarketData createMD(String pDate, Double pClose) {
 		 MarketData md = MarketData.newBuilder()
 				.setDate(pDate)
@@ -40,7 +41,7 @@ public class MetaTraderMessageCreator {
 
 		return md;
 	}
-	
+
 	public static Order createOrder(OrderCtx ctx) {
 		Order order = Order.newBuilder()
 				.setPrice(ctx.getPrice())
@@ -50,6 +51,14 @@ public class MetaTraderMessageCreator {
 		return order;
 	}
 	
+	public static Instrument createInstrument(InstrumentCtx ctx) {
+		Instrument instr = Instrument.newBuilder()
+				.setId(ctx.getId())
+				.setName(ctx.getSymbol())
+				.build();
+		return instr;
+	}
+
 	public static MarketData createMD(MarketDataCtx mdCtx) {
 		MarketData md = MarketData.newBuilder()
 				.setInstrument(mdCtx.getSymbol())
@@ -67,7 +76,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return md;
 	}
-	
+
 	public static Trade createTrade(TradeCtx tradeCtx) {
 		Trade trade = Trade.newBuilder()
 				.setAccount(Account.newBuilder().setId(tradeCtx.getAccountId()).build())
@@ -82,7 +91,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return trade;
 	}
-	
+
 	public static MetaTraderMessage createMTMsg(MarketDataCtx priceCtx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.MarketData)
@@ -91,7 +100,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return mtMsg;
 	}
-	
+
 	public static MetaTraderMessage createMTMsg(OrderCtx ctx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.Order)
@@ -100,7 +109,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return mtMsg;
 	}
-	
+
 	public static MetaTraderMessage createMTMsg(TradeCtx tradeCtx) {
 		MetaTraderMessage tradeMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.Trade)
@@ -109,7 +118,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return tradeMsg;
 	}
-	
+
 	public static Account createAccount(AccountCtx accounCtx) {
 		Account account = Account.newBuilder()
 				.setBroker(accounCtx.getBroker())
@@ -118,7 +127,7 @@ public class MetaTraderMessageCreator {
 				.build();
 		return account;
 	}
-	
+
 	public static MetaTraderMessage createMTMsg(AccountCtx accountCtx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.Account)
@@ -126,5 +135,14 @@ public class MetaTraderMessageCreator {
 				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;
+	}
+
+	public static MetaTraderMessage createMTMsg(InstrumentCtx ctx) {
+		MetaTraderMessage msg = MetaTraderMessage.newBuilder()
+				.setMsgType(Type.Instrument)
+				.setInstrument(createInstrument(ctx))
+				.addTimeStamps(System.currentTimeMillis())
+				.build();
+		return msg;
 	}
 }

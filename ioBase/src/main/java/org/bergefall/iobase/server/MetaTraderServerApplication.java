@@ -8,6 +8,7 @@ import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
+import org.bergefall.iobase.routing.RoutingPipeline;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
@@ -23,6 +24,8 @@ public abstract class MetaTraderServerApplication {
 	protected ServerBootstrap bootStrap;
 	protected EventLoopGroup serverGroup;
 	protected EventLoopGroup workerGroup;
+	protected BusinessLogicPipeline routingBlp;
+	protected Thread routingThread;
 	protected List<BusinessLogicPipeline> blps;
 	protected List<Thread> blpThreads;
 	protected MetaTraderConfig config;
@@ -33,11 +36,14 @@ public abstract class MetaTraderServerApplication {
 		this.serverGroup = getServerGroup();
 		this.workerGroup = getWorkerGroup();
 		this.config = getConfig(configFile);
+		routingBlp = new RoutingPipeline(config);
+		routingThread = new Thread(routingBlp);
 		this.blps = getBLPs(config);
 		this.bootStrap = getBootStrap();
-		
+		routingThread.start();
 		blpThreads = new ArrayList<>(blps.size());
 		for (BusinessLogicPipeline blp : blps) {
+			blp.setRoutingBlp(routingBlp);
 			Thread businessPipeLine = new Thread(blp);
 			blpThreads.add(businessPipeLine);
 			businessPipeLine.start();
@@ -63,6 +69,7 @@ public abstract class MetaTraderServerApplication {
 			for (BusinessLogicPipeline blp1 : blps) {
 				blp1.shutdown();
 			}
+			routingBlp.shutdown();
 		}
 	}
 	protected int getPort() {
