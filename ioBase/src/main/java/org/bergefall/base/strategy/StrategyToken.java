@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bergefall.base.commondata.CommonStrategyData;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 public class StrategyToken {
@@ -14,10 +15,14 @@ public class StrategyToken {
 	private CommonStrategyData csd;
 	private List<Long> timeStamps;
 	private MetaTraderMessage mtMsg;
+	private BusinessLogicPipeline routingPipeline;
 	
-	public StrategyToken(LocalDateTime ldt, CommonStrategyData cds) {
+	public StrategyToken(LocalDateTime ldt, 
+			CommonStrategyData cds,
+			BusinessLogicPipeline routingBlp) {
 		this.ldt = ldt;
 		this.csd = cds;
+		this.routingPipeline = routingBlp;
 		timeStamps = new LinkedList<>();
 	}
 	
@@ -43,5 +48,9 @@ public class StrategyToken {
 	
 	public MetaTraderMessage getTriggeringMsg() {
 		return mtMsg;
+	}
+	
+	public BusinessLogicPipeline getRoutingBlp() {
+		return routingPipeline;
 	}
 }

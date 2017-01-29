@@ -2,7 +2,7 @@ package org.bergefall.iobase.server;
 
 import java.util.List;
 
-import org.bergefall.iobase.blp.BusinessLogicPipline;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 import io.netty.channel.ChannelInitializer;
@@ -15,9 +15,9 @@ import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
 public class MetaTraderServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 
-	private List<BusinessLogicPipline> blp; 
+	private List<BusinessLogicPipeline> blp; 
 	
-	public MetaTraderServerChannelInitializer(List<BusinessLogicPipline> blp) {
+	public MetaTraderServerChannelInitializer(List<BusinessLogicPipeline> blp) {
 		this.blp = blp;
 	}
 	  @Override

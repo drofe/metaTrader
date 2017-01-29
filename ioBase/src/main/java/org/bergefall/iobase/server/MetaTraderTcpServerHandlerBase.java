@@ -2,7 +2,7 @@ package org.bergefall.iobase.server;
 
 import java.util.List;
 
-import org.bergefall.iobase.blp.BusinessLogicPipline;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -10,9 +10,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 
 public class MetaTraderTcpServerHandlerBase extends SimpleChannelInboundHandler<MetaTraderMessage> {
 
-	private List<BusinessLogicPipline> businessPipelines;
+	private List<BusinessLogicPipeline> businessPipelines;
 	
-	public MetaTraderTcpServerHandlerBase(List<BusinessLogicPipline> blp) {
+	public MetaTraderTcpServerHandlerBase(List<BusinessLogicPipeline> blp) {
 		super();
 		businessPipelines = blp;
 	}
@@ -20,7 +20,7 @@ public class MetaTraderTcpServerHandlerBase extends SimpleChannelInboundHandler<
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, MetaTraderMessage msg)
       throws Exception {
-	  for (BusinessLogicPipline pipeline : businessPipelines) {
+	  for (BusinessLogicPipeline pipeline : businessPipelines) {
 		  pipeline.enqueue(msg);
 	  }    
   }

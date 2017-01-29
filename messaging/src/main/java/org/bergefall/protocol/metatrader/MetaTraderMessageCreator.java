@@ -4,12 +4,14 @@ import static org.bergefall.common.MetaTraderConstants.DIVISOR;
 
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.MarketDataCtx;
+import org.bergefall.common.data.OrderCtx;
 import org.bergefall.common.data.TradeCtx;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Beat;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Order;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
@@ -24,6 +26,7 @@ public class MetaTraderMessageCreator {
 		Beat beat = Beat.newBuilder().setTime(time).build();
 		MetaTraderMessage message = MetaTraderMessage.newBuilder()
 				.setBeat(beat)
+				.setMsgType(Type.Beat)
 				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return message;
@@ -36,6 +39,15 @@ public class MetaTraderMessageCreator {
 				.build();
 
 		return md;
+	}
+	
+	public static Order createOrder(OrderCtx ctx) {
+		Order order = Order.newBuilder()
+				.setPrice(ctx.getPrice())
+				.setQty(ctx.getQty())
+				.setInstrument(Instrument.newBuilder().setName(ctx.getSymbol()).build())
+				.build();
+		return order;
 	}
 	
 	public static MarketData createMD(MarketDataCtx mdCtx) {
@@ -75,6 +87,15 @@ public class MetaTraderMessageCreator {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.MarketData)
 				.setMarketData(createMD(priceCtx))
+				.addTimeStamps(System.currentTimeMillis())
+				.build();
+		return mtMsg;
+	}
+	
+	public static MetaTraderMessage createMTMsg(OrderCtx ctx) {
+		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
+				.setMsgType(Type.Order)
+				.setOrder(createOrder(ctx))
 				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;

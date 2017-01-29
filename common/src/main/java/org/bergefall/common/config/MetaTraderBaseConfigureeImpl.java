@@ -93,6 +93,11 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		return getLongProperty(BLP + propKey);
 	}
 	
+	@Override
+	public String getRoutingString(String propKey) {
+		return getStringProperty(ROUTING + propKey);
+	}
+	
 	private Boolean getBooleanProperty(String key) {
 		checkInitialized();
 		String prop = configProperties.getProperty(key);
@@ -148,12 +153,18 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	private Properties getDefaults() {
 		Properties def = new Properties();
 		def.setProperty(COMMON + "processname", "metaTraderService");
+		def.setProperty(IO + "port", "8348");
 		def.setProperty(BLP +"runPreMDStrategy", "true");
 		def.setProperty(BLP +"runPreAccStrategy", "true");
 		def.setProperty(BLP +"runPreInstrStrategy", "true");
 		def.setProperty(BLP + "runPreTradeStrategy", "true");
 		def.setProperty(BLP + "runPreBeatStrategy", "true");
 		def.setProperty(BLP + "beatInterval", "5000");
+		def.setProperty(ROUTING + "accountAddr", "all");
+		def.setProperty(ROUTING + "instrumentAddr", "all");
+		def.setProperty(ROUTING + "orderAddr", "all");
+		def.setProperty(ROUTING + "marketDataAddr", "all");
+		def.setProperty(ROUTING + "tradeAddr", "all");
 		return def;
 	}
 }

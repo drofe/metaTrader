@@ -27,5 +27,13 @@ public class Status {
 	public String getMessage() {
 		return message;
 	}
+	
+	public void setCode(int code) {
+		this.code = code;
+	}
+	
+	public void setMsg(String msg) {
+		this.message = msg;
+	}
 }
 

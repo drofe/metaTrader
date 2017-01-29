@@ -7,7 +7,7 @@ import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
-import org.bergefall.iobase.blp.BusinessLogicPipline;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
@@ -23,7 +23,7 @@ public abstract class MetaTraderServerApplication {
 	protected ServerBootstrap bootStrap;
 	protected EventLoopGroup serverGroup;
 	protected EventLoopGroup workerGroup;
-	protected List<BusinessLogicPipline> blps;
+	protected List<BusinessLogicPipeline> blps;
 	protected List<Thread> blpThreads;
 	protected MetaTraderConfig config;
 	
@@ -33,11 +33,11 @@ public abstract class MetaTraderServerApplication {
 		this.serverGroup = getServerGroup();
 		this.workerGroup = getWorkerGroup();
 		this.config = getConfig(configFile);
-		this.blps = getBLP(config);
+		this.blps = getBLPs(config);
 		this.bootStrap = getBootStrap();
 		
 		blpThreads = new ArrayList<>(blps.size());
-		for (BusinessLogicPipline blp : blps) {
+		for (BusinessLogicPipeline blp : blps) {
 			Thread businessPipeLine = new Thread(blp);
 			blpThreads.add(businessPipeLine);
 			businessPipeLine.start();
@@ -60,7 +60,7 @@ public abstract class MetaTraderServerApplication {
 		} finally {
 			serverGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
-			for (BusinessLogicPipline blp1 : blps) {
+			for (BusinessLogicPipeline blp1 : blps) {
 				blp1.shutdown();
 			}
 		}
@@ -79,7 +79,7 @@ public abstract class MetaTraderServerApplication {
 	
 	
 	
-	protected abstract List<BusinessLogicPipline> getBLP(MetaTraderConfig config);
+	protected abstract List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config);
 	
 	protected ServerBootstrap getBootStrap() {
 		return new ServerBootstrap();

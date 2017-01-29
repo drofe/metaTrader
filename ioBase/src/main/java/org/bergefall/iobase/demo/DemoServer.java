@@ -1,5 +1,6 @@
 package org.bergefall.iobase.demo;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,9 +8,12 @@ import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.DateUtils;
 import org.bergefall.common.config.MetaTraderConfig;
+import org.bergefall.common.data.TradeCtx;
 import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
-import org.bergefall.iobase.blp.BusinessLogicPipline;
+import org.bergefall.iobase.routing.RoutingPipeline;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.iobase.server.MetaTraderServerApplication;
+import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 public class DemoServer extends MetaTraderServerApplication {
@@ -25,13 +29,13 @@ public class DemoServer extends MetaTraderServerApplication {
 	private static class SimpleBLP extends BusinessLogicPipelineImpl {
 
 		public SimpleBLP(MetaTraderConfig config) {
-			super(config);
+			super(config, new RoutingPipeline(config));
 		}
 
 		@Override
 		protected void handleMarketData(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 			MetaTraderMessage msg = token.getTriggeringMsg();
-			if ( msg.getSeqNo() % 10 == 0) {
+			if ( msg.getSeqNo() % 11 == 0) {
 				System.out.println("Handled MarketData msg with seqno: " + msg.getSeqNo() + " at: " +
 						DateUtils.getCurrentTimeAsReadableDate() + msg);			
 			}
@@ -48,7 +52,15 @@ public class DemoServer extends MetaTraderServerApplication {
 
 		@Override
 		protected void handleInstrument(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-
+			//Trigger fire of Trade;
+			MetaTraderMessage msg = MetaTraderMessageCreator.createMTMsg(new TradeCtx("TEST", LocalDateTime.now(),
+					1, true, 123L, 12L, 120L, 130L, 10L));
+			try {
+				token.getRoutingBlp().enqueue(msg);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		@Override
@@ -65,16 +77,15 @@ public class DemoServer extends MetaTraderServerApplication {
 		
 		@Override
 		protected void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-			// TODO Auto-generated method stub
-			
+			log.info("Got trade: " + token.getTriggeringMsg());
 		}
 		
 	}
 
 
 	@Override
-	protected List<BusinessLogicPipline> getBLP(MetaTraderConfig config) {
-		List<BusinessLogicPipline> list = new ArrayList<>();
+	protected List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config) {
+		List<BusinessLogicPipeline> list = new ArrayList<>();
 		list.add(new SimpleBLP(config));
 		list.add(new SimpleBLP(config));
 		return list;

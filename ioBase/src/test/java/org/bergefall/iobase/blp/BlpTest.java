@@ -7,8 +7,10 @@ import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
+import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.iobase.BlpTestBase;
+import org.bergefall.iobase.routing.RoutingPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 import org.junit.Assert;
@@ -21,7 +23,8 @@ public class BlpTest extends BlpTestBase {
 	
 	@Before
 	public void setup() {
-		blp = new TestBlp();
+		MetaTraderConfig config = new MetaTraderBaseConfigureeImpl(null);
+		blp = new TestBlp(config);
 	}
 	@Test
 	public void testCSD() {
@@ -44,8 +47,8 @@ public class BlpTest extends BlpTestBase {
 	
 	private static class TestBlp extends BusinessLogicPipelineImpl {
 
-		public TestBlp() {
-			super(new MetaTraderBaseConfigureeImpl(null));
+		public TestBlp(MetaTraderConfig config) { 
+			super(config, new RoutingPipeline(config));
 		}
 		
 		public void fireAway(MetaTraderMessage msg) {

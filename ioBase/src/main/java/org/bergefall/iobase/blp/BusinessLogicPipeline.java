@@ -3,7 +3,7 @@ package org.bergefall.iobase.blp;
 import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
-public interface BusinessLogicPipline extends Runnable {
+public interface BusinessLogicPipeline extends Runnable {
 
 	/**
 	 * Enqueues and sequences a message to be handled by this Business Logic Pipeline.

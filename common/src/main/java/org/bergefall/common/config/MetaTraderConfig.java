@@ -6,6 +6,7 @@ public interface MetaTraderConfig {
 	public static final String IO = "io.";
 	public static final String STRATEGY = "strategy.";
 	public static final String BLP = "blp.";
+	public static final String ROUTING = "routing.";
 	
 	
 	public Long getCommonLong(String propKey);
@@ -23,4 +24,6 @@ public interface MetaTraderConfig {
 	public Boolean getBlpBoolean(String propKey);
 
 	public Long getBlpLong(String propKey);
+	
+	public String getRoutingString(String propKey);
 }

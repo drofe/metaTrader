@@ -3,7 +3,7 @@ package org.bergefall.base.beats;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.common.log.system.SystemLoggerImpl;
-import org.bergefall.iobase.blp.BusinessLogicPipline;
+import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 
 /**
@@ -18,9 +18,9 @@ public class BeatsGenerator implements Runnable {
 	private boolean active;
 	private long interval;
 	private int genNr;
-	private BusinessLogicPipline blp;
+	private BusinessLogicPipeline blp;
 	
-	public BeatsGenerator(final BusinessLogicPipline blp,
+	public BeatsGenerator(final BusinessLogicPipeline blp,
 			final MetaTraderConfig config) {
 		this.blp = blp;
 		interval = defaultInterval;
