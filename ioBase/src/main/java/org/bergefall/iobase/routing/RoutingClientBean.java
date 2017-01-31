@@ -42,8 +42,6 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		Status status = new Status();
-		MetaTraderMessage msg = token.getTriggeringMsg();
 		
 		switch (msg.getMsgType()) {
 		case Account :
@@ -126,6 +124,10 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 		
 		final String host;
 		final Long port;
+		private boolean initialized;
+		private Channel channel;
+		private EventLoopGroup group;
+		private MetaTraderTcpClientHandlerBase handle;
 		
 		public MsgClient(String host, Long port) {
 			this.host = host;
@@ -144,26 +146,33 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 			this.host = hostPort[0];
 			this.port = Long.parseLong(hostPort[1]); 
 		}
+				
+		public void shutdown() {
+			channel.close();
+			group.shutdownGracefully();
+			initialized = false;
+		}
 		
 		public void sendMsg(MetaTraderMessage msg) throws InterruptedException {
-			EventLoopGroup group = new NioEventLoopGroup();
-
-			try {
-				Bootstrap bootstrap = new Bootstrap();
-				bootstrap.group(group).channel(NioSocketChannel.class).handler(new MetaTraderClientChannelInitializer());
-
-				// Create connection
-				Channel c = bootstrap.connect(host, port.intValue()).sync().channel();
-
-				// Get handle to handler so we can send message
-				MetaTraderTcpClientHandlerBase handle = c.pipeline().get(MetaTraderTcpClientHandlerBase.class);
-					handle.sendAsyncReq(msg);
-				
-				c.close();
-
-			} finally {
-				group.shutdownGracefully();
+			
+			if(false == initialized) {
+				init();
 			}
+			if (initialized) {
+				handle.sendAsyncReq(msg);
+			}
+				
 		}
+		
+		private void init() throws InterruptedException {
+			group = new NioEventLoopGroup();
+			Bootstrap bootstrap = new Bootstrap();
+			bootstrap.group(group).channel(NioSocketChannel.class).handler(new MetaTraderClientChannelInitializer());
+			// Create connection
+			channel = bootstrap.connect(host, port.intValue()).sync().channel();
+			handle = channel.pipeline().get(MetaTraderTcpClientHandlerBase.class);
+			initialized = true;
+		}
+
 	}
 }

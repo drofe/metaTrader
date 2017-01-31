@@ -22,7 +22,10 @@ public class DemoServer extends MetaTraderServerApplication {
 	public static void main(String[] args) throws InterruptedException {
 		DemoServer ds = new DemoServer();
 		ds.initServer(configFile);
-		ds.startListening();
+		Thread server = new Thread(ds);
+		server.setName("Demo Server listener");
+		server.start();
+		server.join();
 	}
 	
 	private static class SimpleBLP extends BusinessLogicPipelineImpl {

@@ -87,10 +87,28 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	public Boolean getBlpBoolean(String propKey) {
 		return getBooleanProperty(BLP + propKey);
 	}
+
+	@Override
+	public Boolean getBlpBoolean(int blpNr, String propKey) {
+		Boolean prop = getBooleanProperty(BLP + blpNr + "." + propKey);
+		if (null == prop) {
+			prop = getBlpBoolean(propKey);
+		}
+		return prop;
+	}
 	
 	@Override
 	public Long getBlpLong(String propKey) {
 		return getLongProperty(BLP + propKey);
+	}
+	
+	@Override
+	public Long getBlpLong(int blpNr, String propKey) {
+		Long prop = getLongProperty(BLP + blpNr + "." + propKey);
+		if (null == prop) {
+			prop = getBlpLong(propKey);
+		}
+		return prop;
 	}
 	
 	@Override
@@ -154,12 +172,19 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		Properties def = new Properties();
 		def.setProperty(COMMON + "processname", "metaTraderService");
 		def.setProperty(IO + "port", "8348");
-		def.setProperty(BLP +"runPreMDStrategy", "true");
-		def.setProperty(BLP +"runPreAccStrategy", "true");
-		def.setProperty(BLP +"runPreInstrStrategy", "true");
-		def.setProperty(BLP + "runPreTradeStrategy", "true");
+		def.setProperty(BLP + "runPreMDStrategy", "false");
+		def.setProperty(BLP + "runPreAccStrategy", "true");
+		def.setProperty(BLP + "runPreInstrStrategy", "true");
+		def.setProperty(BLP + "runPreTradeStrategy", "false");
+		def.setProperty(BLP + "runPreOrderStrategy", "false");
 		def.setProperty(BLP + "runPreBeatStrategy", "true");
 		def.setProperty(BLP + "beatInterval", "5000");
+		def.setProperty(BLP + "runHandleMarketData", "false");
+		def.setProperty(BLP + "runHandleAcc", "true");
+		def.setProperty(BLP + "runHandleInstr", "false");
+		def.setProperty(BLP + "runHandleBeat", "false");
+		def.setProperty(BLP + "runHandleTrade", "false");
+		def.setProperty(BLP + "runHandleOrder", "false");		
 		def.setProperty(ROUTING + "accountAddr", "all");
 		def.setProperty(ROUTING + "instrumentAddr", "all");
 		def.setProperty(ROUTING + "orderAddr", "all");

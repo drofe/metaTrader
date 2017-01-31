@@ -16,6 +16,7 @@ public class StrategyToken {
 	private List<Long> timeStamps;
 	private MetaTraderMessage mtMsg;
 	private BusinessLogicPipeline routingPipeline;
+	private Status status;
 	
 	public StrategyToken(LocalDateTime ldt, 
 			CommonStrategyData cds,
@@ -52,5 +53,16 @@ public class StrategyToken {
 	
 	public BusinessLogicPipeline getRoutingBlp() {
 		return routingPipeline;
+	}
+	
+	public Status getStatus() {
+		if (null == status) {
+			status = new Status();
+		}
+		return status;
+	}
+	
+	public void updateStatus(Status status) {
+		this.status = status;
 	}
 }

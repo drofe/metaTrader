@@ -129,7 +129,7 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 		}
 		Status status = null;
 		for (AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status> bean : strategy) {
-			status = bean.execute(token, intraMsg);
+			status = bean.executeBean(token, intraMsg);
 			if (null == status || status.getCode() >= Status.ERROR) {
 				log.error("Error occurred in bean: " + bean.getClass().getName() + "\n\t" +
 						"in strategy: " + strategyName + "\n\t" +

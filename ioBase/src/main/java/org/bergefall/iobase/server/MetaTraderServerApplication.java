@@ -7,6 +7,8 @@ import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
+import org.bergefall.common.log.system.SystemLoggerIf;
+import org.bergefall.common.log.system.SystemLoggerImpl;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.iobase.routing.RoutingPipeline;
 
@@ -19,8 +21,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
-public abstract class MetaTraderServerApplication {
-
+public abstract class MetaTraderServerApplication implements Runnable {
+	
+	protected static final SystemLoggerIf log = SystemLoggerImpl.get();
 	protected ServerBootstrap bootStrap;
 	protected EventLoopGroup serverGroup;
 	protected EventLoopGroup workerGroup;
@@ -59,17 +62,12 @@ public abstract class MetaTraderServerApplication {
 
 	}
 	
-	protected void startListening() throws InterruptedException {
+	private void startListening() throws InterruptedException {
 		try {
 			// Bind to port
 			bootStrap.bind(getPort()).sync().channel().closeFuture().sync();
 		} finally {
-			serverGroup.shutdownGracefully();
-			workerGroup.shutdownGracefully();
-			for (BusinessLogicPipeline blp1 : blps) {
-				blp1.shutdown();
-			}
-			routingBlp.shutdown();
+			shutdown();
 		}
 	}
 	protected int getPort() {
@@ -84,8 +82,37 @@ public abstract class MetaTraderServerApplication {
 		return port.intValue();
 	}
 	
+	@Override
+	public void run() {
+		try {
+			startListening();
+		} catch (Exception e) {
+			log.error("Exception cought in netty listening layer. Shutting down");
+			shutdown();
+		}
+	}
 	
-	
+	protected void shutdown() {
+		serverGroup.shutdownGracefully();
+		workerGroup.shutdownGracefully();
+		for (BusinessLogicPipeline blp1 : blps) {
+			blp1.shutdown();
+		}
+		routingBlp.shutdown();
+		int safeCtr = 0;
+		while ((workerGroup.isShuttingDown() ||
+				workerGroup.isShuttingDown()) && safeCtr < 10) {
+			try {
+				safeCtr++;
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				log.error(e.toString());
+				// by design
+			}
+		}
+				
+	}
+
 	protected abstract List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config);
 	
 	protected ServerBootstrap getBootStrap() {

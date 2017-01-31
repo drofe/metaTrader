@@ -23,4 +23,7 @@ public class OrderCtx {
 		return symbol;
 	}
 	
+	public void setPrice(long price) {
+		this.price = price;
+	}
 }

@@ -10,7 +10,10 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    project(":ioBase")
+    compile project(":common")
+    compile project(":messaging")
+    compile project(":dbStorage")
+    compile project(":ioBase")
     testCompile "junit:junit:4.12"
 }
 

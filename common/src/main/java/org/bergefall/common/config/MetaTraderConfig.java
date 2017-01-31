@@ -25,5 +25,9 @@ public interface MetaTraderConfig {
 
 	public Long getBlpLong(String propKey);
 	
+	public Boolean getBlpBoolean(int blpNr, String propKey);
+
+	public Long getBlpLong(int blpNr, String propKey);
+	
 	public String getRoutingString(String propKey);
 }

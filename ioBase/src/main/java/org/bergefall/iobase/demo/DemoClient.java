@@ -44,19 +44,19 @@ public class DemoClient {
 			// Get handle to handler so we can send message
 			MetaTraderTcpClientHandlerBase handle = c.pipeline().get(MetaTraderTcpClientHandlerBase.class);
 			String accountNamePrefix = getRandomString();
-			for (int i = 1; i < 11; i++) {
+			for (int i = 1; i < 110; i++) {
 				MetaTraderMessage msg = null;
 				if (0 == i % 2) {
 					MarketDataCtx mdCtx = new MarketDataCtx("CINN",
 							LocalDateTime.now(),
-							Long.valueOf(i), 1L, 2L, 3L, 4L, 5L, 7L, 6L, 8L, 9L);
+							Long.valueOf(i), Long.valueOf(2 * i), 2L, 3L, 4L, 5L, 7L, 6L, 8L, 9L);
 					msg = MetaTraderMessageCreator.createMTMsg(mdCtx);
 				} else {
 					AccountCtx acc = new AccountCtx(accountNamePrefix + " -- "+ i, 0, "broker", "user");
 					msg = MetaTraderMessageCreator.createMTMsg(acc);
 				}
 				handle.sendAsyncReq(msg);
-				Thread.sleep(50);
+				//Thread.sleep(50);
 			}
 			MetaTraderMessage instrMsg = MetaTraderMessageCreator
 					.createMTMsg(new InstrumentCtx("TEST", 1));
