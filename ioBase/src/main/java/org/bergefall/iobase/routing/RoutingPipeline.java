@@ -19,7 +19,6 @@ public class RoutingPipeline extends BusinessLogicPipelineBase {
 
 	public RoutingPipeline(MetaTraderConfig config) {
 		super(config);
-		blpName = "RoutingPipeline-";
 	}
 
 	@Override
@@ -27,6 +26,14 @@ public class RoutingPipeline extends BusinessLogicPipelineBase {
 		runStrategy(routingStrategy, getNewToken(msg), getNewIntraBeanMsg());
 	}
 
+	@Override
+	protected void setBlpIdentifiers(MetaTraderConfig config) {
+		thisBlpNr = 0; //Zero reserved for routing.
+		blpName = "RoutingPipeline-";
+		sequenceLogFileName = "RoutingSequencedMsgs-" + thisBlpNr;
+	}
+	
+	@Override
 	protected void buildStrategies() {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> routingStrat = new LinkedList<>();
 		RoutingClientBean routingBean = new RoutingClientBean();

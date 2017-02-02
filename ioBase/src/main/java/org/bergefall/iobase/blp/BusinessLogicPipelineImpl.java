@@ -2,7 +2,6 @@ package org.bergefall.iobase.blp;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.base.strategy.AbstractStrategyBean;
@@ -29,8 +28,6 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	private static final String preBeatStrategy = "preBeatStrategy";
 	private static final String preOrderStrategy = "preOrderStrategy";
 	private static final String preTradeStrategy = "preTradeStrategy";
-	private static final AtomicInteger cBLPNr = new AtomicInteger(1);
-	private int thisBlpNr;
 
 	protected boolean runPreMdStrat;
 	protected boolean runPreAccStrat;
@@ -48,12 +45,19 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 
 	public BusinessLogicPipelineImpl(MetaTraderConfig config) {
 		super(config);
-		this.thisBlpNr = cBLPNr.getAndIncrement();
 		parseConfig();
-		blpName = "BLP-";
-
 	}
-
+	
+	@Override
+	protected void setBlpIdentifiers(MetaTraderConfig config) {
+		if (null == this.thisBlpNr) {
+			this.thisBlpNr = Integer.valueOf(cBLPNr.getAndIncrement());
+		}
+		String tConfiguredName = config.getBlpString(thisBlpNr, "name"); 
+		blpName = null != tConfiguredName ? tConfiguredName : "BLP-";
+		sequenceLogFileName = blpName + "-" + thisBlpNr +  "-SequencedMsgs-";
+	}
+	
 	@Override
 	public void setRoutingBlp(BusinessLogicPipeline router) {
 		this.routingPipeline = router;
@@ -199,9 +203,11 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		strategyMap.put(preBeatStrategy, preBeat);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preAcc = new LinkedList<>();
+		preAcc.add(addData);
 		strategyMap.put(preAccountStrategy, preAcc);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preInstr = new LinkedList<>();
+		preInstr.add(addData);
 		strategyMap.put(preInstrumentStrategy, preInstr);
 		
 	}

@@ -8,7 +8,7 @@ public class ConvertCsvToMysqldb {
 
 	public static void main(String[] pArgs) {
 
-		CsvReader tCsvRead = new CsvReader("/home/ola/projects/tmp/CINN-2010-11-18-2016-12-19.csv", "CINN");
+		CsvReader tCsvRead = new CsvReader("/home/ola/tmp/ERIC-B-2010-01-01-2017-02-01.csv", "ERIC");
 		MySQLWriter tW = null;
 
 		Set<MarketDataCtx> tPrices = tCsvRead.getFileContents();

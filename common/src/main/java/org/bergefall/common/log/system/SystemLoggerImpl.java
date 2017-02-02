@@ -69,6 +69,9 @@ public class SystemLoggerImpl implements SystemLoggerIf {
 	
 	
 	private void doLog(LogEntry entry) {
+		if (null == entry || null == entry.getLogLevel()) {
+			return;
+		}
 		switch (entry.getLogLevel().toInt()) {
 		case Level.TRACE_INT:
 			logger.trace(formatLogEntry(entry));

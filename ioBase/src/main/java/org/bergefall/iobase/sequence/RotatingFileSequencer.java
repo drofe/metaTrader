@@ -18,11 +18,11 @@ public class RotatingFileSequencer implements SequenceLogger {
 	private static final SystemLoggerIf log = SystemLoggerImpl.get();
 	private String fileName;
 	
-	public void init(String logFileName) {
-		if (null == logFileName)  {
+	public void init(String logFileNamePrefix) {
+		if (null == logFileNamePrefix)  {
 			fileName = "MetaTraderLog-" + LocalDateTime.now().toString() + ".log";
 		} else {
-			fileName = logFileName;
+			fileName = logFileNamePrefix + LocalDateTime.now().toString() + ".log";
 		}
 		file = new File(fileName);
 		try {

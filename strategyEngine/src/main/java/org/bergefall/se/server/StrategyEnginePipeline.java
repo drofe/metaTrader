@@ -8,35 +8,41 @@ import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.base.strategy.basicbeans.BackTestBean;
+import org.bergefall.base.strategy.basicbeans.OrderGenerator;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
 import org.bergefall.se.server.strategy.beans.MovingAverageCalculatingBean;
+import org.bergefall.se.server.strategy.beans.TradeHandlingBean;
 
 public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 
 	private static final String mas = "movingAverageStrategy";
 	private static final String backtestStrategy = "backtestStrat";
+	private static final String tradeStrategy = "tradeStrat";
 	
 	public StrategyEnginePipeline(MetaTraderConfig config) {
 		super(config);
-
 	}
 
 	@Override 
 	protected void buildStrategies() {
 		super.buildStrategies();
-		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> movStrat = new LinkedList<>();
-		MovingAverageCalculatingBean movAvgBean = new MovingAverageCalculatingBean();
-		movAvgBean.initBean(config);
-		movStrat.add(movAvgBean);
-		strategyMap.put(mas, movStrat);
+		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strat = new LinkedList<>();
+		addBeanToStrategy(new MovingAverageCalculatingBean(), strat);
+		addBeanToStrategy(new OrderGenerator(), strat);
+		strategyMap.put(mas, strat);
 		
-		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> bTestStrat = new LinkedList<>();
-		BackTestBean backTestBean = new BackTestBean();
-		backTestBean.initBean(config);
-		bTestStrat.add(backTestBean);
-		strategyMap.put(backtestStrategy, bTestStrat);
+		strat = new LinkedList<>();
+		addBeanToStrategy(new BackTestBean(), strat);
+		strategyMap.put(backtestStrategy, strat);
+		
+		strat = new LinkedList<>();
+		addBeanToStrategy(new TradeHandlingBean(), strat);
+		strategyMap.put(tradeStrategy, strat);
+		
+		
 	}
+		
 	@Override
 	protected void handleAccounts(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 		// TODO Auto-generated method stub
@@ -67,7 +73,7 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 
 	@Override
 	protected void handleTrades(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		runStrategy(backtestStrategy, token, intraMsg);
+		runStrategy(tradeStrategy, token, intraMsg);
 	}
 
 }

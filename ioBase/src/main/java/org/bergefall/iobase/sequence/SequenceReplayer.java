@@ -102,4 +102,9 @@ public class SequenceReplayer implements SequencedBlpQueue {
 	public void doSequenceLog(boolean on) {
 		return; //Currently not possible to create new logs from replay...
 	}
+
+	@Override
+	public void setSequenceLogFileName(String name) {
+		return; //Currently not possible to create new logs from replay...
+	}
 }

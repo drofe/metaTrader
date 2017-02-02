@@ -22,12 +22,16 @@ public interface MetaTraderConfig {
 	public String getIoString(String propKey);
 	
 	public Boolean getBlpBoolean(String propKey);
-
-	public Long getBlpLong(String propKey);
 	
 	public Boolean getBlpBoolean(int blpNr, String propKey);
 
+	public Long getBlpLong(String propKey);
+
 	public Long getBlpLong(int blpNr, String propKey);
+	
+	public String getBlpString(int blpNr, String propKey);
+	
+	public String getBlpString(String propKey);
 	
 	public String getRoutingString(String propKey);
 }

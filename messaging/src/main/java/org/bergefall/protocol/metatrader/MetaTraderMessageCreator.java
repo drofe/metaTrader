@@ -42,10 +42,11 @@ public class MetaTraderMessageCreator {
 		return md;
 	}
 
-	public static Order createOrder(OrderCtx ctx) {
+	public static Order createOrder(OrderCtx ctx, AccountCtx accCtx) {
 		Order order = Order.newBuilder()
 				.setPrice(ctx.getPrice())
 				.setQty(ctx.getQty())
+				.setAccount(createAccount(accCtx))
 				.setInstrument(Instrument.newBuilder().setName(ctx.getSymbol()).build())
 				.build();
 		return order;
@@ -101,10 +102,10 @@ public class MetaTraderMessageCreator {
 		return mtMsg;
 	}
 
-	public static MetaTraderMessage createMTMsg(OrderCtx ctx) {
+	public static MetaTraderMessage createMTMsg(OrderCtx ctx, AccountCtx accCtx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.Order)
-				.setOrder(createOrder(ctx))
+				.setOrder(createOrder(ctx, accCtx))
 				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;

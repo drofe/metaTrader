@@ -1,5 +1,8 @@
 package org.bergefall.common.log.system;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public interface SystemLoggerIf {
 
 	/**
@@ -25,4 +28,16 @@ public interface SystemLoggerIf {
 	 * @param msg
 	 */
 	public void info(String msg);
-}
+	
+	/**
+	 * Get stacktrace from throwable.
+	 * @param th
+	 * @return Stacktrace as string.
+	 */
+	public static String getStacktrace(final Throwable th) {
+		final StringWriter sw = new StringWriter();
+		final PrintWriter pw = new PrintWriter(sw, true);
+		th.printStackTrace(pw);
+		return sw.getBuffer().toString();
+		}
+	}

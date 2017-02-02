@@ -18,7 +18,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class BacktestCLIClient {
 
 	static final String HOST = System.getProperty("host", "127.0.0.1");
-	static final int PORT = Integer.parseInt(System.getProperty("port", "8463"));
+	static final int PORT = Integer.parseInt(System.getProperty("port", "8348"));
 	ReadHistoricalEqPrices priceReader;
 	
 	public static void main(String[] args) throws InterruptedException {
@@ -28,7 +28,7 @@ public class BacktestCLIClient {
 		if (args.length == 1) {
 			symb = args[0];
 		} else {
-			symb = "CINN";
+			symb = "ERIC";
 		}
 		client.runClient(symb);
 	}

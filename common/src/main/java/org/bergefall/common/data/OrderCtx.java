@@ -4,11 +4,15 @@ public class OrderCtx {
 
 	private long price;
 	private long qty;
+	private int accountId;
 	private String symbol;
+	private boolean isBid;
 	
-	public OrderCtx(String symbol, long qty) {
+	public OrderCtx(String symbol, 
+			long qty, boolean isBid) {
 		this.qty = qty;
 		this.symbol = symbol;
+		this.isBid = isBid;
 	}
 	
 	public long getPrice() {
@@ -25,5 +29,17 @@ public class OrderCtx {
 	
 	public void setPrice(long price) {
 		this.price = price;
+	}
+	
+	public void setAccountId(int id) {
+		accountId = id;
+	}
+	
+	public boolean isBid() {
+		return isBid;
+	}
+
+	public int getAccountId() {
+		return accountId;
 	}
 }

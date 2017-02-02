@@ -3,6 +3,7 @@ package org.bergefall.iobase.demo;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
@@ -23,7 +24,8 @@ public class DemoClient {
 	static final String HOST = System.getProperty("host", "127.0.0.1");
 	static final int PORT = Integer.parseInt(System.getProperty("port", "8348"));
 
-	private SecureRandom random = new SecureRandom();
+	private SecureRandom secRandom = new SecureRandom();
+	private Random random = new Random(System.currentTimeMillis()); 
 
 	public static void main(String[] args) throws InterruptedException {
 
@@ -49,7 +51,7 @@ public class DemoClient {
 				if (0 == i % 2) {
 					MarketDataCtx mdCtx = new MarketDataCtx("CINN",
 							LocalDateTime.now(),
-							Long.valueOf(i), Long.valueOf(2 * i), 2L, 3L, 4L, 5L, 7L, 6L, 8L, 9L);
+							Long.valueOf(i), random.nextInt(30) + Long.valueOf(i), 2L, 3L, 4L, 5L, 7L, 6L, 8L, 9L);
 					msg = MetaTraderMessageCreator.createMTMsg(mdCtx);
 				} else {
 					AccountCtx acc = new AccountCtx(accountNamePrefix + " -- "+ i, 0, "broker", "user");
@@ -70,7 +72,9 @@ public class DemoClient {
 
 	}
 
+	
+	
 	private String getRandomString() {
-		return new BigInteger(80, random).toString(32);
+		return new BigInteger(80, secRandom).toString(32);
 	}
 }

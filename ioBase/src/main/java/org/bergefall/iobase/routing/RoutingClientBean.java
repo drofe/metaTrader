@@ -105,6 +105,16 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 		populateClientList(trade, tradeAddr);
 	}
 	
+	@Override
+	public void shutdownHook() {
+		//Shutdown all clients
+		for(Set<MsgClient> clients : serverMap.values()) {
+			for (MsgClient client : clients) {
+				client.shutdown();
+			}
+		}
+	}
+	
 	private void populateClientList(String serverGroup, String config) {
 		if (null == config ||
 			config.isEmpty() ||

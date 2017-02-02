@@ -8,18 +8,24 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.bergefall.common.data.AccountCtx;
+import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 
 public class CommonStrategyData {
 	
-	private Map<String, SortedSet<MarketDataCtx>> marketDataPerSymbol;
-	private Map<Long, AccountCtx> accounts;
+	private final Map<String, SortedSet<MarketDataCtx>> marketDataPerSymbol;
+	private final Map<Long, AccountCtx> accounts;
+	private final Map<String, Long> accountNameToId;
+	private final Map<String, InstrumentCtx> instruments;
 	
 	public CommonStrategyData() {
 		marketDataPerSymbol = new HashMap<>();
 		accounts = new HashMap<>();
+		instruments = new HashMap<>();
+		accountNameToId = new HashMap<>();
 	}
 	
 	public SortedSet<MarketDataCtx> getMarketDataForSymbol(String symbol) {
@@ -48,13 +54,29 @@ public class CommonStrategyData {
 		AccountCtx accCtx = new AccountCtx(acc.getName(), acc.getId(), acc.getBroker(), acc.getUser());
 		addOrUpdateAccount(accCtx);
 	}
+	public Collection<AccountCtx> getAllAccounts() {
+		return accounts.values();
+	}
+	public void addOrUpdateInstrument(Instrument instrument) {
+		InstrumentCtx ctx = new InstrumentCtx(instrument.getName(), instrument.getId());
+		addOrUpdateInstrument(ctx);
+	}
+	
+	public void addOrUpdateInstrument(InstrumentCtx ctx) {
+		instruments.put(ctx.getSymbol(), ctx);
+	}
 	
 	public void addOrUpdateAccount(AccountCtx acc)  {
-		accounts.put(Long.valueOf(acc.getId()), acc);		
+		accounts.put(Long.valueOf(acc.getId()), acc);
+		accountNameToId.put(acc.getName(), acc.getId());
 	}
 	
 	public AccountCtx getAccount(long id) {
 		return accounts.get(Long.valueOf(id));
+	}
+	
+	public Long getAccountId(String name) {
+		return accountNameToId.get(name);
 	}
 	
 	public void addMarketData(MarketData md) {

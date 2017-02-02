@@ -28,4 +28,11 @@ public interface SequencedBlpQueue {
 	 */
 	public void doSequenceLog(boolean on);
 	
+	/**
+	 * Sets the name of the seq log.
+	 * Needs to be set before logging is turned on for the first time.
+	 * @param name
+	 */
+	public void setSequenceLogFileName(String name);
+	
 }

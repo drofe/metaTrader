@@ -112,6 +112,20 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 	}
 	
 	@Override
+	public String getBlpString(String propKey) {
+		return getStringProperty(BLP + propKey);
+	}
+	
+	@Override
+	public String getBlpString(int blpNr, String propKey) {
+		String prop = getStringProperty(BLP + blpNr + "." + propKey);
+		if (null == prop) {
+			prop = getBlpString(propKey);
+		}
+		return prop;
+	}
+	
+	@Override
 	public String getRoutingString(String propKey) {
 		return getStringProperty(ROUTING + propKey);
 	}

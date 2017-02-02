@@ -18,15 +18,17 @@ public class StoreTradeToDb extends AbstractStrategyBean<IntraStrategyBeanMsg, S
 	 */
 	private static final long serialVersionUID = -3502502275690184501L;
 	private TradeWriter tradeWriter = new TradeWriter();
+	protected boolean storeToDB = true;
 	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		Status status = new Status();
 		if (null != intraMsg && null != token.getTriggeringMsg()) {
 			MetaTraderMessage msg = token.getTriggeringMsg();
 			switch (msg.getMsgType()) {
 			case Trade:
-				storeNewTrade(msg.getTrade());
+				if (storeToDB) {
+					storeNewTrade(msg.getTrade());
+				}
 				break;
 			default:
 				break;

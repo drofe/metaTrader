@@ -4,6 +4,7 @@ import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.OrderCtx;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
@@ -21,7 +22,7 @@ public class OrderGenerator extends AbstractStrategyBean<IntraStrategyBeanMsg, S
 		Status status = new Status();
 		if (false == intraMsg.getOrders().isEmpty()) {
 			for (OrderCtx orderCtx : intraMsg.getOrders()) {
-				MetaTraderMessage order = convertToOrder(orderCtx);
+				MetaTraderMessage order = convertToOrder(orderCtx, csd.getAccount(orderCtx.getAccountId()));
 				routeOrder(token, status, order);
 				if (Status.OK != status.getCode()) {
 					return status;
@@ -43,7 +44,7 @@ public class OrderGenerator extends AbstractStrategyBean<IntraStrategyBeanMsg, S
 		return status;
 	}
 
-	protected MetaTraderMessage convertToOrder(OrderCtx ctx) {
-		return MetaTraderMessageCreator.createMTMsg(ctx);
+	protected MetaTraderMessage convertToOrder(OrderCtx ctx, AccountCtx accCtx) {
+		return MetaTraderMessageCreator.createMTMsg(ctx, accCtx);
 	}
 }

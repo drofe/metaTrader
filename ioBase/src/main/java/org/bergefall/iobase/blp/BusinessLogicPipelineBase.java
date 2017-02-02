@@ -3,6 +3,7 @@ package org.bergefall.iobase.blp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bergefall.base.beats.BeatsGenerator;
 import org.bergefall.base.commondata.CommonStrategyData;
@@ -24,15 +25,18 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline {
 
 	protected static final SystemLoggerIf log;
+	protected static final AtomicInteger cBLPNr = new AtomicInteger(0);
 	protected CommonStrategyData csd;
 	protected String blpName = "";
 	protected MetaTraderConfig config;
 	protected BeatsGenerator beatGenerator;
 	protected BusinessLogicPipeline routingPipeline;
 	protected Map<String, List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>>> strategyMap;
-
+	protected Integer thisBlpNr;
+	protected String sequenceLogFileName;
+	
+	
 	private boolean active;
-
 	private final SequencedBlpQueue sequencedQueue;
 	private int defaultSeqQueueSize = 1024 * 4;
 
@@ -41,13 +45,28 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 		log = SystemLoggerImpl.get();
 	}
 	
-	public BusinessLogicPipelineBase(MetaTraderConfig config) {
+	public BusinessLogicPipelineBase(MetaTraderConfig config, int blpNr) {
 		this.config = config;
-		this.sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);
-		this.sequencedQueue.doSequenceLog(true);
+		this.sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);		
 		this.csd = getOrCreateCSD();
 		this.strategyMap = new HashMap<>();
 		buildStrategies();
+		if (blpNr > 0 && blpNr < cBLPNr.get()) {
+			log.error("Trying to set BLP nr that might already been taken. Using generated instead.");
+			thisBlpNr = cBLPNr.getAndIncrement();
+		} else if (blpNr > 0) {
+			thisBlpNr = Integer.valueOf(blpNr);
+			cBLPNr.set(blpNr);
+		} else {
+			thisBlpNr = cBLPNr.getAndIncrement();
+		}
+		setBlpIdentifiers(config);
+		this.sequencedQueue.setSequenceLogFileName(sequenceLogFileName);
+		this.sequencedQueue.doSequenceLog(true);
+	}
+	
+	public BusinessLogicPipelineBase(MetaTraderConfig config) {
+		this(config, -1);
 	}
 
 	public BusinessLogicPipelineBase(MetaTraderConfig config, 
@@ -69,12 +88,17 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 	public void run() {
 		Thread.currentThread().setName(blpName + getBlpNr());
 		active = true;
+		MetaTraderMessage msg = null;
 		while(active) {
 			try {
-				MetaTraderMessage msg = sequencedQueue.take();
+				msg = sequencedQueue.take();
 				fireHandlers(msg);
-			} catch (Throwable th) {
-				log.error("Something went wrong in BLP " + getBlpNr() + ": " + th);
+			} 
+			catch (Exception e) {
+				log.error("Caught an exception while handling message: " + msg + SystemLoggerIf.getStacktrace(e));
+			}
+			catch (Throwable th) {
+				log.error("Caught an exception while handling message: " + msg + SystemLoggerIf.getStacktrace(th));
 			}
 		}
 	}
@@ -94,7 +118,13 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 	@Override
 	public void shutdown() {
 		active = false;
-
+		
+		//Call all shutdown hooks.
+		for (List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strategy : strategyMap.values()) {
+			for( AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status> bean : strategy) {
+				bean.shutdownHook();
+			}
+		}
 	}
 
 	@Override
@@ -120,6 +150,12 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 	protected void buildStrategies() {
 	}
 
+	protected void addBeanToStrategy(AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status> bean,
+			List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strat) {
+		bean.initBean(config);
+		strat.add(bean);
+	}
+	
 	protected Status runStrategy(String strategyName, StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strategy =
 				strategyMap.get(strategyName);
@@ -141,4 +177,6 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 		return status;
 	}
 
+	protected abstract void setBlpIdentifiers(MetaTraderConfig config);
+	
 }
