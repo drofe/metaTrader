@@ -10,6 +10,7 @@ import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.calculators.MovingAverage;
 import org.bergefall.common.calculators.MovingAveragelongRingBufferImpl;
 import org.bergefall.common.config.MetaTraderConfig;
@@ -33,7 +34,9 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 	protected static final SystemLoggerIf log = SystemLoggerImpl.get();
 	protected IntraStrategyBeanMsg intraMsg;
 	protected FileHandler fileHandler;
-	protected Map<String, List<MaStrategy>> strategies;	
+	protected Map<String, List<MaStrategy>> strategies;
+	protected Map<String, HistoricalAverageRelations> historicalValues;
+	protected boolean writeToFile;
 	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
@@ -49,30 +52,55 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 		
 		for (MaStrategy strat : strats) {
 			strat.addNewVal(marketData.getClose());
-			try {
-				fileHandler.write("Strat: " + strat.getName() +
-						", Close price," + marketData.getClose() +
-						", Short average, " + strat.getFastAvg() + 
-						", Long average, " + strat.getSlowAvg());
-			} catch (IOException e) {
-				log.error(SystemLoggerIf.getStacktrace(e));
-			}
-			if (strat.isFastAvgMoreThanSlow()) {
+			writeToFile(strat, marketData);
+			HistoricalAverageRelations histVals = addToHistory(strat);
+			if (strat.isFastAvgGreaterThanSlow() && !histVals.getIsFastG(1)) {
 				Long id = csd.getAccountId(strat.getName());
-				createOrder(marketData.getInstrument(), 100, marketData.getClose(), true, null == id ? 0 : id.intValue());
-			} else if (strat.isSlowAvgMoreThanFast()){
+				createOrder(marketData.getInstrument(), marketData.getClose(), false, 
+						null == id ? 0 : id.intValue());
+			} else if (strat.isSlowAvgGreaterThanFast() && !histVals.getIsSlowG(1)){
 				Long id = csd.getAccountId(strat.getName());
-				createOrder(marketData.getInstrument(), 100, marketData.getClose(), false, null == id ? 0 : id.intValue());
+				createOrder(marketData.getInstrument(), marketData.getClose(), true, 
+						null == id ? 0 : id.intValue());
 			}
 		}
 	}
 	
-	protected void createOrder(String symb, 
-			long qty, long price, boolean isBid, int accountId) {
-		OrderCtx ctx = new OrderCtx(symb, qty, isBid);
+	protected void writeToFile(MaStrategy strat, MarketData marketData) {
+		if(false == writeToFile) {
+			return;
+		}
+		try {
+			fileHandler.write("Strat: " + strat.getName() +
+					", Close price," + marketData.getClose() +
+					", Short average, " + strat.getFastAvg() + 
+					", Long average, " + strat.getSlowAvg());
+		} catch (IOException e) {
+			log.error(SystemLoggerIf.getStacktrace(e));
+		}
+	}
+	
+	protected void createOrder(String symb, long price, boolean isAsk, int accountId) {
+		AccountCtx accCtx = csd.getAccount(accountId);
+		
+		long qty;
+		if (isAsk) {
+			qty = accCtx.getPosition(symb).getLongQty();
+		} else {
+			qty = getBuyQty(accCtx, price);
+		}
+		OrderCtx ctx = new OrderCtx(symb, qty, isAsk);
 		ctx.setPrice(price);
 		ctx.setAccountId(accountId);
 		intraMsg.addOrder(ctx);
+	}
+	
+	private long getBuyQty(AccountCtx accCtx, long price) {
+		long cashAmount = accCtx.getPosition(MetaTraderConstants.CASH).getLongQty();
+		if (cashAmount <= 0) {
+			return 0L;
+		}
+		return cashAmount / price;
 	}
 	
 	private List<MaStrategy> getStrategies(String symb) {
@@ -103,13 +131,130 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 	@Override
 	public void initBean(MetaTraderConfig config) {
 		strategies = new HashMap<>();
-		fileHandler = new RotatingFileHandler("./", false, 60_000, "PriceMAData");
+		historicalValues = new HashMap<>();
+		writeToFile = null == config ? false : config.getBooleanProperty(this.getClass().getName(), "writeToFile");
+		if (writeToFile) {
+			fileHandler = new RotatingFileHandler("./", false, 60_000, "PriceMAData");
+		}
+	}
+	
+	private HistoricalAverageRelations addToHistory(MaStrategy strat) {
+		HistoricalAverageRelations rel = historicalValues.get(strat.getName());
+		if (null == rel) {
+			rel = new HistoricalAverageRelations(strat.getName(), 10);
+			historicalValues.put(strat.getName(), rel);
+		}
+		rel.addFastVal(strat.getFastAvg());
+		rel.addSlowVal(strat.getSlowAvg());
+		rel.addisFastG(strat.isFastAvgGreaterThanSlow());
+		rel.addIsSlowG(strat.isSlowAvgGreaterThanFast());
+		
+		return rel;
 	}
 	
 	protected class HistoricalAverageRelations {
-		private String strategyName;
-		//TODO: Add 2 boolean ring buffers of given length.
+		private final String strategyName;
+		private boolean[] isFastGreater;
+		private int isFastGPos;
+		private boolean[] isSlowGreater;
+		private int isSlowGPos;
+		private long[] slows;
+		private int slowPos;
+		private long[] fasts;
+		private int fastPos;
+
+		public HistoricalAverageRelations(final String strategyName, int bufferSize) {
+			this.strategyName = strategyName;
+			isFastGreater = new boolean[bufferSize];
+			isSlowGreater = new boolean[bufferSize];
+			slows = new long[bufferSize];
+			fasts = new long[bufferSize];
+		}
 		
+		public String getStrategyName() {
+			return strategyName;
+		}
+		
+		public Boolean getIsSlowG(int nrTicksBack) {
+			if (nrTicksBack >= isSlowGreater.length ||
+					nrTicksBack < 0) {
+				return null;
+			}
+			int pos = isSlowGPos - nrTicksBack - 1;
+			if (pos < 0) {
+				pos += isSlowGreater.length;
+			}
+			return Boolean.valueOf(isSlowGreater[pos]);
+		}
+		
+		public Boolean getIsFastG(int nrTicksBack) {
+			if (nrTicksBack >= isFastGreater.length ||
+					nrTicksBack < 0) {
+				return null;
+			}
+			int pos = isFastGPos - nrTicksBack - 1;
+			if (pos < 0) {
+				pos += isFastGreater.length;
+			}
+			return Boolean.valueOf(isFastGreater[pos]);
+		}
+		
+		public long getSlowAvg(int nrTicksBack) {
+			if (nrTicksBack >= slows.length ||
+					nrTicksBack < 0) {
+				return 0L;
+			}
+			int pos = slowPos - nrTicksBack - 1;
+			if (pos < 0) {
+				pos += slows.length;
+			}
+			return slows[pos];
+		}
+		
+		public long getFastAvg(int nrTicksBack) {
+			if (nrTicksBack >= fasts.length ||
+					nrTicksBack < 0) {
+				return 0L;
+			}
+			int pos = fastPos - nrTicksBack - 1;
+			if (pos < 0) {
+				pos += fasts.length;
+			}
+			return fasts[pos];
+		}
+		
+		public void addSlowVal(long val) {
+			slows[slowPos] = val;
+			slowPos++;
+			if (slows.length == slowPos) {
+				slowPos = 0;
+			}
+		}
+		
+		public void addFastVal(long val) {
+			fasts[fastPos] = val;
+			fastPos++;
+			if (fasts.length == fastPos) {
+				fastPos = 0;
+			}
+		}
+		
+		public void addisFastG(boolean val) {
+			isFastGreater[isFastGPos] = val;
+			isFastGPos++;
+			if (isFastGreater.length == isFastGPos) {
+				isFastGPos = 0;
+			}
+		}
+		
+		public void addIsSlowG(boolean val) {
+			isSlowGreater[isSlowGPos] = val;
+			isSlowGPos++;
+			if (isSlowGreater.length == isSlowGPos) {
+				isSlowGPos = 0;
+			}
+		}
+
 	}
 	
 	protected class MaStrategy {
@@ -140,11 +285,11 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 			slowMA.addValue(val);
 		}
 		
-		public boolean isFastAvgMoreThanSlow() {
+		public boolean isFastAvgGreaterThanSlow() {
 			return getFastAvg() > getSlowAvg();
 		}
 		
-		public boolean isSlowAvgMoreThanFast() {
+		public boolean isSlowAvgGreaterThanFast() {
 			return getSlowAvg() > getFastAvg();
 		}
 	}

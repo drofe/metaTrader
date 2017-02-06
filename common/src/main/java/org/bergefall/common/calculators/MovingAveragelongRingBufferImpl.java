@@ -47,4 +47,9 @@ public class MovingAveragelongRingBufferImpl implements MovingAverage {
 		return fillLevel == windowSize;
 	}
 	
+	@Override
+	public String toString() {
+		return "Avg: " + getAverage() + ", is filled: " + isFilled();
+	}
+	
 }

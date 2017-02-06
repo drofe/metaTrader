@@ -6,9 +6,14 @@ import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.base.strategy.basicbeans.StoreTradeToDb;
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.config.MetaTraderConfig;
+import org.bergefall.common.data.AccountCtx;
+import org.bergefall.common.data.PositionCtx;
+import org.bergefall.common.data.TradeCtx;
 import org.bergefall.common.log.RotatingFileHandler;
 import org.bergefall.common.log.system.SystemLoggerIf;
+import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
@@ -20,30 +25,61 @@ public class TradeHandlingBean extends StoreTradeToDb {
 	private static final long serialVersionUID = 736085641456361407L;
 	private static final char cSeparator = ',';
 	
-	RotatingFileHandler fileHander;
+	private RotatingFileHandler fileHander;
+	private boolean writeToFile;
 
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 		super.execute(token, intraMsg);
-		if (Type.Trade == msg.getMsgType()) {
+		if (null != msg && Type.Trade == msg.getMsgType()) {
 			handleTrade(msg.getTrade());
+		}
+		if (null != intraMsg && false == intraMsg.getTrades().isEmpty()) {
+			for (TradeCtx tradeCtx : intraMsg.getTrades()) {
+				handleTrade(tradeCtx);
+			}
 		}
 		return status;
 	}
 	
+	protected void handleTrade(TradeCtx tradeCtx) {
+		Trade trade = MetaTraderMessageCreator.createTrade(tradeCtx);
+		handleTrade(trade);		
+	}
+	
 	protected void handleTrade(Trade trade) {
-		try {
-			fileHander.write(formatLogEntry(trade));
-		} catch (IOException e) {
-			status.setCode(Status.ERROR);
-			status.setMsg(SystemLoggerIf.getStacktrace(e));
+		AccountCtx accCtx = csd.getAccount(trade.getAccount().getId());		
+		updatesPositions(accCtx, trade);
+		if (writeToFile) {
+			try {
+				fileHander.write(formatLogEntry(trade));
+			} catch (IOException e) {
+				status.setCode(Status.ERROR);
+				status.setMsg(SystemLoggerIf.getStacktrace(e));
+			}
 		}
-		
+	}
+	
+	protected void updatesPositions(AccountCtx accCtx, Trade trade) {		
+		if (trade.getIsEntry()) {
+			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
+			tradeInstrPos.addLongQty(trade.getQty());
+			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
+			cashPos.removeLongQty(trade.getPrice() * trade.getQty());
+		} else {
+			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
+			tradeInstrPos.removeLongQty(trade.getQty());
+			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
+			cashPos.addLongQty(trade.getPrice() * trade.getQty());
+		}
 	}
 
 	@Override
 	public void initBean(MetaTraderConfig config) {
-		fileHander = new RotatingFileHandler("./", false, 60_000, "Trades-");
+		writeToFile = null == config ? false : config.getBooleanProperty(this.getClass().getName(), "writeToFile");
+		if (writeToFile) {
+			fileHander = new RotatingFileHandler("./", true, 60_000, "Trades-");
+		}
 		storeToDB = false;
 	}
 	

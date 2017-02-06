@@ -6,6 +6,9 @@ import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.config.MetaTraderConfig;
+import org.bergefall.common.data.OrderCtx;
+import org.bergefall.common.data.PositionCtx;
 import org.bergefall.common.data.TradeCtx;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
@@ -15,18 +18,56 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 @SuppressWarnings("serial")
 public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
 
+	/**
+	 * Commission and slippage
+	 */
+	private long commission = 0L;
+	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
 
 		if (Type.Order == msg.getMsgType()) {
-			handleOrder(msg.getOrder());
+			convertToTradeAndRoute(msg.getOrder());
 		} else if (Type.Trade == msg.getMsgType()) {
 			handleTrade(msg.getTrade());
+		} else if (false == intraMsg.getOrders().isEmpty()) {
+			handleInChainOrders(intraMsg);			
 		}
 		return status;
 	}
 	
-	protected void handleOrder(Order order) {
+	protected void handleInChainOrders(IntraStrategyBeanMsg intraMsg) {
+		for (OrderCtx order : intraMsg.getOrders()) {
+			TradeCtx tradeCtx = new TradeCtx(order.getSymbol(), 
+					LocalDateTime.now(), 
+					order.getAccountId(), 
+					getIsEntry(order), 
+					order.getPrice(), 
+					order.getQty(), 
+					calclulateNetProfit(order), 
+					calclulateGrossProfit(order),
+					commission);
+			intraMsg.addTrade(tradeCtx);
+		}
+	}
+	
+	protected Long calclulateNetProfit(OrderCtx order) {
+		if (!order.isAsk()) {
+			return Long.valueOf(0L);
+		}
+		return Long.valueOf(calclulateGrossProfit(order).longValue() - commission);
+	}
+	
+	protected Long calclulateGrossProfit(OrderCtx order) {
+		if (!order.isAsk()) {
+			return Long.valueOf(0L);
+		}
+		PositionCtx posCtx = csd.getAccount(order.getAccountId()).getPosition(order.getSymbol());
+		long payed = posCtx.getAvgLongPrice() * order.getQty();
+		return (order.getPrice() * order.getQty()) - payed;
+	}
+
+	protected void convertToTradeAndRoute(Order order) {
 		//For back testing each order automatically gets traded.
 		TradeCtx ctx = new TradeCtx(order.getInstrument().getName(), 
 				LocalDateTime.now(), 
@@ -36,8 +77,7 @@ public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 				order.getQty(), 
 				0L, 
 				0L, 
-				0L);
-		
+				commission);
 		try {
 			routingPipeline.enqueue(MetaTraderMessageCreator.createMTMsg(ctx));
 		} catch (InterruptedException e) {
@@ -51,6 +91,15 @@ public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 	}
 
 	protected boolean getIsEntry(Order order) {
-		return true;
+		return !order.getIsAsk();
+	}
+	
+	protected boolean getIsEntry(OrderCtx order) {
+		return !order.isAsk();
+	}
+	
+	@Override
+	public void initBean(MetaTraderConfig config) {
+		commission = null == config ? 0L : config.getLongProperty(this.getClass().getName(), "commission");
 	}
 }

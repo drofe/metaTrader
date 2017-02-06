@@ -26,7 +26,17 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 		msg = token.getTriggeringMsg();
 		routingPipeline = token.getRoutingBlp();
 		csd = token.getCsd();
-		return execute(token, intraMsg);
+		OUT res = null;
+		try {
+		    res =  execute(token, intraMsg);
+		} finally {
+			//Clean up so we don't get leftovers in next call
+			status = null;
+			msg = null;
+			routingPipeline = null;
+			csd = null;
+		}
+		return res;
 		
 	}
 	

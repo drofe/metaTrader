@@ -3,8 +3,10 @@ package org.bergefall.se.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.AccountCtx;
+import org.bergefall.common.data.PositionCtx;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.iobase.server.MetaTraderServerApplication;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
@@ -27,6 +29,9 @@ public class StrategyEngine extends MetaTraderServerApplication {
 		for(int i = 20; i < 25 ; i++) {
 			for (int j = 5; j < 10; j++) {
 				AccountCtx ctx = new AccountCtx(j + "_" + i, id++, "test", "test");
+				PositionCtx posCtx = ctx.getPosition(MetaTraderConstants.CASH);
+				posCtx.setAvgLongPrice(1L);
+				posCtx.setLongQty(1000L);
 				MetaTraderMessage msg = MetaTraderMessageCreator.createMTMsg(ctx);
 				for(BusinessLogicPipeline blp : blps) {
 					try {

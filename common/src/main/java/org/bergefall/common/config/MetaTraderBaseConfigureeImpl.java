@@ -97,6 +97,37 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		return prop;
 	}
 	
+
+	@Override
+	public boolean getBooleanProperty(String prefix, String propKey) {
+		String key = null;
+		if (prefix.endsWith(".")) {
+			key = prefix + propKey;
+		} else {
+			key = prefix + "." + propKey;
+		}
+		Boolean prop = getBooleanProperty(key);
+		if (null == prop) {
+			return false;
+		}
+		return prop.booleanValue();
+	}
+	
+	@Override
+	public long getLongProperty(String prefix, String propKey) {
+		String key = null;
+		if (prefix.endsWith(".")) {
+			key = prefix + propKey;
+		} else {
+			key = prefix + "." + propKey;
+		}
+		Long prop = getLongProperty(key);
+		if (null == prop) {
+			return 0L;
+		}
+		return prop.longValue();
+	}
+	
 	@Override
 	public Long getBlpLong(String propKey) {
 		return getLongProperty(BLP + propKey);

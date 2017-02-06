@@ -6,13 +6,13 @@ public class OrderCtx {
 	private long qty;
 	private int accountId;
 	private String symbol;
-	private boolean isBid;
+	private boolean isAsk;
 	
 	public OrderCtx(String symbol, 
-			long qty, boolean isBid) {
+			long qty, boolean isAsk) {
 		this.qty = qty;
 		this.symbol = symbol;
-		this.isBid = isBid;
+		this.isAsk = isAsk;
 	}
 	
 	public long getPrice() {
@@ -35,8 +35,8 @@ public class OrderCtx {
 		accountId = id;
 	}
 	
-	public boolean isBid() {
-		return isBid;
+	public boolean isAsk() {
+		return isAsk;
 	}
 
 	public int getAccountId() {

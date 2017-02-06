@@ -34,4 +34,22 @@ public interface MetaTraderConfig {
 	public String getBlpString(String propKey);
 	
 	public String getRoutingString(String propKey);
+	
+	/**
+	 * Gets a generic boolean config value.
+	 * Default is false
+	 * @param prefix Prefix. Should normally be calling class (Bean)
+	 * @param propKey Key.
+	 * @return value, default false.
+	 */
+	public boolean getBooleanProperty(String prefix, String propKey);
+	
+	/**
+	 * Gets a generic long config value.
+	 * Default is 0
+	 * @param prefix Prefix. Should normally be calling class (Bean)
+	 * @param propKey Key.
+	 * @return value, default 0L.
+	 */
+	public long getLongProperty(String prefix, String propKey);
 }

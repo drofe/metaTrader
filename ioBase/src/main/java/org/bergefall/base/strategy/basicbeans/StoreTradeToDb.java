@@ -8,7 +8,6 @@ import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.data.TradeCtx;
 import org.bergefall.dbstorage.trade.TradeWriter;
-import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
 public class StoreTradeToDb extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
@@ -22,16 +21,21 @@ public class StoreTradeToDb extends AbstractStrategyBean<IntraStrategyBeanMsg, S
 	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		if (null != intraMsg && null != token.getTriggeringMsg()) {
-			MetaTraderMessage msg = token.getTriggeringMsg();
+		if (false == storeToDB) {
+			return status;
+		}
+		if (null != msg) {
 			switch (msg.getMsgType()) {
 			case Trade:
-				if (storeToDB) {
-					storeNewTrade(msg.getTrade());
-				}
+				storeNewTrade(msg.getTrade());
 				break;
 			default:
 				break;
+			}
+		}
+		if (null != intraMsg && false == intraMsg.getTrades().isEmpty()) {
+			for (TradeCtx tradeCtx : intraMsg.getTrades()) {
+				storeNewTradeCtx(tradeCtx);
 			}
 		}
 		return status;
@@ -39,7 +43,11 @@ public class StoreTradeToDb extends AbstractStrategyBean<IntraStrategyBeanMsg, S
 
 	protected void storeNewTrade(Trade trade) {
 		TradeCtx ctx = convertToCtx(trade);
-		tradeWriter.storeTradeCtx(ctx);
+		storeNewTradeCtx(ctx);
+	}
+	
+	protected void storeNewTradeCtx(TradeCtx trade) {
+		tradeWriter.storeTradeCtx(trade);	
 	}
 
 	protected TradeCtx convertToCtx(Trade trade) {

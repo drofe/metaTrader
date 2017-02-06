@@ -30,29 +30,24 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strat = new LinkedList<>();
 		addBeanToStrategy(new MovingAverageCalculatingBean(), strat);
 		addBeanToStrategy(new OrderGenerator(), strat);
+		addBeanToStrategy(new BackTestBean(), strat);
+		addBeanToStrategy(new TradeHandlingBean(), strat);
 		strategyMap.put(mas, strat);
 		
-		strat = new LinkedList<>();
-		addBeanToStrategy(new BackTestBean(), strat);
+		strat = new LinkedList<>();		
 		strategyMap.put(backtestStrategy, strat);
 		
 		strat = new LinkedList<>();
-		addBeanToStrategy(new TradeHandlingBean(), strat);
 		strategyMap.put(tradeStrategy, strat);
-		
-		
+
 	}
 		
 	@Override
 	protected void handleAccounts(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void handleInstrument(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -62,8 +57,6 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 
 	@Override
 	protected void handleBeats(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

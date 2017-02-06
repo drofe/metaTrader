@@ -2,12 +2,17 @@ package org.bergefall.protocol.metatrader;
 
 import static org.bergefall.common.MetaTraderConstants.DIVISOR;
 
+import java.time.LocalDateTime;
+
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.common.data.OrderCtx;
+import org.bergefall.common.data.PositionCtx;
 import org.bergefall.common.data.TradeCtx;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Builder;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Beat;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
@@ -20,6 +25,12 @@ public class MetaTraderMessageCreator {
 
 	public static MetaTraderMessage createTestMsg() {
 		AccountCtx ctx = new AccountCtx("TEST", 0, "TEST_BROKER", "TEST_USER");
+		return createMTMsg(ctx);
+	}
+	
+	public static MetaTraderMessage createMdTestMsg() {
+		MarketDataCtx ctx = new MarketDataCtx("TEST", 
+				LocalDateTime.now(), 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
 		return createMTMsg(ctx);
 	}
 
@@ -47,6 +58,7 @@ public class MetaTraderMessageCreator {
 				.setPrice(ctx.getPrice())
 				.setQty(ctx.getQty())
 				.setAccount(createAccount(accCtx))
+				.setIsAsk(ctx.isAsk())
 				.setInstrument(Instrument.newBuilder().setName(ctx.getSymbol()).build())
 				.build();
 		return order;
@@ -93,10 +105,10 @@ public class MetaTraderMessageCreator {
 		return trade;
 	}
 
-	public static MetaTraderMessage createMTMsg(MarketDataCtx priceCtx) {
+	public static MetaTraderMessage createMTMsg(MarketDataCtx mdCtx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()
 				.setMsgType(Type.MarketData)
-				.setMarketData(createMD(priceCtx))
+				.setMarketData(createMD(mdCtx))
 				.addTimeStamps(System.currentTimeMillis())
 				.build();
 		return mtMsg;
@@ -121,12 +133,27 @@ public class MetaTraderMessageCreator {
 	}
 
 	public static Account createAccount(AccountCtx accounCtx) {
-		Account account = Account.newBuilder()
+		Builder accBuilder = Account.newBuilder()
 				.setBroker(accounCtx.getBroker())
 				.setName(accounCtx.getName())
-				.setId((int) accounCtx.getId())
+				.setId((int) accounCtx.getId());
+		for (PositionCtx pos : accounCtx.getAllPositions()) {
+			accBuilder.addPositions(createPosition(pos));
+		}
+		Account account = accBuilder 
 				.build();
 		return account;
+	}
+	
+	public static Position createPosition(PositionCtx ctx) {
+		Position pos = Position.newBuilder()
+				.setInstrument(Instrument.newBuilder().setName(ctx.getSymbol()).build())
+				.setLongQty(ctx.getLongQty())
+				.setShortQty(ctx.getShortQty())
+				.setAvgLongPrice(ctx.getAvgLongPrice())
+				.setAvgShortPrice(ctx.getAvgShortPrice())
+				.build();
+		return pos;
 	}
 
 	public static MetaTraderMessage createMTMsg(AccountCtx accountCtx) {
