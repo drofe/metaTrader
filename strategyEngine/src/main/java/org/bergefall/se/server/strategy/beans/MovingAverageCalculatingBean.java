@@ -55,11 +55,11 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 			writeToFile(strat, marketData);
 			HistoricalAverageRelations histVals = addToHistory(strat);
 			if (strat.isFastAvgGreaterThanSlow() && !histVals.getIsFastG(1)) {
-				Long id = csd.getAccountId(strat.getName());
+				Integer id = csd.getAccountId(strat.getName());
 				createOrder(marketData.getInstrument(), marketData.getClose(), false, 
 						null == id ? 0 : id.intValue());
 			} else if (strat.isSlowAvgGreaterThanFast() && !histVals.getIsSlowG(1)){
-				Long id = csd.getAccountId(strat.getName());
+				Integer id = csd.getAccountId(strat.getName());
 				createOrder(marketData.getInstrument(), marketData.getClose(), true, 
 						null == id ? 0 : id.intValue());
 			}

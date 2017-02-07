@@ -1,7 +1,8 @@
-package org.bergefall.se.test;
+package org.bergefall.se.test.beans;
 
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.se.server.strategy.beans.TradeHandlingBean;
+import org.bergefall.se.test.StrategyEngineTestBase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

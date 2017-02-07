@@ -155,6 +155,22 @@ public class MetaTraderMessageCreator {
 				.build();
 		return pos;
 	}
+	
+	public static MarketDataCtx convertToContext(MarketData md) {
+		MarketDataCtx ctx = new MarketDataCtx(md.getInstrument(), 
+				LocalDateTime.parse(md.getDate()), 
+				md.getOpen(), 
+				md.getClose(), 
+				md.getAvg(), 
+				md.getHigh(), 
+				md.getLow(), 
+				md.getAsk(), 
+				md.getBid(), 
+				md.getTrades(), 
+				md.getTotVol(), 
+				md.getTurnover());
+		return ctx;
+	}
 
 	public static MetaTraderMessage createMTMsg(AccountCtx accountCtx) {
 		MetaTraderMessage mtMsg = MetaTraderMessage.newBuilder()

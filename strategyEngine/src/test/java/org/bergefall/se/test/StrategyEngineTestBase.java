@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.MetaTraderConstants;
+import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.MarketDataCtx;
@@ -19,7 +20,7 @@ public class StrategyEngineTestBase {
 	protected static final String ERIC = "ERIC";
 	protected static final String CASH = MetaTraderConstants.CASH;
 	protected CommonStrategyData csd;
-	protected MetaTraderConfig config = null;
+	protected MetaTraderConfig config = new TestConfig(null);
 	
 	
 	public StrategyEngineTestBase() {
@@ -42,7 +43,6 @@ public class StrategyEngineTestBase {
 		return token;
 	}
 	
-	
 	protected TradeCtx getNewBuyTrade(final String symb, long price, long qty) {
 		return new TradeCtx(symb, LocalDateTime.now(), testAccId, true, price, qty, 0L, 0L, 0L);
 	}
@@ -54,9 +54,32 @@ public class StrategyEngineTestBase {
 	protected MetaTraderMessage getNewMarketData(int i) {
 		return getNewMarketData(i, 10L);
 	}
+	
 	protected MetaTraderMessage getNewMarketData(int i, long closePrice) {
 		MarketDataCtx ctx = new MarketDataCtx(ERIC, LocalDateTime.now(), 0L, closePrice, 0, 0, 0, 0, 0, 0, 0, 0);
 		return MetaTraderMessageCreator.createMTMsg(ctx);
 	}
 	
+	protected long price(long price) {
+		return price * MetaTraderConstants.DIVISOR;
+	}
+	
+	protected long qty(long qty) {
+		return qty * MetaTraderConstants.DIVISOR;
+	}
+	
+	protected TestConfig getTestConfig() {
+		return (TestConfig) config;
+	}
+	
+	public class TestConfig extends MetaTraderBaseConfigureeImpl {
+
+		public TestConfig(String configFile) {
+			super(configFile);
+		}
+		
+		public void setConfig(String key, String value) {
+			getProperties().setProperty(key, value);
+		}		
+	}
 }

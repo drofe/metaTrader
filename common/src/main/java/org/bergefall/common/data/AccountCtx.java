@@ -7,12 +7,12 @@ import java.util.Map;
 public class AccountCtx {
 
 	private String name;
-	private long id;
+	private int id;
 	private String broker;
 	private String user;
 	private Map<String, PositionCtx> positions;
 	
-	public AccountCtx(String name, long id, String broker, String user) {
+	public AccountCtx(String name, int id, String broker, String user) {
 		this.name = name;
 		this.id = id;
 		this.broker = broker;
@@ -23,7 +23,7 @@ public class AccountCtx {
 	public String getName() {
 		return name;
 	}
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	public String getBroker() {

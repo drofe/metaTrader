@@ -14,7 +14,7 @@ public class BlpTestBase {
 	}
 	
 	protected AccountCtx createAccountCtx(int id) {
-		return new AccountCtx("TEST", (long) id, "Broker", "User");
+		return new AccountCtx("TEST", id, "Broker", "User");
 	}
 	
 	protected TradeCtx createTradeCtx(LocalDateTime ltd) {

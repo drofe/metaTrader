@@ -1,6 +1,5 @@
 package org.bergefall.base.commondata;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +9,7 @@ import java.util.TreeSet;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
+import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
@@ -17,8 +17,8 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 public class CommonStrategyData {
 	
 	private final Map<String, SortedSet<MarketDataCtx>> marketDataPerSymbol;
-	private final Map<Long, AccountCtx> accounts;
-	private final Map<String, Long> accountNameToId;
+	private final Map<Integer, AccountCtx> accounts;
+	private final Map<String, Integer> accountNameToId;
 	private final Map<String, InstrumentCtx> instruments;
 	
 	public CommonStrategyData() {
@@ -67,15 +67,15 @@ public class CommonStrategyData {
 	}
 	
 	public void addOrUpdateAccount(AccountCtx acc)  {
-		accounts.put(Long.valueOf(acc.getId()), acc);
+		accounts.put(Integer.valueOf(acc.getId()), acc);
 		accountNameToId.put(acc.getName(), acc.getId());
 	}
 	
-	public AccountCtx getAccount(long id) {
-		return accounts.get(Long.valueOf(id));
+	public AccountCtx getAccount(int id) {
+		return accounts.get(Integer.valueOf(id));
 	}
 	
-	public Long getAccountId(String name) {
+	public Integer getAccountId(String name) {
 		return accountNameToId.get(name);
 	}
 	
@@ -83,18 +83,7 @@ public class CommonStrategyData {
 		if (null == md) {
 			return;
 		}
-		MarketDataCtx mdCtx = new MarketDataCtx(md.getInstrument(), 
-				LocalDateTime.parse(md.getDate()), 
-				md.getOpen(), 
-				md.getClose(), 
-				md.getAvg(), 
-				md.getHigh(), 
-				md.getLow(), 
-				md.getAsk(), 
-				md.getBid(), 
-				md.getTrades(), 
-				md.getTotVol(), 
-				md.getTurnover());
+		MarketDataCtx mdCtx = MetaTraderMessageCreator.convertToContext(md);
 		addMarketData(mdCtx);
 	}
 	

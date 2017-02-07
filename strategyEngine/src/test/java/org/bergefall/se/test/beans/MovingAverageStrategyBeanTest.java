@@ -1,8 +1,9 @@
-package org.bergefall.se.test;
+package org.bergefall.se.test.beans;
 
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.se.server.strategy.beans.MovingAverageCalculatingBean;
+import org.bergefall.se.test.StrategyEngineTestBase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

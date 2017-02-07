@@ -161,6 +161,10 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		return getStringProperty(ROUTING + propKey);
 	}
 	
+	protected Properties getProperties() {
+		return configProperties;
+	}
+	
 	private Boolean getBooleanProperty(String key) {
 		checkInitialized();
 		String prop = configProperties.getProperty(key);
@@ -177,7 +181,7 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 			return null;
 		}
 		try {
-			return Long.valueOf(prop);
+			return Long.valueOf(prop.replaceAll("_", ""));
 		} catch (NumberFormatException e) {
 			log.error("Faild to parse key " + key + " to Integer");
 			return null;
