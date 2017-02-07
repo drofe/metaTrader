@@ -1,6 +1,7 @@
 package org.bergefall.se.test.beans;
 
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.se.server.strategy.beans.TradeHandlingBean;
 import org.bergefall.se.test.StrategyEngineTestBase;
 import org.junit.Assert;
@@ -34,8 +35,8 @@ public class TradeHandlerTest extends StrategyEngineTestBase {
 	
 	@Test
 	public void testSimpleSell() {
-		long price = 11L;
-		long qty = 100L;
+		long price = price(11L);
+		long qty = qty(100L);
 		
 		//Add position to sell.
 		csd.getAccount(testAccId).getPosition(ERIC).setLongQty(qty);
@@ -46,17 +47,18 @@ public class TradeHandlerTest extends StrategyEngineTestBase {
 		
 		Assert.assertEquals(0L, csd.getAccount(testAccId).getPosition(ERIC).getLongQty());
 		Assert.assertEquals(0L, csd.getAccount(testAccId).getPosition(ERIC).getShortQty());
-		Assert.assertEquals(price * qty, csd.getAccount(testAccId).getPosition(CASH).getLongQty());
+		Assert.assertEquals((price * qty) / MetaTraderConstants.DIVISOR, 
+				csd.getAccount(testAccId).getPosition(CASH).getLongQty());
 	}
 	
 	@Test
 	public void testBuyThenSellWithProfit() {
-		long price = 10L;
-		long qty = 100L;
-		long profit = 4;
+		long price = price(10L);
+		long qty = qty(100L);
+		long profit = price(4);
 		
 		//Add start cash.
-		csd.getAccount(testAccId).getPosition(CASH).setLongQty(price * qty);
+		csd.getAccount(testAccId).getPosition(CASH).setLongQty((price * qty) / MetaTraderConstants.DIVISOR);
 		
 		IntraStrategyBeanMsg msg = new IntraStrategyBeanMsg();
 		msg.addTrade(getNewBuyTrade(ERIC, price, qty));
@@ -66,17 +68,18 @@ public class TradeHandlerTest extends StrategyEngineTestBase {
 		msg.addTrade(getNewSellTrade(ERIC, price + profit, qty));
 		tradeHandlerBean.executeBean(getNewToken(), msg);
 		
-		Assert.assertEquals((price+profit) * qty, csd.getAccount(testAccId).getPosition(CASH).getLongQty());
+		Assert.assertEquals((price+profit) * qty / MetaTraderConstants.DIVISOR, 
+				csd.getAccount(testAccId).getPosition(CASH).getLongQty());
 	}
 	
 	@Test
 	public void testBuyThenSellWithLoss() {
-		long price = 10L;
-		long qty = 100L;
-		long profit = -6;
+		long price = price(10L);
+		long qty = qty(100L);
+		long profit = price(-6);
 		
 		//Add start cash.
-		csd.getAccount(testAccId).getPosition(CASH).setLongQty(price * qty);
+		csd.getAccount(testAccId).getPosition(CASH).setLongQty(price * qty / MetaTraderConstants.DIVISOR);
 		
 		IntraStrategyBeanMsg msg = new IntraStrategyBeanMsg();
 		msg.addTrade(getNewBuyTrade(ERIC, price, qty));
@@ -86,6 +89,6 @@ public class TradeHandlerTest extends StrategyEngineTestBase {
 		msg.addTrade(getNewSellTrade(ERIC, price + profit, qty));
 		tradeHandlerBean.executeBean(getNewToken(), msg);
 		
-		Assert.assertEquals((price+profit) * qty, csd.getAccount(testAccId).getPosition(CASH).getLongQty());
+		Assert.assertEquals((price+profit) * qty / MetaTraderConstants.DIVISOR, csd.getAccount(testAccId).getPosition(CASH).getLongQty());
 	}
 }

@@ -46,4 +46,12 @@ public class AccountCtx {
 		return ctx;
 	}
 	
+	public boolean hasActivePosition(final String symbol) {
+		PositionCtx ctx = positions.get(symbol);
+		if (null !=  ctx) {
+			return 0 != ctx.getLongQty() || 0 != ctx.getShortQty();
+		}
+		return false;
+	}
+	
 }

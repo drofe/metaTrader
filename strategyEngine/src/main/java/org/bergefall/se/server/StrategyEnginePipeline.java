@@ -11,6 +11,7 @@ import org.bergefall.base.strategy.basicbeans.BackTestBean;
 import org.bergefall.base.strategy.basicbeans.OrderGenerator;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.iobase.blp.BusinessLogicPipelineImpl;
+import org.bergefall.se.server.strategy.beans.EquityLineGeneratorBean;
 import org.bergefall.se.server.strategy.beans.MovingAverageCalculatingBean;
 import org.bergefall.se.server.strategy.beans.TradeHandlingBean;
 
@@ -32,6 +33,7 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 		addBeanToStrategy(new OrderGenerator(), strat);
 		addBeanToStrategy(new BackTestBean(), strat);
 		addBeanToStrategy(new TradeHandlingBean(), strat);
+		addBeanToStrategy(new EquityLineGeneratorBean(), strat);
 		strategyMap.put(mas, strat);
 		
 		strat = new LinkedList<>();		

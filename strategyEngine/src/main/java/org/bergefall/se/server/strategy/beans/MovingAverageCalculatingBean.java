@@ -100,7 +100,7 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 		if (cashAmount <= 0) {
 			return 0L;
 		}
-		return cashAmount / price;
+		return (cashAmount / price) * MetaTraderConstants.DIVISOR;
 	}
 	
 	private List<MaStrategy> getStrategies(String symb) {
@@ -124,6 +124,9 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 //				log.error(SystemLoggerIf.getStacktrace(e));
 //			}
 //		}
+		AccountCtx ctx = new AccountCtx("10_30", 0, "test", "testUser");
+		ctx.getPosition(MetaTraderConstants.CASH).addLongQty(1000L * MetaTraderConstants.DIVISOR);
+		csd.addOrUpdateAccount(ctx);
 		strats.add(new MaStrategy("10_30", 10, 30));
 		return strats;
 	}

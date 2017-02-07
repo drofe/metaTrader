@@ -19,6 +19,7 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 	protected MetaTraderMessage msg;
 	protected BusinessLogicPipeline routingPipeline;
 	protected CommonStrategyData csd;
+	protected MetaTraderConfig config;
 
 	
 	public OUT executeBean(StrategyToken token, IN intraMsg) {
@@ -43,9 +44,14 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 	public abstract OUT execute(StrategyToken token, IN intraMsg);
 	
 	public void initBean(MetaTraderConfig config) {
+		this.config = config;
 		
 	}
 	public void shutdownHook() {
 		
+	}
+	
+	protected boolean getBooleanBeanProperty(String key) {
+		return this.config.getBooleanProperty(this.getClass().getSimpleName(), key);
 	}
 }

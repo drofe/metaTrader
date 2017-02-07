@@ -34,10 +34,18 @@ public class StopLossBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 
 	protected void handleMarketData(MarketDataCtx md) {
 		for (AccountCtx acc : csd.getAllAccounts()){
-			PositionCtx pos = acc.getPosition(md.getSymbol());
-			if (isStopLossHit(pos, md)) {
-				intraMsg.addOrder(createExitOrder(acc.getId(), pos));
+			if (false == acc.hasActivePosition(md.getSymbol())) {
+				continue;
 			}
+			
+			checkLossLimit(acc, md);
+		}
+	}
+	
+	protected void checkLossLimit(AccountCtx acc, MarketDataCtx md) {
+		PositionCtx pos = acc.getPosition(md.getSymbol());
+		if (isStopLossHit(pos.getAvgLongPrice(), md)) {
+			intraMsg.addOrder(createExitOrder(acc.getId(), pos));
 		}
 	}
 	
@@ -47,11 +55,11 @@ public class StopLossBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 		return ctx;
 	}
 
-	protected boolean isStopLossHit(PositionCtx pos, MarketDataCtx mdCtx) {
-		if (mdCtx.getClosePrice() >= pos.getAvgLongPrice()) {
+	protected boolean isStopLossHit(long limitBasePrice, MarketDataCtx mdCtx) {
+		if (mdCtx.getClosePrice() >= limitBasePrice) {
 			return false;
 		}
-		long ratio = (mdCtx.getClosePrice() * MetaTraderConstants.DIVISOR) / pos.getAvgLongPrice();
+		long ratio = (mdCtx.getClosePrice() * MetaTraderConstants.DIVISOR) / limitBasePrice;
 		long downPercentage = 1 * MetaTraderConstants.DIVISOR - ratio;
 		if (downPercentage >= stopLoss) {
 			return true;

@@ -1,11 +1,13 @@
 package org.bergefall.base.commondata;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
@@ -26,11 +28,22 @@ public class CommonStrategyData {
 		accounts = new HashMap<>();
 		instruments = new HashMap<>();
 		accountNameToId = new HashMap<>();
+		addMarketData(new MarketDataCtx(MetaTraderConstants.CASH, LocalDateTime.now(), 
+				1L * MetaTraderConstants.DIVISOR, 1L * MetaTraderConstants.DIVISOR, 
+				0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
 	}
 	
 	public SortedSet<MarketDataCtx> getMarketDataForSymbol(String symbol) {
 		SortedSet<MarketDataCtx> marketData = marketDataPerSymbol.get(symbol);
 		return null == marketData ? new TreeSet<MarketDataCtx>() : marketData;
+	}
+	
+	public MarketDataCtx getLatestMarketDataForSymbol(String symbol) {
+		SortedSet<MarketDataCtx> marketData = marketDataPerSymbol.get(symbol);
+		if (null == marketData) {
+			return null;
+		}
+		return marketData.last();
 	}
 
 	public void addMarketData(MarketDataCtx md) {

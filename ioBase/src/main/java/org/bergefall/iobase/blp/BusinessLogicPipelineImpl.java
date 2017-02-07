@@ -189,21 +189,18 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	protected void buildStrategies() {
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preMd = new LinkedList<>();
 		AddDataToCommonData addData = new AddDataToCommonData();
-		addData.initBean(config);
-		preMd.add(addData);
+		addBeanToStrategy(addData, preMd);
 		strategyMap.put(preMDStrategy, preMd);
 
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preTrade = new LinkedList<>();
-		StoreTradeToDb storeTrade = new StoreTradeToDb();
-		storeTrade.initBean(config);
-		preTrade.add(storeTrade);
+		addBeanToStrategy(new StoreTradeToDb(), preTrade);
 		strategyMap.put(preTradeStrategy, preTrade);
 
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preBeat = new LinkedList<>();
 		strategyMap.put(preBeatStrategy, preBeat);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preAcc = new LinkedList<>();
-		preAcc.add(addData);
+		
 		strategyMap.put(preAccountStrategy, preAcc);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preInstr = new LinkedList<>();

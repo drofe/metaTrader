@@ -7,7 +7,6 @@ import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
-import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 public class AddDataToCommonData extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
 
@@ -20,8 +19,8 @@ public class AddDataToCommonData extends AbstractStrategyBean<IntraStrategyBeanM
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraBeanMsg) {
 
 		csd = token.getCsd();
-		if (null != intraBeanMsg && null != token.getTriggeringMsg()) {
-			MetaTraderMessage msg = token.getTriggeringMsg();
+		if (null != intraBeanMsg && null != msg) {
+
 			switch (msg.getMsgType()) {
 			case MarketData :
 				handleMarketData(msg.getMarketData());

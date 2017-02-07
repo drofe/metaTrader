@@ -52,7 +52,7 @@ public class StrategyEngineTestBase {
 	}
 	
 	protected MetaTraderMessage getNewMarketData(int i) {
-		return getNewMarketData(i, 10L);
+		return getNewMarketData(i, price(10L));
 	}
 	
 	protected MetaTraderMessage getNewMarketData(int i, long closePrice) {

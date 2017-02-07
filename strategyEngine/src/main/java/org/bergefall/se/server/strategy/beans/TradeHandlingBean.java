@@ -65,12 +65,12 @@ public class TradeHandlingBean extends StoreTradeToDb {
 			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
 			tradeInstrPos.addLongQty(trade.getQty());
 			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
-			cashPos.removeLongQty(trade.getPrice() * trade.getQty());
+			cashPos.removeLongQty((trade.getPrice() * trade.getQty()) / MetaTraderConstants.DIVISOR);
 		} else {
 			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
 			tradeInstrPos.removeLongQty(trade.getQty());
 			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
-			cashPos.addLongQty(trade.getPrice() * trade.getQty());
+			cashPos.addLongQty(trade.getPrice() * trade.getQty() / MetaTraderConstants.DIVISOR);
 		}
 	}
 
