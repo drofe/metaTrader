@@ -1,5 +1,9 @@
 package org.bergefall.base.strategy;
 
+
+import static org.bergefall.common.MetaTraderConstants.price;
+import static org.bergefall.common.MetaTraderConstants.qty;
+
 import java.io.Serializable;
 
 import org.bergefall.base.commondata.CommonStrategyData;
@@ -53,5 +57,13 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 	
 	protected boolean getBooleanBeanProperty(String key) {
 		return this.config.getBooleanProperty(this.getClass().getSimpleName(), key);
+	}
+	
+	protected long toPrice(long price) {
+		return price(price);
+	}
+	
+	protected long toQty(long qty) {
+		return qty(qty);
 	}
 }

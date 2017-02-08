@@ -63,22 +63,38 @@ public class TradeHandlingBean extends StoreTradeToDb {
 	protected void updatesPositions(AccountCtx accCtx, Trade trade) {		
 		if (trade.getIsEntry()) {
 			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
-			tradeInstrPos.addLongQty(trade.getQty());
+			tradeInstrPos.addLongQty(trade.getQty(), trade.getPrice());
 			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
-			cashPos.removeLongQty((trade.getPrice() * trade.getQty()) / MetaTraderConstants.DIVISOR);
+			cashPos.removeLongQty((trade.getPrice() * trade.getQty()) / MetaTraderConstants.DIVISOR,
+					MetaTraderConstants.CashPrice);
 		} else {
 			PositionCtx tradeInstrPos = accCtx.getPosition(trade.getInstrument().getName());
-			tradeInstrPos.removeLongQty(trade.getQty());
+			tradeInstrPos.removeLongQty(trade.getQty(), trade.getPrice());
 			PositionCtx cashPos = accCtx.getPosition(MetaTraderConstants.CASH);
-			cashPos.addLongQty(trade.getPrice() * trade.getQty() / MetaTraderConstants.DIVISOR);
+			cashPos.addLongQty(trade.getPrice() * trade.getQty() / MetaTraderConstants.DIVISOR, 
+					MetaTraderConstants.CashPrice);
 		}
 	}
 
 	@Override
 	public void initBean(MetaTraderConfig config) {
-		writeToFile = null == config ? false : config.getBooleanProperty(this.getClass().getName(), "writeToFile");
+		super.initBean(config);
+		writeToFile = null == config ? false : getBooleanBeanProperty("writeToFile");
 		if (writeToFile) {
 			fileHander = new RotatingFileHandler("./", true, 60_000, "Trades-");
+			try {
+				fileHander.write("Instrument" + cSeparator +
+						"Date" + cSeparator + 
+						"IsEntry" + cSeparator + 
+						"Price" + cSeparator + 
+						"Qty" + cSeparator + 
+						"Net profit" + cSeparator +
+						"Gross profit" + cSeparator + 
+						"Commission");
+			} catch (IOException e) {
+				log.error("Error writing head to Trades file." + System.lineSeparator() + 
+						SystemLoggerIf.getStacktrace(e) );
+			}
 		}
 		storeToDB = false;
 	}

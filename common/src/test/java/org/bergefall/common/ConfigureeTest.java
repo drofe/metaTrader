@@ -1,4 +1,4 @@
-package common;
+package org.bergefall.common;
 
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;

@@ -10,6 +10,14 @@ public class MetaTraderConstants {
 	
 	public static final long DefaultEqPrice = Long.MIN_VALUE;
 	public static final long DefaultVal = 0L;
+	public static final long CashPrice = 1L * DIVISOR;
 	public static final String CASH = "cash"; //"Symbol" for cash.
 	
+	public static final long price(long price) {
+		return price * DIVISOR;
+	}
+	
+	public static final long qty(long qty) {
+		return qty * DIVISOR;
+	}
 }

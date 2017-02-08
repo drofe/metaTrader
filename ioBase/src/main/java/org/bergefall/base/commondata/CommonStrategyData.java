@@ -11,8 +11,10 @@ import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
+import org.bergefall.common.data.PositionCtx;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
 
@@ -65,6 +67,14 @@ public class CommonStrategyData {
 		}
 		
 		AccountCtx accCtx = new AccountCtx(acc.getName(), acc.getId(), acc.getBroker(), acc.getUser());
+		for (Position pos : acc.getPositionsList()) {
+			PositionCtx posCtx = accCtx.getPosition(pos.getInstrument().getName());
+			posCtx.setAvgLongPrice(pos.getAvgLongPrice());
+			posCtx.setAvgShortPrice(pos.getAvgShortPrice());
+			posCtx.setLongQty(pos.getLongQty());
+			posCtx.setShortQty(pos.getShortQty());
+			
+		}
 		addOrUpdateAccount(accCtx);
 	}
 	public Collection<AccountCtx> getAllAccounts() {

@@ -60,6 +60,9 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 						null == id ? 0 : id.intValue());
 			} else if (strat.isSlowAvgGreaterThanFast() && !histVals.getIsSlowG(1)){
 				Integer id = csd.getAccountId(strat.getName());
+				if ( false == csd.getAccount(id.intValue()).hasActivePosition(marketData.getInstrument())) {
+					continue; //Nothing to sell.
+				}
 				createOrder(marketData.getInstrument(), marketData.getClose(), true, 
 						null == id ? 0 : id.intValue());
 			}
@@ -71,7 +74,8 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 			return;
 		}
 		try {
-			fileHandler.write("Strat: " + strat.getName() +
+			fileHandler.write("Date: " + marketData.getDate() +
+					"Strat: " + strat.getName() +
 					", Close price," + marketData.getClose() +
 					", Short average, " + strat.getFastAvg() + 
 					", Long average, " + strat.getSlowAvg());
@@ -114,28 +118,29 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 	
 	private List<MaStrategy> generateStrats() {
 		List<MaStrategy> strats = new ArrayList<>();
-//		for (AccountCtx acc : csd.getAllAccounts()) {
-//			String[] ratios = acc.getName().split("_");
-//			try {
-//				int shortW = Integer.valueOf(ratios[0]).intValue();
-//				int longW = Integer.valueOf(ratios[1]).intValue();
-//				strats.add(new MaStrategy(acc.getName(), shortW, longW));
-//			} catch (NumberFormatException e) {
-//				log.error(SystemLoggerIf.getStacktrace(e));
-//			}
-//		}
-		AccountCtx ctx = new AccountCtx("10_30", 0, "test", "testUser");
-		ctx.getPosition(MetaTraderConstants.CASH).addLongQty(1000L * MetaTraderConstants.DIVISOR);
-		csd.addOrUpdateAccount(ctx);
-		strats.add(new MaStrategy("10_30", 10, 30));
+		for (AccountCtx acc : csd.getAllAccounts()) {
+			String[] ratios = acc.getName().split("_");
+			try {
+				int shortW = Integer.valueOf(ratios[0]).intValue();
+				int longW = Integer.valueOf(ratios[1]).intValue();
+				strats.add(new MaStrategy(acc.getName(), shortW, longW));
+			} catch (NumberFormatException e) {
+				log.error(SystemLoggerIf.getStacktrace(e));
+			}
+		}
+//		AccountCtx ctx = new AccountCtx("10_30", 0, "test", "testUser");
+//		ctx.getPosition(MetaTraderConstants.CASH).addLongQty(1000L * MetaTraderConstants.DIVISOR);
+//		csd.addOrUpdateAccount(ctx);
+//		strats.add(new MaStrategy("10_30", 10, 30));
 		return strats;
 	}
 	
 	@Override
 	public void initBean(MetaTraderConfig config) {
+		super.initBean(config);
 		strategies = new HashMap<>();
 		historicalValues = new HashMap<>();
-		writeToFile = null == config ? false : config.getBooleanProperty(this.getClass().getName(), "writeToFile");
+		writeToFile = null == config ? false : getBooleanBeanProperty("writeToFile");
 		if (writeToFile) {
 			fileHandler = new RotatingFileHandler("./", false, 60_000, "PriceMAData");
 		}

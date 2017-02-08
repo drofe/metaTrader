@@ -1,11 +1,13 @@
 package org.bergefall.base.strategy.basicbeans;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.OrderCtx;
 import org.bergefall.common.data.PositionCtx;
@@ -22,6 +24,7 @@ public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 	 * Commission and slippage
 	 */
 	private long commission = 0L;
+	private static final DateTimeFormatter DTF = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 	
 	@Override
 	public Status execute(StrategyToken token, IntraStrategyBeanMsg intraMsg) {
@@ -39,7 +42,9 @@ public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 	protected void handleInChainOrders(IntraStrategyBeanMsg intraMsg) {
 		for (OrderCtx order : intraMsg.getOrders()) {
 			TradeCtx tradeCtx = new TradeCtx(order.getSymbol(), 
-					LocalDateTime.now(), 
+					Type.MarketData == msg.getMsgType() ? 
+							LocalDateTime.parse(msg.getMarketData().getDate(), DTF)
+							: LocalDateTime.now(), 
 					order.getAccountId(), 
 					getIsEntry(order), 
 					order.getPrice(), 
@@ -63,8 +68,8 @@ public class BackTestBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 			return Long.valueOf(0L);
 		}
 		PositionCtx posCtx = csd.getAccount(order.getAccountId()).getPosition(order.getSymbol());
-		long payed = posCtx.getAvgLongPrice() * order.getQty();
-		return (order.getPrice() * order.getQty()) - payed;
+		long payed = (posCtx.getAvgLongPrice() * order.getQty()) / MetaTraderConstants.DIVISOR;
+		return (order.getPrice() * order.getQty())/MetaTraderConstants.DIVISOR - payed;
 	}
 
 	protected void convertToTradeAndRoute(Order order) {

@@ -2,6 +2,7 @@ package org.bergefall.se.test.beans;
 
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
+import org.bergefall.common.MetaTraderConstants;
 import org.bergefall.se.server.strategy.beans.MovingAverageCalculatingBean;
 import org.bergefall.se.test.StrategyEngineTestBase;
 import org.junit.Assert;
@@ -57,7 +58,7 @@ public class MovingAverageStrategyBeanTest extends StrategyEngineTestBase {
 	public void testGenerateBuyOrderWhenCashIsAvailable() {
 		long initialCash = qty(1000L);
 		long newPrice = price(30);
-		csd.getAccount(testAccId).getPosition(CASH).addLongQty(initialCash);
+		csd.getAccount(testAccId).getPosition(CASH).addLongQty(initialCash, MetaTraderConstants.CashPrice);
 		for (int i = 0; i < 30; i++) {
 			StrategyToken token = getNewToken();
 			IntraStrategyBeanMsg msg = new IntraStrategyBeanMsg();

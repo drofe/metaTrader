@@ -129,8 +129,8 @@ public class EqHsAccess {
 	}
 	
 	public static class DataCriterias {
-		public Timestamp from;
-		public Timestamp to;
+		public final Timestamp from;
+		public final Timestamp to;
 		public String symbol;
 		public boolean exCloseP;
 		public boolean exOpenP;
@@ -144,8 +144,16 @@ public class EqHsAccess {
 		public boolean exAsk = true;
 		
 		public DataCriterias(LocalDateTime from, LocalDateTime to, String symbol) {
-			this.from = Timestamp.valueOf(from);
-			this.to = Timestamp.valueOf(to);
+			if (null != from) {
+				this.from = Timestamp.valueOf(from);
+			} else {
+				this.from = Timestamp.valueOf(LocalDateTime.MIN);
+			}
+			if (null != to) {
+				this.to = Timestamp.valueOf(to);
+			} else {
+				this.to= Timestamp.valueOf(LocalDateTime.MAX);
+			}
 			this.symbol = symbol;
 		}
 		

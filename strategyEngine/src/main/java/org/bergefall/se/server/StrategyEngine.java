@@ -1,5 +1,8 @@
 package org.bergefall.se.server;
 
+import static org.bergefall.common.MetaTraderConstants.price;
+import static org.bergefall.common.MetaTraderConstants.qty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +29,11 @@ public class StrategyEngine extends MetaTraderServerApplication {
 	public void runBootloaders() {
 		//For back testing, add a accounts to be used.
 		int id = 0;
-		for(int i = 20; i < 25 ; i++) {
-			for (int j = 5; j < 10; j++) {
+		for(int i = 15; i < 16 ; i++) {
+			for (int j = 3; j < 4; j++) {
 				AccountCtx ctx = new AccountCtx(j + "_" + i, id++, "test", "test");
 				PositionCtx posCtx = ctx.getPosition(MetaTraderConstants.CASH);
-				posCtx.setAvgLongPrice(1L);
-				posCtx.setLongQty(1000L);
+				posCtx.addLongQty(qty(1000L), MetaTraderConstants.CashPrice);
 				MetaTraderMessage msg = MetaTraderMessageCreator.createMTMsg(ctx);
 				for(BusinessLogicPipeline blp : blps) {
 					try {

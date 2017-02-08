@@ -39,7 +39,7 @@ public class EquityLineGeneratorBean extends AbstractStrategyBean<IntraStrategyB
 	private void handleMarketData(MarketData marketData) {
 		if (writeToFile) {
 			try {
-				fileHander.write(formatRecord());
+				fileHander.write(formatRecord(marketData.getDate()));
 			} catch (IOException e) {
 				log.error("Error writing to EQLine file. \n" + SystemLoggerIf.getStacktrace(e));
 			}
@@ -47,10 +47,10 @@ public class EquityLineGeneratorBean extends AbstractStrategyBean<IntraStrategyB
 		
 	}
 
-	private String formatRecord() {
+	private String formatRecord(String date) {
 		StringBuilder builder = new StringBuilder();
 		for (AccountCtx acc : csd.getAllAccounts()) {
-			builder.append("Account;" + acc.getName());
+			builder.append(date + "," + acc.getName());
 			for (PositionCtx pos : acc.getAllPositions()) {
 				String symbol = pos.getSymbol();
 				builder.append(";" + symbol);
@@ -59,8 +59,16 @@ public class EquityLineGeneratorBean extends AbstractStrategyBean<IntraStrategyB
 				builder.append("," + pos.getLongQty());
 				builder.append("," + ((currPrice	* pos.getLongQty()) / MetaTraderConstants.DIVISOR));
 			}
+			builder.append(System.lineSeparator());
 		}
-		return builder.toString();
+		String entry = null;
+		if (System.lineSeparator().equals(builder.substring(builder.length() - 1 , builder.length()))) {
+			entry = builder.substring(0, builder.length() - 1);
+		} else {
+			entry = builder.toString();
+		}
+		
+		return entry;
 	}
 
 	@Override

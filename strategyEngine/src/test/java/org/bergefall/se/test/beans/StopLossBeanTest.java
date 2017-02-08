@@ -25,8 +25,8 @@ public class StopLossBeanTest extends StrategyEngineTestBase {
 		long buyPrice = price(100L);
 		//Add position
 		PositionCtx pos = csd.getAccount(testAccId).getPosition(ERIC);
-		pos.addLongQty(100);
-		pos.setAvgLongPrice(buyPrice);
+		pos.addLongQty(qty(100), buyPrice);
+
 
 		MetaTraderMessage md = getNewMarketData(0, price(99L));
 		StrategyToken token = getNewToken();
@@ -41,9 +41,8 @@ public class StopLossBeanTest extends StrategyEngineTestBase {
 		long buyPrice = price(100L);
 		//Add position
 		PositionCtx pos = csd.getAccount(testAccId).getPosition(ERIC);
-		pos.addLongQty(100);
-		pos.setAvgLongPrice(buyPrice);
-
+		pos.addLongQty(qty(100), buyPrice);
+		
 		MetaTraderMessage md = getNewMarketData(0, price(101L));
 		StrategyToken token = getNewToken();
 		token.setTriggeringMsg(md);
@@ -60,8 +59,7 @@ public class StopLossBeanTest extends StrategyEngineTestBase {
 		long buyPrice = price(100L);
 		//Add position
 		PositionCtx pos = csd.getAccount(testAccId).getPosition(ERIC);
-		pos.addLongQty(100);
-		pos.setAvgLongPrice(buyPrice);
+		pos.addLongQty(qty(100), buyPrice);
 
 		//Down 1%, no trigger.
 		MetaTraderMessage md = getNewMarketData(0, price(99L));

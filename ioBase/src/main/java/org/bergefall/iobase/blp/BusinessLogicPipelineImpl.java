@@ -200,7 +200,7 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 		strategyMap.put(preBeatStrategy, preBeat);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preAcc = new LinkedList<>();
-		
+		addBeanToStrategy(addData, preAcc);
 		strategyMap.put(preAccountStrategy, preAcc);
 		
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> preInstr = new LinkedList<>();
