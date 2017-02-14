@@ -3,6 +3,7 @@ package org.bergefall.iobase.routing;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
@@ -17,8 +18,8 @@ public class RoutingPipeline extends BusinessLogicPipelineBase {
 
 	protected static String routingStrategy = "routeStrategy";
 
-	public RoutingPipeline(MetaTraderConfig config) {
-		super(config);
+	public RoutingPipeline(MetaTraderConfig config, CommonStrategyData csd) {
+		super(config, 0, csd);//Zero Blp nr reserved for routing.
 	}
 
 	@Override
@@ -28,7 +29,6 @@ public class RoutingPipeline extends BusinessLogicPipelineBase {
 
 	@Override
 	protected void setBlpIdentifiers(MetaTraderConfig config) {
-		thisBlpNr = 0; //Zero reserved for routing.
 		blpName = "RoutingPipeline-";
 		sequenceLogFileName = "RoutingSequencedMsgs-" + thisBlpNr;
 	}

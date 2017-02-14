@@ -53,12 +53,14 @@ public class CommonStrategyData {
 			return;
 		}
 		String symbol = md.getSymbol();
-		SortedSet<MarketDataCtx> marketData = marketDataPerSymbol.get(symbol);
-		if (null == marketData) {
-			marketData = new TreeSet<>();
-			marketDataPerSymbol.put(symbol, marketData);
+		synchronized (marketDataPerSymbol) {			
+			SortedSet<MarketDataCtx> marketData = marketDataPerSymbol.get(symbol);
+			if (null == marketData) {
+				marketData = new TreeSet<>();
+				marketDataPerSymbol.put(symbol, marketData);
+			}
+			marketData.add(md);
 		}
-		marketData.add(md);
 	}
 	
 	public void addOrUpdateAccount(Account acc) {
@@ -86,10 +88,12 @@ public class CommonStrategyData {
 	}
 	
 	public void addOrUpdateInstrument(InstrumentCtx ctx) {
-		instruments.put(ctx.getSymbol(), ctx);
+		synchronized (instruments) {
+			instruments.put(ctx.getSymbol(), ctx);
+		}		
 	}
 	
-	public void addOrUpdateAccount(AccountCtx acc)  {
+	public synchronized void addOrUpdateAccount(AccountCtx acc)  {
 		accounts.put(Integer.valueOf(acc.getId()), acc);
 		accountNameToId.put(acc.getName(), acc.getId());
 	}

@@ -1,6 +1,5 @@
 package org.bergefall.se.server;
 
-import static org.bergefall.common.MetaTraderConstants.price;
 import static org.bergefall.common.MetaTraderConstants.qty;
 
 import java.util.ArrayList;
@@ -22,15 +21,15 @@ public class StrategyEngine extends MetaTraderServerApplication {
 	@Override
 	protected List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config) {
 		ArrayList<BusinessLogicPipeline> blpList = new ArrayList<>();
-		blpList.add(new StrategyEnginePipeline(config));
+		blpList.add(new StrategyEnginePipeline(config, csd));
 		return blpList;
 	}
 
 	public void runBootloaders() {
 		//For back testing, add a accounts to be used.
 		int id = 0;
-		for(int i = 15; i < 16 ; i++) {
-			for (int j = 3; j < 4; j++) {
+		for(int i = 23; i < 24 ; i++) {
+			for (int j = 9; j < 10; j++) {
 				AccountCtx ctx = new AccountCtx(j + "_" + i, id++, "test", "test");
 				PositionCtx posCtx = ctx.getPosition(MetaTraderConstants.CASH);
 				posCtx.addLongQty(qty(1000L), MetaTraderConstants.CashPrice);

@@ -1,7 +1,9 @@
 package org.bergefall.iobase;
 
 import java.time.LocalDateTime;
+import java.util.Properties;
 
+import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.data.AccountCtx;
 import org.bergefall.common.data.InstrumentCtx;
 import org.bergefall.common.data.MarketDataCtx;
@@ -23,5 +25,14 @@ public class BlpTestBase {
 	
 	protected InstrumentCtx createInstrCtx(String name) {
 		return new InstrumentCtx(name, 1);
+	}
+	
+	public class TestConfig extends MetaTraderBaseConfigureeImpl {
+
+		public TestConfig(String configFile) {
+			super(configFile);
+			getProperties().setProperty(BLP + "runPreMDStrategy", "true");
+		}
+		
 	}
 }

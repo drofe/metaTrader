@@ -6,7 +6,6 @@ import java.util.SortedSet;
 import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
-import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.common.data.MarketDataCtx;
 import org.bergefall.iobase.BlpTestBase;
@@ -22,8 +21,9 @@ public class BlpTest extends BlpTestBase {
 	
 	@Before
 	public void setup() {
-		MetaTraderConfig config = new MetaTraderBaseConfigureeImpl(null);
-		blp = new TestBlp(config);
+		MetaTraderConfig config = new TestConfig(null);
+
+		blp = new TestBlp(config, new CommonStrategyData());
 	}
 	@Test
 	public void testCSD() {
@@ -32,7 +32,7 @@ public class BlpTest extends BlpTestBase {
 		blp.fireAway(msg);
 		msg = MetaTraderMessageCreator.createMTMsg(createMdCtx(LocalDateTime.now()));
 		blp.fireAway(msg);
-		CommonStrategyData csd = blp.getOrCreateCSD();
+		CommonStrategyData csd = blp.getCSD();
 		SortedSet<MarketDataCtx> mds = csd.getMarketDataForSymbol("TEST");
 		Assert.assertEquals(2, mds.size());
 	}
@@ -46,8 +46,8 @@ public class BlpTest extends BlpTestBase {
 	
 	private static class TestBlp extends BusinessLogicPipelineImpl {
 
-		public TestBlp(MetaTraderConfig config) { 
-			super(config);
+		public TestBlp(MetaTraderConfig config, CommonStrategyData csd) { 
+			super(config, csd);
 		}
 		
 		public void fireAway(MetaTraderMessage msg) {

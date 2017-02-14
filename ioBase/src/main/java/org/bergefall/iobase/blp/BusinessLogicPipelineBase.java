@@ -26,13 +26,13 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 
 	protected static final SystemLoggerIf log;
 	protected static final AtomicInteger cBLPNr = new AtomicInteger(0);
-	protected CommonStrategyData csd;
+	protected final CommonStrategyData csd;
 	protected String blpName = "";
-	protected MetaTraderConfig config;
+	protected final MetaTraderConfig config;
 	protected BeatsGenerator beatGenerator;
 	protected BusinessLogicPipeline routingPipeline;
 	protected Map<String, List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>>> strategyMap;
-	protected Integer thisBlpNr;
+	protected final Integer thisBlpNr;
 	protected String sequenceLogFileName;
 	
 	
@@ -45,10 +45,11 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 		log = SystemLoggerImpl.get();
 	}
 	
-	public BusinessLogicPipelineBase(MetaTraderConfig config, int blpNr) {
+	public BusinessLogicPipelineBase(MetaTraderConfig config, int blpNr,
+			CommonStrategyData csd) {
 		this.config = config;
 		this.sequencedQueue = new SequencedBlpQueueImpl(defaultSeqQueueSize);		
-		this.csd = getOrCreateCSD();
+		this.csd = csd;
 		this.strategyMap = new HashMap<>();
 		buildStrategies();
 		if (blpNr > 0 && blpNr < cBLPNr.get()) {
@@ -65,23 +66,15 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 		this.sequencedQueue.doSequenceLog(true);
 	}
 	
-	public BusinessLogicPipelineBase(MetaTraderConfig config) {
-		this(config, -1);
+	public BusinessLogicPipelineBase(MetaTraderConfig config, CommonStrategyData csd) {
+		this(config, -1, csd);
 	}
 
 	public BusinessLogicPipelineBase(MetaTraderConfig config, 
-			BusinessLogicPipeline routingBlp) {
-		this(config);
+			BusinessLogicPipeline routingBlp, CommonStrategyData csd) {
+		this(config, csd);
 		this.routingPipeline = routingBlp;
 
-	}
-
-	protected CommonStrategyData getOrCreateCSD() {
-		if (null == csd) {
-			return new CommonStrategyData();
-		} else {
-			return csd;
-		}
 	}
 
 	@Override
@@ -130,6 +123,11 @@ public abstract class BusinessLogicPipelineBase implements BusinessLogicPipeline
 	@Override
 	public void attachBeatGenerator(BeatsGenerator beatGen) {
 		beatGenerator = beatGen;
+	}
+	
+	@Override
+	public CommonStrategyData getCSD() {
+		return csd;
 	}
 
 	protected void fireHandlers(MetaTraderMessage msg) {

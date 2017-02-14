@@ -42,7 +42,7 @@ public class BackTestingBeanTest extends StrategyEngineTestBase {
 		Assert.assertEquals(sellPrice, intraMsg.getTrades().get(0).getPrice().longValue());
 		Assert.assertEquals((sellPrice - buyPrice) * qty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getGrossProfit().longValue());
-		Assert.assertEquals((sellPrice - buyPrice) * qty, 
+		Assert.assertEquals((sellPrice - buyPrice) * qty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getNetProfit().longValue());
 	}
 	
@@ -65,9 +65,9 @@ public class BackTestingBeanTest extends StrategyEngineTestBase {
 		Assert.assertEquals(1, intraMsg.getTrades().size());
 		Assert.assertEquals(0L, intraMsg.getTrades().get(0).getCommission().longValue());
 		Assert.assertEquals(sellPrice, intraMsg.getTrades().get(0).getPrice().longValue());
-		Assert.assertEquals((sellPrice - buyPrice) * qty, 
+		Assert.assertEquals((sellPrice - buyPrice) * qty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getGrossProfit().longValue());
-		Assert.assertEquals((sellPrice - buyPrice) * qty, 
+		Assert.assertEquals((sellPrice - buyPrice) * qty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getNetProfit().longValue());
 	}
 	
@@ -91,9 +91,9 @@ public class BackTestingBeanTest extends StrategyEngineTestBase {
 		Assert.assertEquals(1, intraMsg.getTrades().size());
 		Assert.assertEquals(0L, intraMsg.getTrades().get(0).getCommission().longValue());
 		Assert.assertEquals(sellPrice, intraMsg.getTrades().get(0).getPrice().longValue());
-		Assert.assertEquals((sellPrice - buyPrice) * sellqty, 
+		Assert.assertEquals((sellPrice - buyPrice) * sellqty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getGrossProfit().longValue());
-		Assert.assertEquals((sellPrice - buyPrice) * sellqty, 
+		Assert.assertEquals((sellPrice - buyPrice) * sellqty / MetaTraderConstants.DIVISOR, 
 				intraMsg.getTrades().get(0).getNetProfit().longValue());
 		
 	}

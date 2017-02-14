@@ -34,6 +34,8 @@ public class MovingAverageStrategyBeanTest extends StrategyEngineTestBase {
 	
 	@Test
 	public void testGenerateBuyOrder() {
+		long initialCash = qty(1000L);
+		csd.getAccount(testAccId).getPosition(CASH).addLongQty(initialCash, MetaTraderConstants.CashPrice);
 		for (int i = 0; i < 30; i++) {
 			StrategyToken token = getNewToken();
 			IntraStrategyBeanMsg msg = new IntraStrategyBeanMsg();

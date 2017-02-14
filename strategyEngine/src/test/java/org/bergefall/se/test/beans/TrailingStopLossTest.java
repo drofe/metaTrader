@@ -56,8 +56,8 @@ public class TrailingStopLossTest extends StrategyEngineTestBase {
 	@Test
 	public void testSimpleOrderStopWithConfig() {		
 		stopLossBean = new TrailingStoppLossBean();
-		getTestConfig().setConfig(stopLossBean.getClass().getName() + ".stopLoss", "20_000");  //2%
-		stopLossBean.initBean(config);
+		getTestConfig().setConfig(stopLossBean.getClass().getSimpleName() + ".stopLoss", "20_000");  //2%
+		stopLossBean.initBean(getTestConfig());
 		long buyPrice = price(100L);
 		//Add position
 		PositionCtx pos = csd.getAccount(testAccId).getPosition(ERIC);
@@ -83,7 +83,7 @@ public class TrailingStopLossTest extends StrategyEngineTestBase {
 	@Test
 	public void testSimpleTrailingStopWithConfig() {		
 		stopLossBean = new TrailingStoppLossBean();
-		getTestConfig().setConfig(stopLossBean.getClass().getName() + ".stopLoss", "20_000");  //2%
+		getTestConfig().setConfig(stopLossBean.getClass().getSimpleName() + ".stopLoss", "20_000");  //2%
 		stopLossBean.initBean(config);
 		long buyPrice = price(100L);
 		//Add position

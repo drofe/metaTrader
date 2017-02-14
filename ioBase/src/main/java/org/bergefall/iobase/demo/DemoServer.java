@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.StrategyToken;
 import org.bergefall.common.DateUtils;
@@ -30,8 +31,8 @@ public class DemoServer extends MetaTraderServerApplication {
 	
 	private static class SimpleBLP extends BusinessLogicPipelineImpl {
 
-		public SimpleBLP(MetaTraderConfig config) {
-			super(config);
+		public SimpleBLP(MetaTraderConfig config, CommonStrategyData csd) {
+			super(config, csd);
 		}
 
 		@Override
@@ -88,8 +89,8 @@ public class DemoServer extends MetaTraderServerApplication {
 	@Override
 	protected List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config) {
 		List<BusinessLogicPipeline> list = new ArrayList<>();
-		list.add(new SimpleBLP(config));
-		list.add(new SimpleBLP(config));
+		list.add(new SimpleBLP(config, csd));
+		list.add(new SimpleBLP(config, csd));
 		return list;
 	}
 }

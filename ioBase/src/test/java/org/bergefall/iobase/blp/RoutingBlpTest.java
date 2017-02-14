@@ -1,5 +1,6 @@
 package org.bergefall.iobase.blp;
 
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
 import org.bergefall.iobase.BlpTestBase;
@@ -44,7 +45,7 @@ public class RoutingBlpTest extends BlpTestBase {
 	private static class TestRouterBlp extends RoutingPipeline {
 
 		public TestRouterBlp(MetaTraderConfig config) { 
-			super(config);
+			super(config, new CommonStrategyData());
 		}
 		
 		public void fireAway(MetaTraderMessage msg) {

@@ -32,6 +32,7 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type
 public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
 
 	protected static final SystemLoggerIf log = SystemLoggerImpl.get();
+	private static final char cSeparator = ',';
 	protected IntraStrategyBeanMsg intraMsg;
 	protected FileHandler fileHandler;
 	protected Map<String, List<MaStrategy>> strategies;
@@ -74,11 +75,11 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 			return;
 		}
 		try {
-			fileHandler.write("Date: " + marketData.getDate() +
-					"Strat: " + strat.getName() +
-					", Close price," + marketData.getClose() +
-					", Short average, " + strat.getFastAvg() + 
-					", Long average, " + strat.getSlowAvg());
+			fileHandler.write(marketData.getDate() + cSeparator +
+					strat.getName()  + cSeparator +
+					marketData.getClose() + cSeparator +
+					strat.getFastAvg() + cSeparator + 
+					strat.getSlowAvg());
 		} catch (IOException e) {
 			log.error(SystemLoggerIf.getStacktrace(e));
 		}
@@ -92,6 +93,13 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 			qty = accCtx.getPosition(symb).getLongQty();
 		} else {
 			qty = getBuyQty(accCtx, price);
+		}
+		if (0 == qty) {
+			log.error("WARNING! Strategy indicated order for: " + symb + 
+					" on accountid: " + accountId + " @ price: " + price + 
+					"\nBut calculated qty is zero!! " + "Lacking " + 
+					(isAsk ? "positions to sell" : "cash to buy with."));
+			return;  //Not enough cash!
 		}
 		OrderCtx ctx = new OrderCtx(symb, qty, isAsk);
 		ctx.setPrice(price);
@@ -119,10 +127,10 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 	private List<MaStrategy> generateStrats() {
 		List<MaStrategy> strats = new ArrayList<>();
 		for (AccountCtx acc : csd.getAllAccounts()) {
-			String[] ratios = acc.getName().split("_");
+//			String[] ratios = acc.getName().split("_");
 			try {
-				int shortW = Integer.valueOf(ratios[0]).intValue();
-				int longW = Integer.valueOf(ratios[1]).intValue();
+				int shortW = Integer.valueOf(9); //ratios[0]).intValue();
+				int longW = Integer.valueOf(23); //ratios[1]).intValue();
 				strats.add(new MaStrategy(acc.getName(), shortW, longW));
 			} catch (NumberFormatException e) {
 				log.error(SystemLoggerIf.getStacktrace(e));
@@ -143,6 +151,16 @@ public class MovingAverageCalculatingBean extends AbstractStrategyBean<IntraStra
 		writeToFile = null == config ? false : getBooleanBeanProperty("writeToFile");
 		if (writeToFile) {
 			fileHandler = new RotatingFileHandler("./", false, 60_000, "PriceMAData");
+			try {
+				fileHandler.write("Date" + cSeparator +
+						"Strategy" + cSeparator +
+						"Close price" + cSeparator +
+						"Short average" + cSeparator + 
+						"Long average");
+			} catch (IOException e) {
+				log.error("Error writing head to Trades file." + System.lineSeparator() + 
+						SystemLoggerIf.getStacktrace(e) );
+			}
 		}
 	}
 	

@@ -54,7 +54,7 @@ public class StopLossBeanTest extends StrategyEngineTestBase {
 	@Test
 	public void testSimpleOrderStopWithConfig() {		
 		stopLossBean = new StopLossBean();
-		getTestConfig().setConfig(stopLossBean.getClass().getName() + ".stopLoss", "20_000");  //2%
+		getTestConfig().setConfig(stopLossBean.getClass().getSimpleName() + ".stopLoss", "20_000");  //2%
 		stopLossBean.initBean(config);
 		long buyPrice = price(100L);
 		//Add position

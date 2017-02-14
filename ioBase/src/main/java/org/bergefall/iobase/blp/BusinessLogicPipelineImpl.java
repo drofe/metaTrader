@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bergefall.base.beats.BeatsGenerator;
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
@@ -43,16 +44,13 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	protected boolean runHandleTrade;
 	protected BeatsGenerator beatGenerator;
 
-	public BusinessLogicPipelineImpl(MetaTraderConfig config) {
-		super(config);
+	public BusinessLogicPipelineImpl(MetaTraderConfig config, CommonStrategyData csd) {
+		super(config, Integer.valueOf(cBLPNr.getAndIncrement()), csd);
 		parseConfig();
 	}
 	
 	@Override
 	protected void setBlpIdentifiers(MetaTraderConfig config) {
-		if (null == this.thisBlpNr) {
-			this.thisBlpNr = Integer.valueOf(cBLPNr.getAndIncrement());
-		}
 		String tConfiguredName = config.getBlpString(thisBlpNr, "name"); 
 		blpName = null != tConfiguredName ? tConfiguredName : "BLP-";
 		sequenceLogFileName = blpName + "-" + thisBlpNr +  "-SequencedMsgs-";

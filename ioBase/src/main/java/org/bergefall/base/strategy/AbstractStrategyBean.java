@@ -59,6 +59,10 @@ public abstract class AbstractStrategyBean<IN, OUT> implements Serializable {
 		return this.config.getBooleanProperty(this.getClass().getSimpleName(), key);
 	}
 	
+	protected long getLongBeanProperty(String key) {
+		return this.config.getLongProperty(this.getClass().getSimpleName(), key);
+	}
+	
 	protected long toPrice(long price) {
 		return price(price);
 	}

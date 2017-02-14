@@ -16,9 +16,6 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type
 
 public class StopLossBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Status> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1578965216255593549L;
 	private long stopLoss;
 	IntraStrategyBeanMsg intraMsg;
@@ -43,10 +40,15 @@ public class StopLossBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 	}
 	
 	protected void checkLossLimit(AccountCtx acc, MarketDataCtx md) {
+		//setStopLoss(acc);
 		PositionCtx pos = acc.getPosition(md.getSymbol());
 		if (isStopLossHit(pos.getAvgLongPrice(), md)) {
 			intraMsg.addOrder(createExitOrder(acc.getId(), pos));
 		}
+	}
+	
+	private void setStopLoss(AccountCtx acc) {
+		stopLoss = Long.valueOf(acc.getName().substring(0, 1)) * MetaTraderConstants.DIVISOR / 1000L;
 	}
 	
 	protected OrderCtx createExitOrder(int accountId, PositionCtx pos) {
@@ -67,13 +69,10 @@ public class StopLossBean extends AbstractStrategyBean<IntraStrategyBeanMsg, Sta
 		return false;
 	}
 	
-	protected OrderCtx generateStopOrder() {
-		return null;
-	}
-	
 	@Override
 	public void initBean(MetaTraderConfig config) {
-		stopLoss = null == config ? 0L : config.getLongProperty(this.getClass().getName(), "stopLoss");
+		super.initBean(config);
+		stopLoss = null == config ? MetaTraderConstants.DIVISOR : getLongBeanProperty("stopLoss");
 	}
 	
 }

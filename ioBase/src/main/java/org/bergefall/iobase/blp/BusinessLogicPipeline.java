@@ -1,6 +1,7 @@
 package org.bergefall.iobase.blp;
 
 import org.bergefall.base.beats.BeatsGenerator;
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 
 public interface BusinessLogicPipeline extends Runnable {
@@ -30,6 +31,12 @@ public interface BusinessLogicPipeline extends Runnable {
 	 */
 	public Integer getBlpNr();
 
+	/**
+	 * Get the common data store.
+	 * @return The single instance of the CSD.
+	 */
+	public CommonStrategyData getCSD();
+	
 	/**
 	 * Set the router BLP for this BLP.
 	 * @param router

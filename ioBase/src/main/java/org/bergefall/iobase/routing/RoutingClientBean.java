@@ -158,8 +158,12 @@ public class RoutingClientBean extends AbstractStrategyBean<IntraStrategyBeanMsg
 		}
 				
 		public void shutdown() {
-			channel.close();
-			group.shutdownGracefully();
+			if (null != channel) {
+				channel.close();
+			}
+			if (null != group) {
+				group.shutdownGracefully();
+			}
 			initialized = false;
 		}
 		

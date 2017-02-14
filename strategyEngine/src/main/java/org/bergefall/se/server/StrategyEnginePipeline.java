@@ -3,6 +3,7 @@ package org.bergefall.se.server;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.base.strategy.AbstractStrategyBean;
 import org.bergefall.base.strategy.IntraStrategyBeanMsg;
 import org.bergefall.base.strategy.Status;
@@ -21,8 +22,8 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 	private static final String backtestStrategy = "backtestStrat";
 	private static final String tradeStrategy = "tradeStrat";
 	
-	public StrategyEnginePipeline(MetaTraderConfig config) {
-		super(config);
+	public StrategyEnginePipeline(MetaTraderConfig config, CommonStrategyData csd) {
+		super(config, csd);
 	}
 
 	@Override 
@@ -30,6 +31,7 @@ public class StrategyEnginePipeline extends BusinessLogicPipelineImpl {
 		super.buildStrategies();
 		List<AbstractStrategyBean<IntraStrategyBeanMsg, ? extends Status>> strat = new LinkedList<>();
 		addBeanToStrategy(new MovingAverageCalculatingBean(), strat);
+		//addBeanToStrategy(new StopLossBean(), strat);
 		addBeanToStrategy(new OrderGenerator(), strat);
 		addBeanToStrategy(new BackTestBean(), strat);
 		addBeanToStrategy(new TradeHandlingBean(), strat);

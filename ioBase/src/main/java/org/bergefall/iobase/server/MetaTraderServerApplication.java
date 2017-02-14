@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bergefall.base.beats.BeatsGenerator;
+import org.bergefall.base.commondata.CommonStrategyData;
 import org.bergefall.common.config.ConfigurationException;
 import org.bergefall.common.config.MetaTraderBaseConfigureeImpl;
 import org.bergefall.common.config.MetaTraderConfig;
@@ -11,6 +12,7 @@ import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.common.log.system.SystemLoggerImpl;
 import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.iobase.routing.RoutingPipeline;
+import org.bergefall.iobase.web.WebService;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelHandler;
@@ -28,7 +30,10 @@ public abstract class MetaTraderServerApplication implements Runnable {
 	protected EventLoopGroup serverGroup;
 	protected EventLoopGroup workerGroup;
 	protected BusinessLogicPipeline routingBlp;
+	protected CommonStrategyData csd;
 	protected Thread routingThread;
+	protected WebService webService;
+	protected Thread webServiceThread;
 	protected List<BusinessLogicPipeline> blps;
 	protected List<Thread> blpThreads;
 	protected MetaTraderConfig config;
@@ -39,11 +44,17 @@ public abstract class MetaTraderServerApplication implements Runnable {
 		this.serverGroup = getServerGroup();
 		this.workerGroup = getWorkerGroup();
 		this.config = getConfig(configFile);
-		routingBlp = new RoutingPipeline(config);
+		csd = getCSD();
+		routingBlp = new RoutingPipeline(config, csd);
 		routingThread = new Thread(routingBlp);
-		this.blps = getBLPs(config);
+		this.blps = getBLPs(config);		
 		this.bootStrap = getBootStrap();
 		routingThread.start();
+		initWebService(config);
+		if (null != webService) {
+			webServiceThread = new Thread(webService);
+			webServiceThread.start();
+		}
 		blpThreads = new ArrayList<>(blps.size());
 		for (BusinessLogicPipeline blp : blps) {
 			blp.setRoutingBlp(routingBlp);
@@ -62,6 +73,15 @@ public abstract class MetaTraderServerApplication implements Runnable {
 
 	}
 	
+	protected void initWebService(MetaTraderConfig config) {
+		webService = getWebServiceImpl(config);
+		webService.get("/hello", (request, response) -> "Hello world") ;
+	}
+	
+	protected WebService getWebServiceImpl(MetaTraderConfig config) {
+		return new WebService(config, csd);
+	}
+
 	private void startListening() throws InterruptedException {
 		try {
 			// Bind to port
@@ -90,6 +110,10 @@ public abstract class MetaTraderServerApplication implements Runnable {
 			log.error("Exception cought in netty listening layer. Shutting down");
 			shutdown();
 		}
+	}
+	
+	protected CommonStrategyData getCSD() {
+		return new CommonStrategyData();
 	}
 	
 	protected void shutdown() {
