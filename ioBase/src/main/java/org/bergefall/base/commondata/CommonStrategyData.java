@@ -3,6 +3,8 @@ package org.bergefall.base.commondata;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -24,12 +26,14 @@ public class CommonStrategyData {
 	private final Map<Integer, AccountCtx> accounts;
 	private final Map<String, Integer> accountNameToId;
 	private final Map<String, InstrumentCtx> instruments;
+	private final Map<Integer, List<String>> paLLines;
 	
 	public CommonStrategyData() {
 		marketDataPerSymbol = new HashMap<>();
 		accounts = new HashMap<>();
 		instruments = new HashMap<>();
 		accountNameToId = new HashMap<>();
+		paLLines = new HashMap<>();
 		addMarketData(new MarketDataCtx(MetaTraderConstants.CASH, LocalDateTime.now(), 
 				1L * MetaTraderConstants.DIVISOR, 1L * MetaTraderConstants.DIVISOR, 
 				0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
@@ -121,5 +125,25 @@ public class CommonStrategyData {
 		for (MarketDataCtx mdItem : mds ) {
 			addMarketData(mdItem);
 		}
+	}
+	
+	public void addNewPaL(Integer accId, String pal) {
+		if (null == accId || null == pal) {
+			return;
+		}
+		List<String> palList = paLLines.get(accId);
+		if (null == palList) {
+			palList = new LinkedList<>();
+			paLLines.put(accId, palList);
+		}
+		palList.add(pal);
+	}
+	
+	public List<String> getPaL(Integer accId) {
+		List<String> palList = paLLines.get(accId);
+		if (null == palList) {
+			return new LinkedList<>();
+		}
+		return palList;
 	}
 }

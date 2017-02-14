@@ -13,6 +13,7 @@ import org.bergefall.iobase.blp.BusinessLogicPipeline;
 import org.bergefall.iobase.server.MetaTraderServerApplication;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
+import org.bergefall.se.server.webhandlers.PublishProfitAndLoss;
 
 public class StrategyEngine extends MetaTraderServerApplication {
 
@@ -25,6 +26,12 @@ public class StrategyEngine extends MetaTraderServerApplication {
 		return blpList;
 	}
 
+	@Override 
+	protected void initWebService(MetaTraderConfig config) {
+		super.initWebService(config);
+		webService.get("/test", new PublishProfitAndLoss(getCSD())) ;
+	}
+	
 	public void runBootloaders() {
 		//For back testing, add a accounts to be used.
 		int id = 0;

@@ -113,7 +113,11 @@ public abstract class MetaTraderServerApplication implements Runnable {
 	}
 	
 	protected CommonStrategyData getCSD() {
-		return new CommonStrategyData();
+		if (null == csd) {
+			return new CommonStrategyData();
+		} else {
+			return csd;
+		}
 	}
 	
 	protected void shutdown() {

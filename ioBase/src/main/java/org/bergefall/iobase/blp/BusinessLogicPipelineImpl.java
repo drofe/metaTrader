@@ -45,7 +45,7 @@ public abstract class BusinessLogicPipelineImpl extends BusinessLogicPipelineBas
 	protected BeatsGenerator beatGenerator;
 
 	public BusinessLogicPipelineImpl(MetaTraderConfig config, CommonStrategyData csd) {
-		super(config, Integer.valueOf(cBLPNr.getAndIncrement()), csd);
+		super(config, -1, csd);
 		parseConfig();
 	}
 	

@@ -60,6 +60,7 @@ public class EquityLineGeneratorBean extends AbstractStrategyBean<IntraStrategyB
 				builder.append("," + ((currPrice	* pos.getLongQty()) / MetaTraderConstants.DIVISOR));
 			}
 			builder.append(System.lineSeparator());
+			csd.addNewPaL(acc.getId(), builder.toString());
 		}
 		String entry = null;
 		if (System.lineSeparator().equals(builder.substring(builder.length() - 1 , builder.length()))) {
@@ -67,7 +68,6 @@ public class EquityLineGeneratorBean extends AbstractStrategyBean<IntraStrategyB
 		} else {
 			entry = builder.toString();
 		}
-		
 		return entry;
 	}
 
