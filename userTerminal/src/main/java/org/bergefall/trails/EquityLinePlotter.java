@@ -1,9 +1,6 @@
 package org.bergefall.trails;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +8,11 @@ import java.util.List;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.chart.XYChart.Series;
 
-public class EquityLinePlotter extends ZoomableLineChart {
-	public static void main(String[] args) {
-		launch(args);
-	}
+public abstract class EquityLinePlotter extends ZoomableLineChart {
 
 	protected List<Series<Number, Number>> getData() {
 		try {
-			file = new File("/home/ola/hacks/metaTrader/strategyEngine/PortfolioValue-2017-02-13--17.38.56.443+1100.log");
-			fileRead = new FileReader(file);
-			bufRead = new BufferedReader(fileRead);
+			bufRead = getBufferToTraverse();
 			String line;
 			final Series<Number, Number> tot = new Series<>();
 			final Series<Number, Number> cash = new Series<>();
@@ -35,7 +27,7 @@ public class EquityLinePlotter extends ZoomableLineChart {
 					String[] cashData = data[1].split(",");
 					cash.getData().add(new Data<Number, Number>(ctr, Long.valueOf(cashData[3]) / 1000_000L));
 					tot.getData().add(new Data<Number, Number>(ctr, Long.valueOf(cashData[3]) / 1000_000L));
-				} else {
+				} else if (3 == data.length){
 					String[] cashData = data[2].split(",");
 					String[] hmData = data[1].split(",");
 					cash.getData().add(new Data<Number, Number>(ctr, Long.valueOf(cashData[3]) / 1000_000L));
@@ -50,12 +42,13 @@ public class EquityLinePlotter extends ZoomableLineChart {
 			result.add(cash);
 			result.add(hm);
 			return result;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	protected abstract BufferedReader getBufferToTraverse();
+	
 }

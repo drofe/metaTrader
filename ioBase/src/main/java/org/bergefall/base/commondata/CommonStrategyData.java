@@ -19,6 +19,7 @@ import org.bergefall.protocol.metatrader.MetaTraderProtos.Account;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Account.Position;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Instrument;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MarketData;
+import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
 public class CommonStrategyData {
 	
@@ -27,6 +28,7 @@ public class CommonStrategyData {
 	private final Map<String, Integer> accountNameToId;
 	private final Map<String, InstrumentCtx> instruments;
 	private final Map<Integer, List<String>> paLLines;
+	private final Map<Integer, List<Trade>> trades;
 	
 	public CommonStrategyData() {
 		marketDataPerSymbol = new HashMap<>();
@@ -34,6 +36,7 @@ public class CommonStrategyData {
 		instruments = new HashMap<>();
 		accountNameToId = new HashMap<>();
 		paLLines = new HashMap<>();
+		trades = new HashMap<>();
 		addMarketData(new MarketDataCtx(MetaTraderConstants.CASH, LocalDateTime.now(), 
 				1L * MetaTraderConstants.DIVISOR, 1L * MetaTraderConstants.DIVISOR, 
 				0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L));
@@ -145,5 +148,25 @@ public class CommonStrategyData {
 			return new LinkedList<>();
 		}
 		return palList;
+	}
+	
+	public void addNewTrade(Integer accId, Trade trade) {
+		if (null == accId || null == trade) {
+			return;
+		}
+		List<Trade> tradeList = trades.get(accId);
+		if (null == tradeList) {
+			tradeList = new LinkedList<>();
+			trades.put(accId, tradeList);
+		}
+		tradeList.add(trade);
+	}
+	
+	public List<Trade> getTradeList(Integer accId) {
+		List<Trade> tradeList = trades.get(accId);
+		if (null == tradeList) {
+			return new LinkedList<>();
+		}
+		return tradeList;
 	}
 }

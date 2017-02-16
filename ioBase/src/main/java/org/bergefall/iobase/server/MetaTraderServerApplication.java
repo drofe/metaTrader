@@ -76,6 +76,7 @@ public abstract class MetaTraderServerApplication implements Runnable {
 	protected void initWebService(MetaTraderConfig config) {
 		webService = getWebServiceImpl(config);
 		webService.get("/hello", (request, response) -> "Hello world") ;
+		webService.get("/config", (request, response) -> this.config.toString()) ;
 	}
 	
 	protected WebService getWebServiceImpl(MetaTraderConfig config) {

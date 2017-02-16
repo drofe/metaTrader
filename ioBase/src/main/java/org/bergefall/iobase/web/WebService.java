@@ -51,8 +51,6 @@ public class WebService implements Runnable {
     public final MetaTraderConfig config;
     private final RouteTable routeTable;
     private final int port;
-    private boolean active;
-
     /**
      * Creates a new WebServer.
      */
@@ -359,6 +357,5 @@ public class WebService implements Runnable {
 	}
 	
 	public void shutdown() {
-		active = false;
 	}
 }

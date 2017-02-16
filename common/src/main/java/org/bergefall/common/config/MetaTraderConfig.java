@@ -8,7 +8,6 @@ public interface MetaTraderConfig {
 	public static final String BLP = "blp.";
 	public static final String ROUTING = "routing.";
 	
-	
 	public Long getCommonLong(String propKey);
 	
 	public Double getCommonDoubleConfig(String propKey);

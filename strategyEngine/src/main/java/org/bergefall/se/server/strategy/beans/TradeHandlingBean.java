@@ -15,6 +15,7 @@ import org.bergefall.common.log.RotatingFileHandler;
 import org.bergefall.common.log.system.SystemLoggerIf;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage.Type;
+import org.bergefall.se.server.common.TradeStatisticsMangler;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.Trade;
 
 public class TradeHandlingBean extends StoreTradeToDb {
@@ -23,7 +24,6 @@ public class TradeHandlingBean extends StoreTradeToDb {
 	 * 
 	 */
 	private static final long serialVersionUID = 736085641456361407L;
-	private static final char cSeparator = ',';
 	
 	private RotatingFileHandler fileHander;
 	private boolean writeToFile;
@@ -50,9 +50,10 @@ public class TradeHandlingBean extends StoreTradeToDb {
 	protected void handleTrade(Trade trade) {
 		AccountCtx accCtx = csd.getAccount(trade.getAccount().getId());		
 		updatesPositions(accCtx, trade);
+		csd.addNewTrade(accCtx.getId(), trade);
 		if (writeToFile) {
 			try {
-				fileHander.write(formatLogEntry(trade));
+				fileHander.write(TradeStatisticsMangler.formatLogEntry(trade));
 			} catch (IOException e) {
 				status.setCode(Status.ERROR);
 				status.setMsg(SystemLoggerIf.getStacktrace(e));
@@ -83,14 +84,7 @@ public class TradeHandlingBean extends StoreTradeToDb {
 		if (writeToFile) {
 			fileHander = new RotatingFileHandler("./", true, 60_000, "Trades-");
 			try {
-				fileHander.write("Instrument" + cSeparator +
-						"Date" + cSeparator + 
-						"IsEntry" + cSeparator + 
-						"Price" + cSeparator + 
-						"Qty" + cSeparator + 
-						"Net profit" + cSeparator +
-						"Gross profit" + cSeparator + 
-						"Commission");
+				fileHander.write(TradeStatisticsMangler.getTitle());
 			} catch (IOException e) {
 				log.error("Error writing head to Trades file." + System.lineSeparator() + 
 						SystemLoggerIf.getStacktrace(e) );
@@ -99,25 +93,7 @@ public class TradeHandlingBean extends StoreTradeToDb {
 		storeToDB = false;
 	}
 	
-	protected String formatLogEntry(Trade trade) {
-		StringBuilder buf = new StringBuilder(256);
-		buf.append(trade.getInstrument().getName());
-		buf.append(cSeparator);
-		buf.append(trade.getDate());
-		buf.append(cSeparator);
-		buf.append(trade.getIsEntry());
-		buf.append(cSeparator);
-		buf.append(trade.getPrice());
-		buf.append(cSeparator);
-		buf.append(trade.getQty());
-		buf.append(cSeparator);
-		buf.append(trade.getNetProfit());
-		buf.append(cSeparator);
-		buf.append(trade.getGrossProfit());
-		buf.append(cSeparator);
-		buf.append(trade.getCommission());
-		return buf.toString();
-	}
+	
 	@Override
 	public void shutdownHook() {
 		if (null != fileHander) {

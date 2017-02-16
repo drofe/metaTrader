@@ -161,6 +161,17 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 		return getStringProperty(ROUTING + propKey);
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder strBldr = new StringBuilder();
+		strBldr.append("Current configuration:" + System.lineSeparator());
+		for (String key : configProperties.stringPropertyNames()) {
+			String value = configProperties.getProperty(key);
+			strBldr.append(key + ":" + value + System.lineSeparator());
+		}
+		return strBldr.toString();
+	}
+	
 	protected Properties getProperties() {
 		return configProperties;
 	}

@@ -14,6 +14,7 @@ import org.bergefall.iobase.server.MetaTraderServerApplication;
 import org.bergefall.protocol.metatrader.MetaTraderMessageCreator;
 import org.bergefall.protocol.metatrader.MetaTraderProtos.MetaTraderMessage;
 import org.bergefall.se.server.webhandlers.PublishProfitAndLoss;
+import org.bergefall.se.server.webhandlers.PublishTradeStatistics;
 
 public class StrategyEngine extends MetaTraderServerApplication {
 
@@ -29,7 +30,8 @@ public class StrategyEngine extends MetaTraderServerApplication {
 	@Override 
 	protected void initWebService(MetaTraderConfig config) {
 		super.initWebService(config);
-		webService.get("/test", new PublishProfitAndLoss(getCSD())) ;
+		webService.get("/pal", new PublishProfitAndLoss(getCSD()));
+		webService.get("/trades", new PublishTradeStatistics(getCSD()));
 	}
 	
 	public void runBootloaders() {
