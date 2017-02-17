@@ -18,7 +18,7 @@ import org.bergefall.se.server.webhandlers.PublishTradeStatistics;
 
 public class StrategyEngine extends MetaTraderServerApplication {
 
-	private static final String configFile = "./src/main/resources/StrategyEngine.properties";
+	private static final String configFile = "StrategyEngine.properties";
 	
 	@Override
 	protected List<BusinessLogicPipeline> getBLPs(MetaTraderConfig config) {

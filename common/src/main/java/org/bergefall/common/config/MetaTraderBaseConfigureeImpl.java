@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -27,15 +28,35 @@ public class MetaTraderBaseConfigureeImpl implements MetaTraderConfig {
 			return;
 		}
 		File file = new File(configFile);
-		try {
-			FileReader fileReader = new FileReader(file);
-			configProperties = new Properties(defaults);
-			configProperties.load(fileReader);
-		} catch (FileNotFoundException e) {
-			log.error("Couldn't find specified log file: " + configFile + ". (Current dir: " + 
-		System.getProperty("user.dir") + ")\n" + e);
-		} catch (IOException e) {
-			log.error("Couldn't parse specified log file: " + configFile + ". \n" + e);
+		configProperties = new Properties(defaults);
+		if (file.exists() && file.isFile()) {
+			try {
+
+				FileReader fileReader = new FileReader(file);
+				configProperties.load(fileReader);
+
+			} catch (FileNotFoundException e) {
+				log.error("Couldn't find specified log file: " + configFile + ". (Current dir: "
+						+ System.getProperty("user.dir") + ")\n" + e);
+			} catch (IOException e) {
+				log.error("Couldn't parse specified log file: " + configFile + ". \n" + e);
+			}
+		} else {
+			//Add leading "/" to find in classpath
+			if (false == configFile.startsWith("/")) {
+				configFile = "/" + configFile;
+			}
+			try (final InputStream stream =
+			           this.getClass().getResourceAsStream(configFile)) {
+				if (null != stream) {
+					configProperties.load(stream);
+				} else {
+					log.error("Couldn't find specified log file: " + configFile + " in classpath.");
+				}
+			} catch (IOException | NullPointerException e) {
+				log.error("Couldn't parse specified log file: " + configFile + ". \n" + 
+						SystemLoggerIf.getStacktrace(e));		
+				}
 		}
 	}
 	

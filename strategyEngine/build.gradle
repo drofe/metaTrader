@@ -6,6 +6,7 @@ repositories {
     jcenter()
 }
 
+version = '0.0.1'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -19,5 +20,17 @@ dependencies {
 
 jar {
     baseName = 'strategyEngine'
-    version =  '0.0.1'
+    version =  version
+}
+
+//create a single Jar with all dependencies
+task buildServer(type: Jar) {
+     manifest {
+         attributes 'Implementation-Title': 'Strategy Engine',
+	     'Implementation-Version': version,
+         'Main-Class': 'org.bergefall.se.server.StrategyEngine'
+     }
+     baseName = project.name + '-full'
+     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+     with jar
 }
